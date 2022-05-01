@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "612609086258",
+    "project_id": "photogram-chat-7e841",
+    "storage_bucket": "photogram-chat-7e841.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:612609086258:android:ca714a0021c60893bf3d2b",
+        "android_client_info": {
+          "package_name": "com.photogram_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "612609086258-tmski1l88469r82ulmjj32rt0r25d385.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLw9jxagHMy6WG9hUaslJhBUsoFfVrvvE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "612609086258-tmski1l88469r82ulmjj32rt0r25d385.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
