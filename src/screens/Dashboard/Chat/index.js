@@ -4,37 +4,26 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   FlatList,
   Image,
-  Keyboard,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  ScrollView,
   Modal,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {GiftedChat} from 'react-native-gifted-chat';
 import {width, height} from '../../../constants/Dimesions/index';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import MessageCard from '../../../components/Cards/MessageCard';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import RNEncryptionModule from '@dhairyasharma/react-native-encryption';
-import {Base64} from 'js-base64';
+import {DecryptData, EncryptData} from '../../../functions';
 
 export default function Chat(props) {
   let [imageUri, setImageUri] = useState('');
   let [userData, setUserData] = useState();
   let [userForToken, setUserForToken] = useState([]);
   let [messageText, setMessageText] = useState('');
-  let [encryptedMessageText, setEncryptedMessageText] = useState('');
   let [messages, setMessages] = useState([]);
-
-  const encryptText = () => {
-    let encodedMessageText = Base64.encode(messageText);
-    setEncryptedMessageText(encodedMessageText);
-  };
 
   let fetchMessages = useCallback(async () => {
     try {
@@ -105,7 +94,7 @@ export default function Chat(props) {
         .collection('Messages')
         .add({
           createdAt: Date.now(),
-          messageText: encryptedMessageText,
+          messageText: EncryptData(messageText),
           userName: userData.userName ? userData.userName : 'Tests',
           image: imageUri ? imageUri : null,
           uid: auth().currentUser.uid,
@@ -178,7 +167,7 @@ export default function Chat(props) {
             alignSelf:
               item.uid !== auth().currentUser.uid ? 'flex-start' : 'flex-end',
             backgroundColor:
-              item.uid === auth().currentUser?.uid ? 'yellow' : 'white',
+              item.uid === auth().currentUser?.uid ? 'yellow' : '#45aaf4',
           }}>
           <Image
             style={{
@@ -195,7 +184,7 @@ export default function Chat(props) {
               fontFamily: 'Lato-Regular',
               textAlign: item.uid === auth().currentUser.uid ? 'right' : 'left',
             }}>
-            {Base64.decode(item.messageText)}
+            {DecryptData(item.messageText)}
           </Text>
         </View>
       </View>
@@ -327,8 +316,8 @@ export default function Chat(props) {
           placeholderTextColor="#000"
           value={messageText}
           onChangeText={_message_text => {
-            setMessageText(_message_text)
-            encryptText()
+            setMessageText(_message_text);
+            encryptText();
           }}
           placeholder={'Type the message here ......'}
           style={{

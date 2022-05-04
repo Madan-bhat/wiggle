@@ -1,12 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
 import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
 import moment from 'moment';
-import React from 'react';
+import React,{useEffect} from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import dayjs from 'dayjs';
 
 export default function LaunchCard({navigation, groupId, item, groupName}) {
   let styles = StyleSheet.create({
