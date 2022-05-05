@@ -12,14 +12,14 @@ import {
   Switch,
 } from 'react-native-paper';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
-
+import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {AuthContext} from '../../../context';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
-export default function DrawerContent(props) {
+export default function DrawerContent(props,{navigation}) {
   let [user, setUser] = useState();
   const paperTheme = useTheme();
 
@@ -42,7 +42,7 @@ export default function DrawerContent(props) {
       <DrawerContentScrollView {...props}>
         <View style={styles.drawerContent}>
           <View style={styles.userInfoSection}>
-            <View style={{flexDirection: 'row', marginTop: 15}}>
+            <TouchableOpacity onPress={() => props.navigation.navigate("photogram.edit.profile.screen")} style={{flexDirection: 'row', marginTop: 15}}>
               <Avatar.Image
                 source={{
                   uri: user
@@ -66,7 +66,7 @@ export default function DrawerContent(props) {
                     : 'Text'}
                 </Caption>
               </View>
-            </View>
+            </TouchableOpacity>
 
             <View style={styles.row}>
               <View style={styles.section}>

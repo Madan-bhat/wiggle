@@ -2,6 +2,7 @@ import {Loading, Login, Register} from './Auth';
 import {
   Chat,
   CreateRoom,
+  EditRoomDetails,
   JoinRoom,
   Launch,
   Password,
@@ -24,6 +25,8 @@ export {
   CreateRoom,
   Chat,
   RoomDetail,
+EditRoomDetails
+  ,
   Users,
   Password,
 };

@@ -81,7 +81,7 @@ export default function Launch({navigation}) {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     if (enabled) {
-      console.log('Authorization status:', authStatus);
+      return ;
     }
   }
   useEffect(() => {

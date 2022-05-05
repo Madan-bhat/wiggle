@@ -19,15 +19,16 @@ import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {ScrollView} from 'react-native-gesture-handler';
-import {atob, Base64, btoa} from 'js-base64';
+import {EncryptData} from '../../../../functions';
 
 export default function Create({navigation}) {
-  const [pickerValue, setPickerValue] = useState(2);
+  const [pickerValue, setPickerValue] = useState(1);
   const [type, setType] = useState();
   const [groupName, setGroupName] = useState('');
   const [password, setPassword] = useState('');
   const [description, setDescription] = useState('');
   const [imageUri, setImageUri] = useState();
+  const [imageUrl, setImageUrl] = useState();
   const [uploading, setUploading] = useState(false);
   const [encodedPassword, setEncodedPassword] = useState('');
 
@@ -36,6 +37,7 @@ export default function Create({navigation}) {
     nameInput: {
       shadowColor: '#333',
       elevation: 48,
+      color: '#000',
       padding: 12,
       marginHorizontal: 12,
       marginTop: 24,
@@ -95,7 +97,6 @@ export default function Create({navigation}) {
       compressImageQuality: 1,
     }).then(image => {
       setImageUri(image.path);
-      console.log(image);
     });
   };
 
@@ -112,9 +113,6 @@ export default function Create({navigation}) {
           'state_changed',
           snapshot => {
             setUploading(true);
-            console.log(
-              `${snapshot.bytesTransferred} transferred out of ${snapshot.totalBytes}`,
-            ),
               setVisible(true);
             setTransferred(
               Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100,
@@ -128,7 +126,6 @@ export default function Create({navigation}) {
             setImageUrl(url);
             setVisible(false);
             setUploading(false);
-            console.log(url);
             resolve(url);
             setImageUri(null);
             return url;
@@ -138,13 +135,8 @@ export default function Create({navigation}) {
     }
   };
 
-  let encryptPassword = () => {
-    let encryptedPassword = btoa(password);
-    setEncodedPassword(encryptedPassword);
-  };
 
   let createGroup = async () => {
-    encryptPassword()
     let url = await uploadImage();
     try {
       firestore()
@@ -165,11 +157,11 @@ export default function Create({navigation}) {
               numberOfMembers: pickerValue,
               ownerUid: auth().currentUser.uid,
               description,
-              password: encodedPassword,
+              password: EncryptData(password),
               type,
               requests: type === 'Approval' ? [] : null,
               members: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
-              groupImage: url ? url : '',
+              groupImage: setImageUrl ? setImageUrl : '',
             })
             .then(() => {
               firestore()
@@ -189,12 +181,6 @@ export default function Create({navigation}) {
         .catch(e => alert(e));
     } catch (error) {}
   };
-
-  useEffect(() => {
-    setTimeout(() => {
-      encryptPassword();
-    }, 1);
-  }, []);
 
   return (
     <ScrollView style={styles.Container}>
@@ -239,12 +225,14 @@ export default function Create({navigation}) {
           <Text style={styles.imagePickerStyle}>Choose Photo</Text>
         </Pressable>
         <TextInput
+          placeholderTextColor={'#000'}
           value={groupName}
           onChangeText={_val => setGroupName(_val)}
           placeholder="Name"
           style={styles.nameInput}
         />
         <TextInput
+          placeholderTextColor={'#000'}
           value={description}
           onChangeText={_val => setDescription(_val)}
           placeholder="Description (optional)"
@@ -296,10 +284,9 @@ export default function Create({navigation}) {
       </View>
       {type === 'Approval' ? (
         <TextInput
-          onT
+          placeholderTextColor={'#000'}
           value={password}
           onChangeText={_val => {
-            encryptPassword();
             setPassword(_val);
           }}
           placeholder="Password"

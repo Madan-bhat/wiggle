@@ -3,7 +3,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useState} from 'react';
-import {DrawerContent} from './src/components';
+import {DrawerContent, ImageView} from './src/components';
 import {
   CreateRoom as CreateScreen,
   JoinRoom as JoinScreen,
@@ -19,7 +19,10 @@ import {
   RoomDetail,
   Users,
   Password,
+  EditProfile,
+  EditRoomDetails,
 } from './src/screens';
+
 import {Text} from 'react-native';
 import {AuthContext} from './src/context';
 import auth from '@react-native-firebase/auth';
@@ -156,6 +159,18 @@ export default function App() {
             name="photogram.password.screen"
             component={Password}
           />
+          <Stack.Screen
+            options={{headerShown: false}}
+            name="photogram.edit.profile.screen"
+            component={EditProfile}
+          />
+          <Stack.Screen
+            options={{headerShown: false}}
+            name="photogram.image.view.screen"
+            component={ImageView}
+          />
+          <Stack.Screen options={{headerShown : false}} name="photogram.edit.group.info.screen" component={EditRoomDetails} />
+
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>

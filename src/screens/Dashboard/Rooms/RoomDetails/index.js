@@ -18,10 +18,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Lightbox from 'react-native-lightbox';
 
 export default function RoomDetail({route, navigation}) {
-  console.log(route);
   let [user, setUser] = useState();
   let [users, setUsers] = useState([]);
   let [groupImages, setGroupImages] = useState([]);
+
   const getUser = useCallback(() => {
     try {
       firestore()
@@ -34,9 +34,6 @@ export default function RoomDetail({route, navigation}) {
     } catch (error) {}
   }, [route.params.item.ownerUid]);
 
-  useEffect(() => {
-    console.log(route.params);
-  });
 
   let getGroupWithImages = useCallback(async () => {
     let Lists = [];
@@ -59,14 +56,12 @@ export default function RoomDetail({route, navigation}) {
   }, [route.params.item.id]);
 
   const joinGroup = id => {
-    console.log(route.params.item.password)
     if (route.params.item.password) {
-      navigation.navigate('photogram.password.screen',{
-        password : route.params.item.password,
-        item: route.params.item
-      })
-    }else {
-      console.log('no password detected')
+      navigation.navigate('photogram.password.screen', {
+        password: route.params.item.password,
+        item: route.params.item,
+      });
+    } else {
     }
     // } else {
     //   try {
@@ -77,7 +72,6 @@ export default function RoomDetail({route, navigation}) {
     //         members: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
     //       });
     //   } catch (error) {}
-    
   };
 
   useEffect(() => {
@@ -124,6 +118,13 @@ export default function RoomDetail({route, navigation}) {
             {moment(route.params.item.createdAt).format('L')}
           </Text>
         </View>
+        {route.params.item?.ownerUid === auth().currentUser.uid ? (
+          <AntDesign onPress={() => navigation.navigate('photogram.edit.group.info.screen',{
+            info : route.params
+          })} name="edit" style={{position:"absolute",right:10,bottom:10}} size={24} color="black" />
+        ) : (
+          <></>
+        )}
       </ImageBackground>
       <Text
         style={{
@@ -149,7 +150,12 @@ export default function RoomDetail({route, navigation}) {
         style={{marginRight: 4, marginLeft: 4}}
         renderItem={({item}) => {
           return (
-            <View>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('photogram.image.view.screen', {
+                  image: item.image,
+                })
+              }>
               <Image
                 source={{uri: item.image}}
                 style={{
@@ -159,7 +165,7 @@ export default function RoomDetail({route, navigation}) {
                   width: item.image ? 75 : 0,
                 }}
               />
-            </View>
+            </TouchableOpacity>
           );
         }}
       />
@@ -205,9 +211,7 @@ export default function RoomDetail({route, navigation}) {
         }}
       />
       <View>
-        {route.params.ownerUid === auth().currentUser.uid
-          ? console.log('user is owner')
-          : console.log('user is not your owner')}
+     
         {route.name === 'photogram.chatDetails.screen' ? (
           route.params.item.ownerUid === auth().currentUser.uid ? (
             <TouchableOpacity

@@ -13,6 +13,7 @@ import {
   ImageBackground,
   Dimensions,
   StyleSheet,
+  ToastAndroid,
   ActivityIndicator,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
@@ -23,22 +24,19 @@ import ImagePicker from 'react-native-image-crop-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
+import {DecryptData, EncryptData} from '../../../../../functions';
 
-function EditProfile(props) {
+function EditRoomDetails(props) {
   let padding = 24;
   let {height} = Dimensions.get('window');
   const [imageUri, setImageUri] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [bio, setBio] = useState('');
   const [updating, setupdating] = useState(false);
-  const [web, setWeb] = useState('');
   const [transferred, setTransferred] = useState(0);
   const [visible, setVisible] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [userData, setUserData] = useState('');
-  const [nickname, setNickName] = useState('');
+  const [groupName, setgroupName] = useState('');
+  const [password, setPassword] = useState('');
+  const [firestorePass, setFirestorePass] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
 
   const takePhotoFromCamera = () => {
     ImagePicker.openCamera({
@@ -46,9 +44,7 @@ function EditProfile(props) {
       height: 700,
       cropping: true,
     }).then(image => {
-      const imageUri = image.path;
-      setImageUri(imageUri);
-
+        setImageUri(`data:image/jpeg;base64,${image.data}`);
       bs.current.snapTo(1);
     });
   };
@@ -57,50 +53,33 @@ function EditProfile(props) {
     ImagePicker.openPicker({
       width: 300,
       height: 400,
+      includeBase64: true,
       cropping: true,
     }).then(image => {
-      setImageUri(image.path);
-
+      setImageUri(`data:image/jpeg;base64,${image.data}`);
       bs.current.snapTo(1);
     });
   };
 
-  const getUser = () => {
-    firestore()
-      .collection('users')
-      .doc(auth().currentUser.uid)
-      .get()
-      .then(documentSnaphot => {
-        if (documentSnaphot.exists) {
-          setUserData(documentSnaphot.data());
-        }
-      });
-  };
-  useEffect(() => {
-    const cleanUp = getUser();
-    let userName = firstName + ' ' + lastName;
-    setNickName(userName.replace(/\s/g, ''));
-    return () => cleanUp;
-  }, []);
-  useEffect(() => {});
-
   const onUpdate = async () => {
-    if (
-      (firstName.length < 3 && lastName.length === 0, nickname.length === 3)
-    ) {
-      Alert.alert('Username should be atleast 3 charactors');
+    if (DecryptData(firestorePass) === password && groupName.length < 3) {
+      if (DecryptData(firestorePass !== currentPassword)) {
+        ToastAndroid.show('Password do not match', 12);
+      }
+      setupdating(false);
     } else {
       firestore()
-        .collection('users')
-        .doc(auth().currentUser.uid)
+        .collection('groups')
+        .doc(props.route.params.info.item.id)
         .update({
-          userName: firstName + ' ' + lastName,
-          nickname,
-          userImg: imageUrl || null,
+          groupName: groupName
+            ? groupName
+            : props.route.params.info.item.groupName,
+          password: EncryptData(password)
+            ? EncryptData(password)
+            : firestorePass,
+          groupImage: imageUri || null,
           uid: auth().currentUser.uid,
-          createdAt: Date.now(),
-          bio,
-          web,
         })
         .then(() => {
           setupdating(false);
@@ -108,42 +87,20 @@ function EditProfile(props) {
     }
   };
 
-  const uploadImage = async () => {
-    if (!imageUri) {
-      Alert.alert('Choose a image', 'Please choose a image to continue');
-    } else {
-      setUploading(true);
-      const path = `profile/${auth().currentUser.uid + Date.now()}}`;
-      return new Promise(async (resolve, rej) => {
-        const response = await fetch(imageUri);
-        const file = await response.blob();
-        let upload = storage().ref(path).put(file);
-        upload.on(
-          'state_changed',
-          snapshot => {
-       
-            setTransferred(
-              Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100,
-            );
-            setVisible(true);
-          },
-
-          err => {
-            rej(err);
-          },
-          async () => {
-            const url = await upload.snapshot.ref.getDownloadURL();
-            setImageUrl(url);
-            resolve(url);
-            setVisible(false);
-            setImageUri(null);
-            setUploading(false);
-            return url;
-          },
-        );
-      });
-    }
+  const getGroupPassword = () => {
+    try {
+      firestore()
+        .collection('groups')
+        .doc(props.route.params.info.item.id)
+        .onSnapshot(_data => {
+          setFirestorePass(_data.data().password);
+        });
+    } catch (error) {}
   };
+
+  useEffect(() => {
+    getGroupPassword();
+  }, []);
 
   let renderInner = () => {
     return (
@@ -230,12 +187,7 @@ function EditProfile(props) {
           onPress={() => bs.current.snapTo(0)}>
           <ImageBackground
             source={{
-              uri: imageUri
-                ? imageUri
-                : userData
-                ? userData.userImg ||
-                  'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png'
-                : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
+              uri: imageUri ? imageUri : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
             }}
             style={{height: 100, width: 100}}
             imageStyle={{borderRadius: 15}}>
@@ -259,35 +211,12 @@ function EditProfile(props) {
             </View>
           </ImageBackground>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => uploadImage()}>
-          <Text
-            style={{
-              fontSize: padding - 6,
-              color: '#128EF2',
-              marginTop: '3%',
-              alignSelf: 'center',
-            }}>
-            {'Set this as profile photo'}
-          </Text>
-        </TouchableOpacity>
         {/* Main */}
         <View style={{marginTop: padding + 6}}>
           <View>
-            <Text style={{marginLeft: padding - 6}}>First Name</Text>
+            <Text style={{marginLeft: padding - 6}}>Group Name</Text>
             <TextInput
-              onChangeText={val => setFirstName(val)}
-              style={{
-                fontSize: padding - 4,
-                borderBottomColor: 'rgba(0,0,0,0.4)',
-                marginHorizontal: 18,
-                borderBottomWidth: 1,
-              }}
-            />
-          </View>
-          <View style={{marginVertical: padding}}>
-            <Text style={{marginLeft: padding - 6}}>Last Name</Text>
-            <TextInput
-              onChangeText={val => setLastName(val)}
+              onChangeText={val => setgroupName(val)}
               style={{
                 fontSize: padding - 4,
                 borderBottomColor: 'rgba(0,0,0,0.4)',
@@ -297,10 +226,12 @@ function EditProfile(props) {
             />
           </View>
         </View>
-        <View style={{marginBottom: padding}}>
-          <Text style={{marginLeft: padding - 6}}>website</Text>
+        <View>
+          <Text style={{marginTop: padding - 6, marginLeft: padding - 6}}>
+            Current Password
+          </Text>
           <TextInput
-            onChangeText={val => setWeb(val)}
+            onChangeText={val => setCurrentPassword(val)}
             style={{
               fontSize: padding - 4,
               borderBottomColor: 'rgba(0,0,0,0.4)',
@@ -310,9 +241,11 @@ function EditProfile(props) {
           />
         </View>
         <View>
-          <Text style={{marginLeft: padding - 6}}>Bio</Text>
+          <Text style={{marginTop: padding - 6, marginLeft: padding - 6}}>
+            New Password
+          </Text>
           <TextInput
-            onChangeText={val => setBio(val)}
+            onChangeText={val => setPassword(val)}
             style={{
               fontSize: padding - 4,
               borderBottomColor: 'rgba(0,0,0,0.4)',
@@ -436,4 +369,4 @@ const styles = StyleSheet.create({
     color: '#333333',
   },
 });
-export default EditProfile;
+export default EditRoomDetails;

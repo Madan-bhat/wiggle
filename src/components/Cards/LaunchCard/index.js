@@ -5,6 +5,7 @@ import moment from 'moment';
 import React,{useEffect} from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
+import { DecryptData } from '../../../functions';
 
 export default function LaunchCard({navigation, groupId, item, groupName}) {
   let styles = StyleSheet.create({
@@ -21,21 +22,24 @@ export default function LaunchCard({navigation, groupId, item, groupName}) {
     },
   });
 
-  function getTheLastMessage() {
-    try {
-      firestore()
-        .collection('groups')
-        .doc(groupId)
-        .collection('Messages')
-        .limitToLast()
-        .orderBy('createdAt', 'asc')
-        .get();
-    } catch (error) {}
-  }
+  // function getTheLastMessage() {
+  //   try {
+  //     firestore()
+  //       .collection('groups')
+  //       .doc(groupId)
+  //       .collection('Messages')
+  //       .orderBy('createdAt','asc')
+  //       .limitToLast(1)
+  //       .onSnapshot(_data => {
+  //         _data.docs.forEach(data => {
+  //         })
+  //       })
+  //   } catch (error) {}
+  // }
 
-  useEffect(() => {
-    getTheLastMessage();
-  });
+  // useEffect(() => {
+  //   getTheLastMessage();
+  // },[]);
 
   return (
     <TouchableOpacity

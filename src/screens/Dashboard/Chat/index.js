@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
   Modal,
+  StyleSheet,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {width, height} from '../../../constants/Dimesions/index';
@@ -17,10 +18,97 @@ import auth from '@react-native-firebase/auth';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {DecryptData, EncryptData} from '../../../functions';
+import BottomSheet from 'reanimated-bottom-sheet';
+import Animated from 'react-native-reanimated';
+import {ImageView} from '../../../components';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  commandButton: {
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: '#FF6347',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  panel: {
+    padding: 20,
+    backgroundColor: '#FFFFFF',
+    paddingTop: 20,
+    width: '100%',
+  },
+  header: {
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#333333',
+    shadowOffset: {width: -1, height: -3},
+    shadowRadius: 2,
+    shadowOpacity: 0.4,
+    paddingTop: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  panelHeader: {
+    alignItems: 'center',
+  },
+  panelHandle: {
+    width: 40,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#00000040',
+    marginBottom: 10,
+  },
+  panelTitle: {
+    fontSize: 27,
+    height: 35,
+  },
+  panelSubtitle: {
+    fontSize: 14,
+    color: 'gray',
+    height: 30,
+    marginBottom: 10,
+  },
+  panelButton: {
+    padding: 13,
+    borderRadius: 10,
+    backgroundColor: '#45A4F9',
+    alignItems: 'center',
+    marginVertical: 7,
+  },
+  panelButtonTitle: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  action: {
+    flexDirection: 'row',
+    marginTop: 10,
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
+    paddingBottom: 5,
+  },
+  actionError: {
+    flexDirection: 'row',
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#FF0000',
+    paddingBottom: 5,
+  },
+  textInput: {
+    flex: 1,
+    marginTop: Platform.OS === 'ios' ? 0 : -12,
+    paddingLeft: 10,
+    color: '#333333',
+  },
+});
 
 export default function Chat(props) {
   let [imageUri, setImageUri] = useState('');
   let [userData, setUserData] = useState();
+  let [imageViewModalVisible, setImageViewModalVisible] = useState('');
   let [userForToken, setUserForToken] = useState([]);
   let [messageText, setMessageText] = useState('');
   let [messages, setMessages] = useState([]);
@@ -59,7 +147,7 @@ export default function Chat(props) {
 
   useEffect(() => {
     getUser();
-    props.route.params.members.map(async item => {
+    props.route.params.item.members.map(async item => {
       await firestore()
         .collection('users')
         .doc(item)
@@ -72,19 +160,6 @@ export default function Chat(props) {
         });
     });
   }, [getUser, props.route.params.members]);
-
-  let pickImage = () => {
-    ImageCropPicker.openPicker({
-      width: 720,
-      height: 1080,
-      cropping: true,
-      compressImageQuality: 0.8,
-      mediaType: 'photo',
-      includeBase64: true,
-    }).then(_image => {
-      setImageUri(`data:image/jpeg;base64,${_image.data}`);
-    });
-  };
 
   let sendMessage = () => {
     try {
@@ -102,6 +177,7 @@ export default function Chat(props) {
         .then(() => sendPushNotification());
       setMessageText('');
       setImageUri(null);
+      bs.current.snapTo(1);
     } catch (e) {}
   };
 
@@ -167,27 +243,111 @@ export default function Chat(props) {
             alignSelf:
               item.uid !== auth().currentUser.uid ? 'flex-start' : 'flex-end',
             backgroundColor:
-              item.uid === auth().currentUser?.uid ? 'yellow' : '#45aaf4',
+              item.uid === auth().currentUser?.uid ? '#45aaf4' : '#fff',
           }}>
-          <Image
-            style={{
-              height: item.image ? height / 4 : 0,
-              width: item.image ? width / 2 : 0,
-              borderTopLeftRadius: 18,
-              borderTopRightRadius: 18,
-              borderBottomLeftRadius: 18,
-            }}
-            source={{uri: item.image ? item.image : null}}
-          />
+          <TouchableOpacity
+            onPress={() =>
+              props.navigation.navigate('photogram.image.view.screen', {
+                image: item.image,
+              })
+            }>
+            <Image
+              style={{
+                height: item.image ? height / 4 : 0,
+                width: item.image ? width / 1.5 : 0,
+                borderTopLeftRadius: 18,
+                borderTopRightRadius: 18,
+                borderBottomLeftRadius: 18,
+              }}
+              source={{uri: item.image ? item.image : null}}
+            />
+          </TouchableOpacity>
+
           <Text
             style={{
               fontFamily: 'Lato-Regular',
+              color: item.uid === auth().currentUser.uid ? 'white' : 'black',
               textAlign: item.uid === auth().currentUser.uid ? 'right' : 'left',
             }}>
             {DecryptData(item.messageText)}
           </Text>
         </View>
       </View>
+    );
+  };
+
+  const takePhotoFromCamera = () => {
+    ImageCropPicker.openCamera({
+      width: 720,
+      height: 1080,
+      cropping: true,
+      compressImageQuality: 0.8,
+      mediaType: 'photo',
+      includeBase64: true,
+    }).then(image => {
+      setImageUri(`data:image/jpeg;base64,${image.data}`);
+      bs.current.snapTo(1);
+    });
+  };
+
+  const choosePhotoFromLibrary = () => {
+    ImageCropPicker.openPicker({
+      width: 720,
+      height: 1080,
+      cropping: true,
+      compressImageQuality: 0.8,
+      mediaType: 'photo',
+      includeBase64: true,
+    }).then(image => {
+      setImageUri(`data:image/jpeg;base64,${image.data}`);
+      bs.current.snapTo(1);
+    });
+  };
+
+  let renderInner = () => {
+    return (
+      <View style={styles.panel}>
+        <View style={{alignItems: 'center'}}>
+          <Text style={styles.panelTitle}>Upload Photo</Text>
+          <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.panelButton}
+          onPress={takePhotoFromCamera}>
+          <Text style={styles.panelButtonTitle}>Take Photo</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.panelButton}
+          onPress={choosePhotoFromLibrary}>
+          <Text style={styles.panelButtonTitle}>Choose From Library</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.panelButton}
+          onPress={() => bs.current.snapTo(1)}>
+          <Text style={styles.panelButtonTitle}>Cancel</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  let bs;
+  let fall;
+  bs = React.createRef();
+  fall = new Animated.Value(1);
+
+  let renderHeader = () => (
+    <View style={styles.header}>
+      <View style={styles.panelHeader}>
+        <View style={styles.panelHandle} />
+      </View>
+    </View>
+  );
+
+  let RenderModal = uri => {
+    return (
+      <Modal>
+        <ImageView image={uri} />
+      </Modal>
     );
   };
 
@@ -255,7 +415,6 @@ export default function Chat(props) {
             placeholder="Type the message here ....."
             onChangeText={_val => {
               setMessageText(_val);
-              encryptText();
             }}
           />
           <TouchableOpacity
@@ -275,27 +434,38 @@ export default function Chat(props) {
           </TouchableOpacity>
         </View>
       </Modal>
-
-      <FlatList
-        enableEmptySections={true}
-        scrollEnabled={true}
-        inverted={false}
-        scrollEventThrottle={100}
-        ref={flatlistRef}
-        style={{
-          marginBottom: 12,
-          flex: 1,
-          bottom: 0,
-          flexDirection: 'column-reverse',
-        }}
-        automaticallyAdjustContentInsets={false}
-        showsVerticalScrollIndicator={false}
-        onContentSizeChange={() =>
-          flatlistRef.current.scrollToEnd({animated: true})
-        }
-        data={messages}
-        renderItem={renderRow}
+      <BottomSheet
+        ref={bs}
+        snapPoints={[330, -5]}
+        renderContent={renderInner}
+        renderHeader={renderHeader}
+        initialSnap={1}
+        callbackNode={fall}
+        enabledGestureInteraction={true}
       />
+      <View style={{flexDirection: 'column-reverse', flex: 1}}>
+        <FlatList
+          enableEmptySections={true}
+          scrollEnabled={true}
+          inverted={false}
+          scrollEventThrottle={100}
+          ref={flatlistRef}
+          style={{
+            marginBottom: 12,
+            flex: 1,
+            bottom: 0,
+            flexDirection: 'column',
+          }}
+          onContentSizeChange={() => {
+            flatlistRef.current.scrollToEnd({animated: true});
+          }}
+          automaticallyAdjustContentInsets={false}
+          showsVerticalScrollIndicator={false}
+          data={messages}
+          renderItem={renderRow}
+        />
+      </View>
+
       <View
         style={{
           backgroundColor: '#FFF',
@@ -305,7 +475,7 @@ export default function Chat(props) {
           width: width,
         }}>
         <Ionicons
-          onPress={pickImage}
+          onPress={() => bs.current.snapTo(0)}
           style={{marginHorizontal: 6}}
           name="images"
           size={24}
@@ -317,7 +487,6 @@ export default function Chat(props) {
           value={messageText}
           onChangeText={_message_text => {
             setMessageText(_message_text);
-            encryptText();
           }}
           placeholder={'Type the message here ......'}
           style={{

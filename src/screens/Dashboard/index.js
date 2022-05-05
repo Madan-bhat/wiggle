@@ -1,6 +1,12 @@
 import Chat from './Chat';
 import Launch from './LaunchScreen';
-import {CreateRoom, JoinRoom, Password, RoomDetail} from './Rooms';
+import {
+  CreateRoom,
+  EditRoomDetails,
+  JoinRoom,
+  Password,
+  RoomDetail,
+} from './Rooms';
 import Search from './SearchScreen';
 import Users from './Users';
 export {
@@ -11,5 +17,6 @@ export {
   Chat,
   JoinRoom,
   CreateRoom,
+  EditRoomDetails,
   RoomDetail,
 };

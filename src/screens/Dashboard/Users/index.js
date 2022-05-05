@@ -14,7 +14,6 @@ export default function Users({route}) {
           let Lists = [];
           Lists.push(_data.data());
          let data = Lists.indexOf(route.params.members,-1)
-         console.log(data)
         });
       });
   });

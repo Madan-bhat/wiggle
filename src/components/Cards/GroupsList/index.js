@@ -26,60 +26,6 @@ export default function GroupsListCard({item, navigation}) {
     },
   });
 
-  useEffect(() => {
-    console.log(item)
-  })
-  const joinGroup = id => {
-    try {
-      firestore()
-        .collection('groups')
-        .doc(id)
-        .update({
-          members: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
-        });
-    } catch (error) {}
-  };
-
-  useEffect(() => {
-    if (item.members.indexOf(auth().currentUser.uid) > -1) {
-      console.log('contains');
-    } else {
-      console.log('does not contain');
-    }
-  }, [item.members]);
-
-  // const doesContainUserInGroup = async () => {
-  //   try {
-  //     firestore()
-  //       .collection('groups')
-  //       .where('members', 'array-contains', auth().currentUser.uid)
-  //       .onSnapshot(_data => {
-  //         if (_data.empty) {
-  //           console.log(_data.docs);
-  //         } else {
-  //           setIngroup(true);
-  //         }
-  //       });
-  //   } catch (error) {}
-  // };
-
-  // useEffect(() => {
-  //   firestore()
-  //     .collection('groups')
-  //     .doc()
-  //     .collection()
-  //     .where('members', 'array-contains', auth().currentUser.uid)
-  //     .onSnapshot(_data => {
-  //       if (_data.empty) {
-  //         setIngroup(false);
-  //         console.log('user not in group');
-  //       } else {
-  //         setIngroup(true);
-  //         console.log('user in group');
-  //       }
-  //     });
-  // }, [doesContainUserInGroup]);
-
   return (
     <TouchableOpacity activeOpacity={1}>
       <ScrollView>
@@ -115,7 +61,7 @@ export default function GroupsListCard({item, navigation}) {
                 {moment(item.createdAt).format('LLL')}
               </Text>
 
-              {item.members.indexOf(auth().currentUser.uid) > -1 ? (
+              {item.members?.indexOf(auth().currentUser.uid) > -1 ? (
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate('photogram.chat.screen', {
