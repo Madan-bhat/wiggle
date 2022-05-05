@@ -13,7 +13,6 @@ import {height, width} from '../../../constants';
 export default function Login({navigation}) {
   let [email, setEmail] = useState('');
   let [password, setPassword] = useState('');
-  let [error, setError] = useState('');
   let [isFocused, setFocused] = useState('');
 
   const LoginWithEmailAndPassword = () => {

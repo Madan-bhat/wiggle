@@ -29,8 +29,9 @@ export default function Create({navigation}) {
   const [description, setDescription] = useState('');
   const [imageUri, setImageUri] = useState();
   const [imageUrl, setImageUrl] = useState();
+  const [visible, setVisible] = useState();
+  const [transferred, setTransferred] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [encodedPassword, setEncodedPassword] = useState('');
 
   let styles = StyleSheet.create({
     Container: {flex: 1, backgroundColor: '#fff', height},
@@ -90,13 +91,13 @@ export default function Create({navigation}) {
   });
 
   let PickImage = () => {
-    ImagePicker.openPicker({
+    ImagePicker.openCamera({
       width: 1300,
       height: 1400,
       cropping: true,
       compressImageQuality: 1,
     }).then(image => {
-      setImageUri(image.path);
+      setImageUri(`data:image/jpeg;base64,${image.data}`);
     });
   };
 
@@ -113,7 +114,6 @@ export default function Create({navigation}) {
           'state_changed',
           snapshot => {
             setUploading(true);
-              setVisible(true);
             setTransferred(
               Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100,
             );
@@ -135,9 +135,7 @@ export default function Create({navigation}) {
     }
   };
 
-
   let createGroup = async () => {
-    let url = await uploadImage();
     try {
       firestore()
         .collection('groups')
@@ -161,7 +159,7 @@ export default function Create({navigation}) {
               type,
               requests: type === 'Approval' ? [] : null,
               members: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
-              groupImage: setImageUrl ? setImageUrl : '',
+              groupImage: setImageUri ? setImageUri : '',
             })
             .then(() => {
               firestore()

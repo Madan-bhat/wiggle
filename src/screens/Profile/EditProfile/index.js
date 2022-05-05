@@ -24,7 +24,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 
-function EditProfile(props) {
+function EditProfile(props, {navigation}) {
   let padding = 24;
   let {height} = Dimensions.get('window');
   const [imageUri, setImageUri] = useState('');
@@ -121,7 +121,6 @@ function EditProfile(props) {
         upload.on(
           'state_changed',
           snapshot => {
-       
             setTransferred(
               Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100,
             );
@@ -189,7 +188,10 @@ function EditProfile(props) {
       <View style={{backgroundColor: '#FFF', padding: padding - 4}}>
         <SafeAreaView
           style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity
+            onPress={() => {
+              props.navigation.goBack();
+            }}>
             <MaterialIcons name="close" size={28} color="#000" />
           </TouchableOpacity>
           <Text

@@ -34,7 +34,6 @@ export default function RoomDetail({route, navigation}) {
     } catch (error) {}
   }, [route.params.item.ownerUid]);
 
-
   let getGroupWithImages = useCallback(async () => {
     let Lists = [];
     try {
@@ -56,21 +55,21 @@ export default function RoomDetail({route, navigation}) {
   }, [route.params.item.id]);
 
   const joinGroup = id => {
-    if (route.params.item.password) {
+    if (route.params.item.password?.length !== 0) {
       navigation.navigate('photogram.password.screen', {
         password: route.params.item.password,
         item: route.params.item,
       });
     } else {
+      firestore()
+        .collection('groups')
+        .doc(route.params.id)
+        .update({
+          members: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
+        });
     }
     // } else {
-    //   try {
-    //     firestore()
-    //       .collection('groups')
-    //       .doc(route.params.id)
-    //       .update({
-    //         members: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
-    //       });
+
     //   } catch (error) {}
   };
 
@@ -119,9 +118,17 @@ export default function RoomDetail({route, navigation}) {
           </Text>
         </View>
         {route.params.item?.ownerUid === auth().currentUser.uid ? (
-          <AntDesign onPress={() => navigation.navigate('photogram.edit.group.info.screen',{
-            info : route.params
-          })} name="edit" style={{position:"absolute",right:10,bottom:10}} size={24} color="black" />
+          <AntDesign
+            onPress={() =>
+              navigation.navigate('photogram.edit.group.info.screen', {
+                info: route.params,
+              })
+            }
+            name="edit"
+            style={{position: 'absolute', right: 10, bottom: 10}}
+            size={24}
+            color="white"
+          />
         ) : (
           <></>
         )}
@@ -150,22 +157,31 @@ export default function RoomDetail({route, navigation}) {
         style={{marginRight: 4, marginLeft: 4}}
         renderItem={({item}) => {
           return (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('photogram.image.view.screen', {
-                  image: item.image,
-                })
-              }>
-              <Image
-                source={{uri: item.image}}
-                style={{
-                  marginLeft: 4,
-                  height: item.image ? 75 : 0,
-                  marginTop: 4,
-                  width: item.image ? 75 : 0,
-                }}
-              />
-            </TouchableOpacity>
+            <>
+              {route.params.item.members?.indexOf(auth().currentUser.uid) >
+              -1 ? (
+                <>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate('photogram.image.view.screen', {
+                        image: item.image,
+                      })
+                    }>
+                    <Image
+                      source={{uri: item.image}}
+                      style={{
+                        marginLeft: 4,
+                        height: item.image ? 75 : 0,
+                        marginTop: 4,
+                        width: item.image ? 75 : 0,
+                      }}
+                    />
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <></>
+              )}
+            </>
           );
         }}
       />
@@ -211,7 +227,6 @@ export default function RoomDetail({route, navigation}) {
         }}
       />
       <View>
-     
         {route.name === 'photogram.chatDetails.screen' ? (
           route.params.item.ownerUid === auth().currentUser.uid ? (
             <TouchableOpacity

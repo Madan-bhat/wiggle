@@ -6,6 +6,7 @@ import {
   Image,
   Text,
   TextInput,
+  ScrollView,
   TouchableOpacity,
   View,
   Modal,
@@ -108,7 +109,6 @@ const styles = StyleSheet.create({
 export default function Chat(props) {
   let [imageUri, setImageUri] = useState('');
   let [userData, setUserData] = useState();
-  let [imageViewModalVisible, setImageViewModalVisible] = useState('');
   let [userForToken, setUserForToken] = useState([]);
   let [messageText, setMessageText] = useState('');
   let [messages, setMessages] = useState([]);
@@ -159,7 +159,7 @@ export default function Chat(props) {
           setUserForToken(Lists);
         });
     });
-  }, [getUser, props.route.params.members]);
+  }, [getUser, props.route.params.item.members, props.route.params.members]);
 
   let sendMessage = () => {
     try {
@@ -186,27 +186,25 @@ export default function Chat(props) {
       'AAAAjqJY0zI:APA91bFf3LXAnyDmGHgTUNKhjVoKzEpbjDeRkOQOXqDs3OB2j2FEYZduHluuyqdD0Ul9qtCPMcB9Cc3uAClcwjR6RK0gZFuF2YVpOAmvSsWIlAecIENsh92oXpCuvqiqG6z2vdouGqah';
     const message = {
       registration_ids: userForToken,
-      // notification: {
-      //   vibrate: 1,
-      //   sound: 1,
-      //   show_in_foreground: true,
-      //   priority: 'high',
-      //   title: props.route.params.headerTitle,
-      //   icon: props.route.params.item.groupImage,
-      //   content_available: true,
-      // },
+      notification: {
+        vibrate: 1,
+        sound: 1,
+        show_in_foreground: true,
+        priority: 'high',
+        title: props.route.params.headerTitle,
+        body: messageText,
+        icon: props.route.params.item.groupImage,
+        content_available: true,
+      },
       data: {
-        type: 'MEASURE_CHANGE',
-        custom_notification: {
-          body: 'test body',
-          title: 'test title',
-          color: '#00ACD4',
-          priority: 'high',
-          icon: 'ic_notif',
-          group: 'GROUP',
-          id: 'id',
-          show_in_foreground: true,
-        },
+        body: messageText,
+        title: props.route.params.item.groupImage,
+        color: '#00ACD4',
+        priority: 'high',
+        icon: 'ic_notif',
+        group: 'GROUP',
+        id: 'id',
+        show_in_foreground: true,
       },
     };
 
@@ -228,49 +226,53 @@ export default function Chat(props) {
   let renderRow = ({item}) => {
     return (
       <View>
-        <View
-          style={{
-            padding: item.image ? 4 : 14,
-            borderTopLeftRadius: 18,
-            borderTopRightRadius: 18,
-            borderBottomLeftRadius:
-              item.uid === auth().currentUser.uid ? 18 : 0,
-            marginTop: 4,
-            borderBottomRightRadius:
-              item.uid === auth().currentUser.uid ? 0 : 18,
-            marginRight: item.uid === auth().currentUser.uid ? 4 : width / 2.5,
-            marginLeft: item.uid === auth().currentUser.uid ? width / 2.5 : 4,
-            alignSelf:
-              item.uid !== auth().currentUser.uid ? 'flex-start' : 'flex-end',
-            backgroundColor:
-              item.uid === auth().currentUser?.uid ? '#45aaf4' : '#fff',
-          }}>
-          <TouchableOpacity
-            onPress={() =>
-              props.navigation.navigate('photogram.image.view.screen', {
-                image: item.image,
-              })
-            }>
-            <Image
-              style={{
-                height: item.image ? height / 4 : 0,
-                width: item.image ? width / 1.5 : 0,
-                borderTopLeftRadius: 18,
-                borderTopRightRadius: 18,
-                borderBottomLeftRadius: 18,
-              }}
-              source={{uri: item.image ? item.image : null}}
-            />
-          </TouchableOpacity>
-
-          <Text
+        <View>
+          <View
             style={{
-              fontFamily: 'Lato-Regular',
-              color: item.uid === auth().currentUser.uid ? 'white' : 'black',
-              textAlign: item.uid === auth().currentUser.uid ? 'right' : 'left',
+              padding: item.image ? 4 : 14,
+              borderTopLeftRadius: 18,
+              borderTopRightRadius: 18,
+              borderBottomLeftRadius:
+                item.uid === auth().currentUser.uid ? 18 : 0,
+              marginTop: 14,
+              borderBottomRightRadius:
+                item.uid === auth().currentUser.uid ? 0 : 18,
+              marginRight:
+                item.uid === auth().currentUser.uid ? 4 : width / 2.5,
+              marginLeft: item.uid === auth().currentUser.uid ? width / 2.5 : 4,
+              alignSelf:
+                item.uid !== auth().currentUser.uid ? 'flex-start' : 'flex-end',
+              backgroundColor:
+                item.uid === auth().currentUser?.uid ? '#45aaf4' : '#fff',
             }}>
-            {DecryptData(item.messageText)}
-          </Text>
+            <TouchableOpacity
+              onPress={() =>
+                props.navigation.navigate('photogram.image.view.screen', {
+                  image: item.image,
+                })
+              }>
+              <Image
+                style={{
+                  height: item.image ? height / 4 : 0,
+                  width: item.image ? width / 1.5 : 0,
+                  borderTopLeftRadius: 18,
+                  borderTopRightRadius: 18,
+                  borderBottomLeftRadius: 18,
+                }}
+                source={{uri: item.image ? item.image : null}}
+              />
+            </TouchableOpacity>
+
+            <Text
+              style={{
+                fontFamily: 'Lato-Regular',
+                color: item.uid === auth().currentUser.uid ? 'white' : 'black',
+                textAlign:
+                  item.uid === auth().currentUser.uid ? 'right' : 'left',
+              }}>
+              {DecryptData(item.messageText)}
+            </Text>
+          </View>
         </View>
       </View>
     );
@@ -281,7 +283,7 @@ export default function Chat(props) {
       width: 720,
       height: 1080,
       cropping: true,
-      compressImageQuality: 0.8,
+      compressImageQuality: 1,
       mediaType: 'photo',
       includeBase64: true,
     }).then(image => {
@@ -295,7 +297,7 @@ export default function Chat(props) {
       width: 720,
       height: 1080,
       cropping: true,
-      compressImageQuality: 0.8,
+      compressImageQuality: 1,
       mediaType: 'photo',
       includeBase64: true,
     }).then(image => {
@@ -453,7 +455,6 @@ export default function Chat(props) {
           style={{
             marginBottom: 12,
             flex: 1,
-            bottom: 0,
             flexDirection: 'column',
           }}
           onContentSizeChange={() => {

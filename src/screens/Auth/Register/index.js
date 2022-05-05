@@ -200,13 +200,13 @@ export default function Register({navigation}) {
           bottom: isKeyboardShown ? -20 : 36,
         }}>
         <Text style={{fontWeight: 'bold'}}>
-          Don't have an account ?{' '}
+          Already have an account ?{' '}
           <Text
             onPress={() => {
-              navigation.navigate('photogram.register.screen');
+              navigation.navigate('photogram.login.screen');
             }}
             style={{color: '#45A4FF'}}>
-            Register
+            Login
           </Text>
         </Text>
       </View>

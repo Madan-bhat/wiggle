@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useState, useEffect, memo} from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
@@ -44,7 +45,7 @@ function EditRoomDetails(props) {
       height: 700,
       cropping: true,
     }).then(image => {
-        setImageUri(`data:image/jpeg;base64,${image.data}`);
+      setImageUri(`data:image/jpeg;base64,${image.data}`);
       bs.current.snapTo(1);
     });
   };
@@ -146,7 +147,10 @@ function EditRoomDetails(props) {
       <View style={{backgroundColor: '#FFF', padding: padding - 4}}>
         <SafeAreaView
           style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity
+            onPress={() => {
+              props.navigation.goBack();
+            }}>
             <MaterialIcons name="close" size={28} color="#000" />
           </TouchableOpacity>
           <Text
@@ -187,7 +191,9 @@ function EditRoomDetails(props) {
           onPress={() => bs.current.snapTo(0)}>
           <ImageBackground
             source={{
-              uri: imageUri ? imageUri : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
+              uri: imageUri
+                ? imageUri
+                : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
             }}
             style={{height: 100, width: 100}}
             imageStyle={{borderRadius: 15}}>

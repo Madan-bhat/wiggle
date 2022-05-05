@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {View, Text} from 'react-native';
+import {View, PermissionsAndroid, Platform, Text} from 'react-native';
 import {AuthContext} from '../../../context';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -9,7 +9,17 @@ export default function Loading({navigation}) {
   const [fcm, setFcm] = useState('');
   let user = useContext(AuthContext);
 
+  const requestPermissions = async () => {
+    if (Platform.OS === 'android') {
+      const result = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+      );
+      return result === PermissionsAndroid.RESULTS.GRANTED || result === true;
+    }
+    return true;
+  };
   useEffect(() => {
+    requestPermissions();
     setTimeout(() => {
       auth().onAuthStateChanged(user => {
         if (user) {
