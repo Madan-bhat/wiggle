@@ -3,6 +3,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useState} from 'react';
+import codePush from 'react-native-code-push';
 import {DrawerContent, ImageView} from './src/components';
 import {
   CreateRoom as CreateScreen,
@@ -28,7 +29,7 @@ import {AuthContext} from './src/context';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
-export default function App() {
+function App() {
   let [user, setUser] = useState();
   let [userData, setUserData] = useState();
   let Stack = createNativeStackNavigator();
@@ -74,6 +75,7 @@ export default function App() {
   };
 
   React.useEffect(() => {
+    // eslint-disable-next-line no-shadow
     auth().onAuthStateChanged(user => {
       if (user) {
         firestore()
@@ -169,10 +171,16 @@ export default function App() {
             name="photogram.image.view.screen"
             component={ImageView}
           />
-          <Stack.Screen options={{headerShown : false}} name="photogram.edit.group.info.screen" component={EditRoomDetails} />
-
+          <Stack.Screen
+            options={{headerShown: false}}
+            name="photogram.edit.group.info.screen"
+            component={EditRoomDetails}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>
   );
 }
+let codePushOptions = {checkFrequency: codePush.CheckFrequency.ON_APP_RESUME};
+
+export default codePush(codePushOptions)(App);

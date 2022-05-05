@@ -14,6 +14,15 @@ target 'photogram_chat' do
 
   pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
 
+
+  pod 'CodePush', :path => '../node_modules/react-native-code-push'
+
+  pod 'appcenter-core', :path => '../node_modules/appcenter'
+
+  pod 'appcenter-analytics', :path => '../node_modules/appcenter-analytics'
+
+  pod 'appcenter-crashes', :path => '../node_modules/appcenter-crashes'
+
   target 'photogram_chatTests' do
     inherit! :complete
     # Pods for testing

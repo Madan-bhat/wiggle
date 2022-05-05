@@ -15,6 +15,7 @@ import firestore from '@react-native-firebase/firestore';
 import moment from 'moment';
 import {UsersList} from '../../../../components';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Lightbox from 'react-native-lightbox';
 
 export default function RoomDetail({route, navigation}) {
@@ -80,59 +81,82 @@ export default function RoomDetail({route, navigation}) {
 
   return (
     <View>
-      <ImageBackground
-        style={{width, height: height / 3}}
-        source={{
-          uri: route.params.item.groupImage
-            ? route.params.item.groupImage
-            : 'https://media.istockphoto.com/vectors/profile-picture-vector-illustration-vector-id587805156?k=20&m=587805156&s=612x612&w=0&h=Ok_jDFC5J1NgH20plEgbQZ46XheiAF8sVUKPvocne6Y=',
-        }}>
-        <View
-          style={{
-            marginTop: '48%',
-            marginHorizontal: 8,
-            shadowColor: '#000',
-            shadowRadius: 18,
-            elevation: 8,
+      <TouchableOpacity
+        activeOpacity={3}
+        onPress={() =>
+          navigation.navigate('photogram.image.view.screen', {
+            image: route.params.item.groupImage,
+          })
+        }>
+        <ImageBackground
+          style={{width, height: height / 3}}
+          source={{
+            uri: route.params.item.groupImage
+              ? route.params.item.groupImage
+              : 'https://media.istockphoto.com/vectors/profile-picture-vector-illustration-vector-id587805156?k=20&m=587805156&s=612x612&w=0&h=Ok_jDFC5J1NgH20plEgbQZ46XheiAF8sVUKPvocne6Y=',
           }}>
-          <Text
+          <View
             style={{
-              fontFamily: 'Lato-Bold',
-              textShadowRadius: 39,
-              textShadowColor: '#000',
-              fontSize: 48,
-              color: '#FFF',
+              marginTop: '48%',
+              marginHorizontal: 8,
+              shadowColor: '#000',
+              shadowRadius: 18,
+              elevation: 8,
             }}>
-            {route.params.item.groupName}
-          </Text>
-          <Text
-            style={{
-              fontFamily: 'Lato-Regular',
-              textShadowRadius: 19,
-              textShadowColor: '#000',
-              fontSize: 16,
-              color: '#FFF',
-            }}>
-            created By {user ? user.userName : 'unknown'},{' '}
-            {moment(route.params.item.createdAt).format('L')}
-          </Text>
-        </View>
-        {route.params.item?.ownerUid === auth().currentUser.uid ? (
-          <AntDesign
-            onPress={() =>
-              navigation.navigate('photogram.edit.group.info.screen', {
-                info: route.params,
-              })
-            }
-            name="edit"
-            style={{position: 'absolute', right: 10, bottom: 10}}
-            size={24}
-            color="white"
-          />
-        ) : (
-          <></>
-        )}
-      </ImageBackground>
+            <Text
+              style={{
+                fontFamily: 'Lato-Bold',
+                textShadowRadius: 39,
+                textShadowColor: '#000',
+                fontSize: 48,
+                color: '#FFF',
+              }}>
+              {route.params.item.groupName}
+            </Text>
+            <Text
+              style={{
+                fontFamily: 'Lato-Regular',
+                textShadowRadius: 19,
+                textShadowColor: '#000',
+                fontSize: 16,
+                color: '#FFF',
+              }}>
+              created By {user ? user.userName : 'unknown'},{' '}
+              {moment(route.params.item.createdAt).format('L')}
+            </Text>
+          </View>
+          {route.params.item?.ownerUid === auth().currentUser.uid ? (
+            <View
+              style={{
+                position: 'absolute',
+                bottom: -30,
+                elevation: 18,
+                borderRadius: 100,
+                height: 75,
+                backgroundColor: '#45aaf4',
+                zIndex: 100,
+                width: 75,
+                alignItems: 'center',
+                justifyContent: 'center',
+                right: 10,
+              }}>
+              <FontAwesome
+                onPress={() =>
+                  navigation.navigate('photogram.edit.group.info.screen', {
+                    info: route.params,
+                  })
+                }
+                style={{left: 1}}
+                name="edit"
+                size={32}
+                color="white"
+              />
+            </View>
+          ) : (
+            <></>
+          )}
+        </ImageBackground>
+      </TouchableOpacity>
       <Text
         style={{
           fontSize: 16,

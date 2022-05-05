@@ -98,7 +98,7 @@ const Password = ({route, navigation}) => {
         {'Please enter the password to join'}
       </Text>
       <TextInput
-      keyboardType='visible-password'
+        keyboardType="visible-password"
         placeholder="Password"
         style={{
           width: width - 24,

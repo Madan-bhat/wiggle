@@ -275,8 +275,8 @@ export default function Create({navigation}) {
               setType(itemValue);
             }}
             style={styles.picker}>
-            <Picker.Item label="Approval" value="Approval" />
             <Picker.Item label="Any one can Join" value="Any one can Join" />
+            <Picker.Item label="Approval" value="Approval" />
           </Picker>
         </View>
       </View>
