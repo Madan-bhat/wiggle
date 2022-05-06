@@ -1,10 +1,10 @@
-import {firebase} from '@react-native-firebase/firestore';
-import React, {useEffect} from 'react';
-import {View, Text} from 'react-native';
-import {FlatList} from 'react-native-gesture-handler';
-import {AllUsers} from '../../../components';
+import { firebase } from '@react-native-firebase/firestore';
+import React, { useEffect } from 'react';
+import { View } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
+import { AllUsers } from '../../../components';
 
-export default function Users({route}) {
+export default function Users({ route }) {
   useEffect(function () {
     firebase
       .firestore()
@@ -13,7 +13,7 @@ export default function Users({route}) {
         value.docs.forEach(_data => {
           let Lists = [];
           Lists.push(_data.data());
-         let data = Lists.indexOf(route.params.members,-1)
+          let data = Lists.indexOf(route.params.members, -1);
         });
       });
   });
@@ -22,7 +22,7 @@ export default function Users({route}) {
     <View>
       <FlatList
         data={route.params.members}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           return <AllUsers item={item} />;
         }}
       />

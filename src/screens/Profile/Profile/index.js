@@ -1,14 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
 import auth from '@react-native-firebase/auth';
-import {firebase} from '@react-native-firebase/firestore';
-import React, {useCallback, useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
-import {height, width} from '../../../constants';
+import { firebase } from '@react-native-firebase/firestore';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { height, width } from '../../../constants';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {TextInput} from 'react-native-gesture-handler';
+import { TextInput } from 'react-native-gesture-handler';
 import CodePush from 'react-native-code-push';
 
-export default function Profile({navigation}) {
+export default function Profile({ navigation }) {
   let [userData, setUserData] = useState();
 
   function checkForUpdates() {
@@ -54,7 +54,7 @@ export default function Profile({navigation}) {
           }}>
           <FontAwesome
             onPress={() => navigation.navigate('photogram.edit.profile.screen')}
-            style={{left: 1}}
+            style={{ left: 1 }}
             name="edit"
             size={32}
             color="white"
@@ -68,8 +68,8 @@ export default function Profile({navigation}) {
             })
           }>
           <Image
-            source={{uri: userData?.userImg}}
-            style={{width, height: 256, backgroundColor: 'rgba(0,0,0,0.5)'}}
+            source={{ uri: userData?.userImg }}
+            style={{ width, height: 256, backgroundColor: 'rgba(0,0,0,0.5)' }}
           />
         </TouchableOpacity>
         <Text
@@ -87,7 +87,7 @@ export default function Profile({navigation}) {
         </Text>
       </View>
       <View>
-        <Text style={{marginTop: 24, marginLeft: 24 - 6}}>User Name</Text>
+        <Text style={{ marginTop: 24, marginLeft: 24 - 6 }}>User Name</Text>
         <Text
           style={{
             fontSize: 24 - 4,
@@ -98,7 +98,7 @@ export default function Profile({navigation}) {
         </Text>
       </View>
       <View>
-        <Text style={{marginTop: 24, marginLeft: 24 - 6}}>Email</Text>
+        <Text style={{ marginTop: 24, marginLeft: 24 - 6 }}>Email</Text>
         <Text
           style={{
             fontSize: 24 - 4,
@@ -109,7 +109,7 @@ export default function Profile({navigation}) {
         </Text>
       </View>
       <View>
-        <Text style={{marginTop: 24, marginLeft: 24 - 6}}>User id</Text>
+        <Text style={{ marginTop: 24, marginLeft: 24 - 6 }}>User id</Text>
         <Text
           style={{
             fontSize: 24 - 4,
@@ -120,7 +120,7 @@ export default function Profile({navigation}) {
         </Text>
       </View>
       <View>
-        <Text style={{marginTop: 24, marginLeft: 24 - 6}}>Token</Text>
+        <Text style={{ marginTop: 24, marginLeft: 24 - 6 }}>Token</Text>
         <Text
           style={{
             fontSize: 24 - 4,
@@ -140,7 +140,7 @@ export default function Profile({navigation}) {
           marginHorizontal: 12,
         }}
         onPress={checkForUpdates()}>
-        <Text style={{fontSize: 17, fontWeight: 'bold', color: 'white'}}>
+        <Text style={{ fontSize: 17, fontWeight: 'bold', color: 'white' }}>
           Check for updates
         </Text>
       </TouchableOpacity>

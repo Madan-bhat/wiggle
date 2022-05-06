@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,10 +9,10 @@ import {
   StyleSheet,
   ToastAndroid,
 } from 'react-native';
-import {width} from '../../../../../constants';
-import {DecryptData} from '../../../../../functions';
+import { width } from '../../../../../constants';
+import { DecryptData } from '../../../../../functions';
 
-const Password = ({route, navigation}) => {
+const Password = ({ route, navigation }) => {
   let [password, setPassword] = useState('');
   const styles = StyleSheet.create({
     borderStyleBase: {
@@ -71,7 +71,6 @@ const Password = ({route, navigation}) => {
   });
 
   const JoinGroup = () => {
-    alert(DecryptData(route.params.password));
     if (DecryptData(route.params.password) === password) {
       firestore()
         .collection('groups')
@@ -87,7 +86,7 @@ const Password = ({route, navigation}) => {
   };
 
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text
         style={{
           fontFamily: 'Lato-Bold',

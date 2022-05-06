@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -11,17 +11,17 @@ import {
   Pressable,
   TouchableOpacity,
 } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
-import {height} from '../../../../constants';
+import { Picker } from '@react-native-picker/picker';
+import { height } from '../../../../constants';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ImagePicker from 'react-native-image-crop-picker';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import {ScrollView} from 'react-native-gesture-handler';
-import {EncryptData} from '../../../../functions';
+import { ScrollView } from 'react-native-gesture-handler';
+import { EncryptData } from '../../../../functions';
 
-export default function Create({navigation}) {
+export default function Create({ navigation }) {
   const [pickerValue, setPickerValue] = useState(1);
   const [type, setType] = useState();
   const [groupName, setGroupName] = useState('');
@@ -34,7 +34,7 @@ export default function Create({navigation}) {
   const [uploading, setUploading] = useState(false);
 
   let styles = StyleSheet.create({
-    Container: {flex: 1, backgroundColor: '#fff', height},
+    Container: { flex: 1, backgroundColor: '#fff', height },
     nameInput: {
       shadowColor: '#333',
       elevation: 48,
@@ -194,7 +194,7 @@ export default function Create({navigation}) {
           <AntDesign
             name="left"
             size={36}
-            style={{marginHorizontal: 12}}
+            style={{ marginHorizontal: 12 }}
             color="black"
           />
         </TouchableOpacity>
@@ -234,7 +234,7 @@ export default function Create({navigation}) {
           value={description}
           onChangeText={_val => setDescription(_val)}
           placeholder="Description (optional)"
-          style={[styles.nameInput, {marginTop: 8}]}
+          style={[styles.nameInput, { marginTop: 8 }]}
         />
         <View style={styles.pickerContainer}>
           <Text style={styles.numberOfMembers}>Number Of Members</Text>

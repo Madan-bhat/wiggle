@@ -1,4 +1,4 @@
-import React, {useState, useEffect, memo} from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   View,
@@ -18,15 +18,15 @@ import {
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import ImagePicker from 'react-native-image-crop-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 
-function EditProfile(props, {navigation}) {
+function EditProfile(props, { navigation }) {
   let padding = 24;
-  let {height} = Dimensions.get('window');
+  let { height } = Dimensions.get('window');
   const [imageUri, setImageUri] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [bio, setBio] = useState('');
@@ -147,7 +147,7 @@ function EditProfile(props, {navigation}) {
   let renderInner = () => {
     return (
       <View style={styles.panel}>
-        <View style={{alignItems: 'center'}}>
+        <View style={{ alignItems: 'center' }}>
           <Text style={styles.panelTitle}>Upload Photo</Text>
           <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
         </View>
@@ -184,10 +184,10 @@ function EditProfile(props, {navigation}) {
   );
 
   return (
-    <SafeAreaView style={{backgroundColor: '#fff', flex: 1}}>
-      <View style={{backgroundColor: '#FFF', padding: padding - 4}}>
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+      <View style={{ backgroundColor: '#FFF', padding: padding - 4 }}>
         <SafeAreaView
-          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <TouchableOpacity
             onPress={() => {
               props.navigation.goBack();
@@ -228,7 +228,7 @@ function EditProfile(props, {navigation}) {
       />
       <KeyboardAvoidingView enabled={true} behavior={'padding'}>
         <TouchableOpacity
-          style={{alignSelf: 'center'}}
+          style={{ alignSelf: 'center' }}
           onPress={() => bs.current.snapTo(0)}>
           <ImageBackground
             source={{
@@ -239,8 +239,8 @@ function EditProfile(props, {navigation}) {
                   'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png'
                 : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
             }}
-            style={{height: 100, width: 100}}
-            imageStyle={{borderRadius: 15}}>
+            style={{ height: 100, width: 100 }}
+            imageStyle={{ borderRadius: 15 }}>
             <View
               style={{
                 backgroundColor: 'rgba(0,0,0,0.20)',
@@ -273,9 +273,9 @@ function EditProfile(props, {navigation}) {
           </Text>
         </TouchableOpacity>
         {/* Main */}
-        <View style={{marginTop: padding + 6}}>
+        <View style={{ marginTop: padding + 6 }}>
           <View>
-            <Text style={{marginLeft: padding - 6}}>First Name</Text>
+            <Text style={{ marginLeft: padding - 6 }}>First Name</Text>
             <TextInput
               onChangeText={val => setFirstName(val)}
               style={{
@@ -286,8 +286,8 @@ function EditProfile(props, {navigation}) {
               }}
             />
           </View>
-          <View style={{marginVertical: padding}}>
-            <Text style={{marginLeft: padding - 6}}>Last Name</Text>
+          <View style={{ marginVertical: padding }}>
+            <Text style={{ marginLeft: padding - 6 }}>Last Name</Text>
             <TextInput
               onChangeText={val => setLastName(val)}
               style={{
@@ -299,8 +299,8 @@ function EditProfile(props, {navigation}) {
             />
           </View>
         </View>
-        <View style={{marginBottom: padding}}>
-          <Text style={{marginLeft: padding - 6}}>website</Text>
+        <View style={{ marginBottom: padding }}>
+          <Text style={{ marginLeft: padding - 6 }}>website</Text>
           <TextInput
             onChangeText={val => setWeb(val)}
             style={{
@@ -312,7 +312,7 @@ function EditProfile(props, {navigation}) {
           />
         </View>
         <View>
-          <Text style={{marginLeft: padding - 6}}>Bio</Text>
+          <Text style={{ marginLeft: padding - 6 }}>Bio</Text>
           <TextInput
             onChangeText={val => setBio(val)}
             style={{
@@ -338,7 +338,7 @@ function EditProfile(props, {navigation}) {
             alignSelf: 'center',
             marginTop: '50%',
           }}>
-          <Text style={{fontWeight: '700', fontSize: height / 18}}>
+          <Text style={{ fontWeight: '700', fontSize: height / 18 }}>
             Uploading
           </Text>
           <Text
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#FFFFFF',
     shadowColor: '#333333',
-    shadowOffset: {width: -1, height: -3},
+    shadowOffset: { width: -1, height: -3 },
     shadowRadius: 2,
     shadowOpacity: 0.4,
     paddingTop: 20,

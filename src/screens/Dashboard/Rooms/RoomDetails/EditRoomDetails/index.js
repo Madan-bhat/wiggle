@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState, useEffect, memo} from 'react';
+import React, { useState, useEffect, memo, useCallback } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   View,
@@ -20,16 +20,16 @@ import {
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import ImagePicker from 'react-native-image-crop-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
-import {DecryptData, EncryptData} from '../../../../../functions';
+import { DecryptData, EncryptData } from '../../../../../functions';
 
 function EditRoomDetails(props) {
   let padding = 24;
-  let {height} = Dimensions.get('window');
+  let { height } = Dimensions.get('window');
   const [imageUri, setImageUri] = useState('');
   const [updating, setupdating] = useState(false);
   const [transferred, setTransferred] = useState(0);
@@ -88,7 +88,7 @@ function EditRoomDetails(props) {
     }
   };
 
-  const getGroupPassword = () => {
+  const getGroupPassword = useCallback(() => {
     try {
       firestore()
         .collection('groups')
@@ -97,16 +97,16 @@ function EditRoomDetails(props) {
           setFirestorePass(_data.data().password);
         });
     } catch (error) {}
-  };
+  }, [props.route.params.info.item.id]);
 
   useEffect(() => {
     getGroupPassword();
-  }, []);
+  }, [getGroupPassword]);
 
   let renderInner = () => {
     return (
       <View style={styles.panel}>
-        <View style={{alignItems: 'center'}}>
+        <View style={{ alignItems: 'center' }}>
           <Text style={styles.panelTitle}>Upload Photo</Text>
           <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
         </View>
@@ -143,10 +143,10 @@ function EditRoomDetails(props) {
   );
 
   return (
-    <SafeAreaView style={{backgroundColor: '#fff', flex: 1}}>
-      <View style={{backgroundColor: '#FFF', padding: padding - 4}}>
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+      <View style={{ backgroundColor: '#FFF', padding: padding - 4 }}>
         <SafeAreaView
-          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <TouchableOpacity
             onPress={() => {
               props.navigation.goBack();
@@ -187,7 +187,7 @@ function EditRoomDetails(props) {
       />
       <KeyboardAvoidingView enabled={true} behavior={'padding'}>
         <TouchableOpacity
-          style={{alignSelf: 'center'}}
+          style={{ alignSelf: 'center' }}
           onPress={() => bs.current.snapTo(0)}>
           <ImageBackground
             source={{
@@ -195,8 +195,8 @@ function EditRoomDetails(props) {
                 ? imageUri
                 : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
             }}
-            style={{height: 100, width: 100}}
-            imageStyle={{borderRadius: 15}}>
+            style={{ height: 100, width: 100 }}
+            imageStyle={{ borderRadius: 15 }}>
             <View
               style={{
                 backgroundColor: 'rgba(0,0,0,0.20)',
@@ -218,9 +218,9 @@ function EditRoomDetails(props) {
           </ImageBackground>
         </TouchableOpacity>
         {/* Main */}
-        <View style={{marginTop: padding + 6}}>
+        <View style={{ marginTop: padding + 6 }}>
           <View>
-            <Text style={{marginLeft: padding - 6}}>Group Name</Text>
+            <Text style={{ marginLeft: padding - 6 }}>Group Name</Text>
             <TextInput
               onChangeText={val => setgroupName(val)}
               style={{
@@ -233,7 +233,7 @@ function EditRoomDetails(props) {
           </View>
         </View>
         <View>
-          <Text style={{marginTop: padding - 6, marginLeft: padding - 6}}>
+          <Text style={{ marginTop: padding - 6, marginLeft: padding - 6 }}>
             Current Password
           </Text>
           <TextInput
@@ -247,7 +247,7 @@ function EditRoomDetails(props) {
           />
         </View>
         <View>
-          <Text style={{marginTop: padding - 6, marginLeft: padding - 6}}>
+          <Text style={{ marginTop: padding - 6, marginLeft: padding - 6 }}>
             New Password
           </Text>
           <TextInput
@@ -275,7 +275,7 @@ function EditRoomDetails(props) {
             alignSelf: 'center',
             marginTop: '50%',
           }}>
-          <Text style={{fontWeight: '700', fontSize: height / 18}}>
+          <Text style={{ fontWeight: '700', fontSize: height / 18 }}>
             Uploading
           </Text>
           <Text
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#FFFFFF',
     shadowColor: '#333333',
-    shadowOffset: {width: -1, height: -3},
+    shadowOffset: { width: -1, height: -3 },
     shadowRadius: 2,
     shadowOpacity: 0.4,
     paddingTop: 20,

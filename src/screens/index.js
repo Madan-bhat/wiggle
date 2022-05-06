@@ -1,4 +1,4 @@
-import {Loading, Login, Register} from './Auth';
+import { Loading, Login, Register } from './Auth';
 import {
   Chat,
   CreateRoom,
@@ -10,7 +10,7 @@ import {
   Search,
   Users,
 } from './Dashboard';
-import {EditProfile, Profile, Settings, Support} from './Profile';
+import { EditProfile, Profile, Settings, Support } from './Profile';
 export {
   Login,
   Loading,
@@ -25,8 +25,7 @@ export {
   CreateRoom,
   Chat,
   RoomDetail,
-EditRoomDetails
-  ,
+  EditRoomDetails,
   Users,
   Password,
 };

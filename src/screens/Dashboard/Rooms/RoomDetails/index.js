@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   FlatList,
@@ -8,17 +8,17 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import {height, width} from '../../../../constants';
+import { height, width } from '../../../../constants';
 import auth from '@react-native-firebase/auth';
-import {StandaloneGallery} from 'react-native-gallery-toolkit';
+import { StandaloneGallery } from 'react-native-gallery-toolkit';
 import firestore from '@react-native-firebase/firestore';
 import moment from 'moment';
-import {UsersList} from '../../../../components';
+import { UsersList } from '../../../../components';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Lightbox from 'react-native-lightbox';
 
-export default function RoomDetail({route, navigation}) {
+export default function RoomDetail({ route, navigation }) {
   let [user, setUser] = useState();
   let [users, setUsers] = useState([]);
   let [groupImages, setGroupImages] = useState([]);
@@ -45,7 +45,7 @@ export default function RoomDetail({route, navigation}) {
         .get()
         .then(_data => {
           _data.forEach(data => {
-            let {image} = data.data();
+            let { image } = data.data();
             Lists.push({
               image,
             });
@@ -89,7 +89,7 @@ export default function RoomDetail({route, navigation}) {
           })
         }>
         <ImageBackground
-          style={{width, height: height / 3}}
+          style={{ width, height: height / 3 }}
           source={{
             uri: route.params.item.groupImage
               ? route.params.item.groupImage
@@ -146,7 +146,7 @@ export default function RoomDetail({route, navigation}) {
                     info: route.params,
                   })
                 }
-                style={{left: 1}}
+                style={{ left: 1 }}
                 name="edit"
                 size={32}
                 color="white"
@@ -171,15 +171,15 @@ export default function RoomDetail({route, navigation}) {
         horizontal
         ListEmptyComponent={
           <View>
-            <Text style={{fontFamily: 'Lato-Regular', marginLeft: 12}}>
+            <Text style={{ fontFamily: 'Lato-Regular', marginLeft: 12 }}>
               No Images or Media
             </Text>
           </View>
         }
         data={groupImages}
         showsHorizontalScrollIndicator={false}
-        style={{marginRight: 4, marginLeft: 4}}
-        renderItem={({item}) => {
+        style={{ marginRight: 4, marginLeft: 4 }}
+        renderItem={({ item }) => {
           return (
             <>
               {route.params.item.members?.indexOf(auth().currentUser.uid) >
@@ -192,7 +192,7 @@ export default function RoomDetail({route, navigation}) {
                       })
                     }>
                     <Image
-                      source={{uri: item.image}}
+                      source={{ uri: item.image }}
                       style={{
                         marginLeft: 4,
                         height: item.image ? 75 : 0,
@@ -231,7 +231,7 @@ export default function RoomDetail({route, navigation}) {
               {route.params.item.members.length} members
             </Text>
             <AntDesign
-              style={{marginRight: 6}}
+              style={{ marginRight: 6 }}
               name="search1"
               size={24}
               color="black"
@@ -239,7 +239,7 @@ export default function RoomDetail({route, navigation}) {
           </View>
         }
         stickyHeaderIndices={[0, 6, 13]}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           setUsers(item);
           return (
             <UsersList

@@ -1,15 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useCallback, useEffect, useState} from 'react';
-import {View, Text, StyleSheet, RefreshControl, Alert} from 'react-native';
-import {FloatingAction} from 'react-native-floating-action';
-import {FlatList} from 'react-native-gesture-handler';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, RefreshControl } from 'react-native';
+import { FloatingAction } from 'react-native-floating-action';
+import { FlatList } from 'react-native-gesture-handler';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import {LaunchCard} from '../../../components';
+import { LaunchCard } from '../../../components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import messaging from '@react-native-firebase/messaging';
 
-export default function Launch({navigation}) {
+export default function Launch({ navigation }) {
   const [groups, setGroups] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -81,7 +81,7 @@ export default function Launch({navigation}) {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     if (enabled) {
-      return ;
+      return;
     }
   }
   useEffect(() => {
@@ -93,7 +93,7 @@ export default function Launch({navigation}) {
   }, [fetchGroups]);
 
   return (
-    <View style={{flex: 1, backgroundColor: '#FFF'}}>
+    <View style={{ flex: 1, backgroundColor: '#FFF' }}>
       <View
         style={{
           marginTop: 24,
@@ -106,7 +106,7 @@ export default function Launch({navigation}) {
           onPress={() => navigation.openDrawer()}
           name="ios-menu"
           size={36}
-          style={{marginHorizontal: 12}}
+          style={{ marginHorizontal: 12 }}
           color="black"
         />
         <Text
@@ -127,7 +127,7 @@ export default function Launch({navigation}) {
         }
         data={groups}
         showsVerticalScrollIndicator={false}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           return (
             <LaunchCard
               groupName={item.groupName}

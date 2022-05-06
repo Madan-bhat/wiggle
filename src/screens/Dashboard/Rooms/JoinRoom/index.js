@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useCallback, useState} from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import {
   View,
   FlatList,
@@ -11,11 +11,11 @@ import {
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import GroupsListCard from '../../../../components/Cards/GroupsList';
-import {height} from '../../../../constants';
+import { height } from '../../../../constants';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 
-export default function Join({navigation}) {
+export default function Join({ navigation }) {
   const [groups, setGroups] = useState([]);
 
   let FetchGroups = useCallback(async searchText => {
@@ -74,7 +74,7 @@ export default function Join({navigation}) {
   });
 
   return (
-    <View style={{flex: 1, height: height, backgroundColor: '#fff'}}>
+    <View style={{ flex: 1, height: height, backgroundColor: '#fff' }}>
       <View
         style={{
           marginTop: 24,
@@ -87,7 +87,7 @@ export default function Join({navigation}) {
           <AntDesign
             name="left"
             size={36}
-            style={{marginHorizontal: 12}}
+            style={{ marginHorizontal: 12 }}
             color="black"
           />
         </TouchableOpacity>
@@ -114,7 +114,7 @@ export default function Join({navigation}) {
           marginHorizontal: 24,
         }}>
         <AntDesign
-          style={{marginLeft: 12}}
+          style={{ marginLeft: 12 }}
           name="search1"
           size={24}
           color={'#000'}
@@ -143,7 +143,7 @@ export default function Join({navigation}) {
         }}>
         <ScrollView>
           <FlatList
-            style={{marginBottom: 24}}
+            style={{ marginBottom: 24 }}
             ListEmptyComponent={
               <View
                 style={{
@@ -158,8 +158,8 @@ export default function Join({navigation}) {
               </View>
             }
             data={groups}
-            contentContainerStyle={{marginTop: 12, marginBottom: 12}}
-            renderItem={({item}) => {
+            contentContainerStyle={{ marginTop: 12, marginBottom: 12 }}
+            renderItem={({ item }) => {
               return <GroupsListCard navigation={navigation} item={item} />;
             }}
           />

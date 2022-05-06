@@ -1,10 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, {useState} from 'react';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useState } from 'react';
 import codePush from 'react-native-code-push';
-import {DrawerContent, ImageView} from './src/components';
+import { DrawerContent, ImageView } from './src/components';
 import {
   CreateRoom as CreateScreen,
   JoinRoom as JoinScreen,
@@ -24,10 +24,12 @@ import {
   EditRoomDetails,
 } from './src/screens';
 
-import {Text} from 'react-native';
-import {AuthContext} from './src/context';
+import { Text } from 'react-native';
+import { AuthContext } from './src/context';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+
+let codePushOptions = { checkFrequency: codePush.CheckFrequency.MANUAL };
 
 function App() {
   let [user, setUser] = useState();
@@ -43,7 +45,9 @@ function App() {
           <MainDrawerStack.Screen
             name="photogram.launch.screen"
             options={{
-              title: <Text style={{fontFamily: 'Lato-Bold'}}>{'Wiggle'}</Text>,
+              title: (
+                <Text style={{ fontFamily: 'Lato-Bold' }}>{'Wiggle'}</Text>
+              ),
               headerLeft: null,
               headerShown: false,
             }}
@@ -51,21 +55,21 @@ function App() {
           />
           <MainDrawerStack.Screen
             name="photogram.search.screen"
-            options={{title: 'Photogram'}}
+            options={{ title: 'Photogram' }}
             component={Search}
           />
           <MainDrawerStack.Screen
-            options={{headerShown: false, title: 'Photogram'}}
+            options={{ headerShown: false, title: 'Photogram' }}
             name="photogram.profile.screen"
             component={Profile}
           />
           <MainDrawerStack.Screen
-            options={{headerShown: false, title: 'Photogram'}}
+            options={{ headerShown: false, title: 'Photogram' }}
             name="photogram.settings.screen"
             component={Settings}
           />
           <MainDrawerStack.Screen
-            options={{headerShown: false, title: 'Photogram'}}
+            options={{ headerShown: false, title: 'Photogram' }}
             name="photogram.support.screen"
             component={Support}
           />
@@ -94,26 +98,26 @@ function App() {
   }, []);
 
   return (
-    <AuthContext.Provider value={{user, userData}}>
+    <AuthContext.Provider value={{ user, userData }}>
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
             name="photogram.loading.screen"
             component={Loading}
           />
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
             name="photogram.login.screen"
             component={Login}
           />
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
             name="photogram.register.screen"
             component={Register}
           />
           <Stack.Screen
-            options={{headerShown: false, title: 'Photogram'}}
+            options={{ headerShown: false, title: 'Photogram' }}
             name="photogram.dashboard.screen"
             component={DashBoard}
           />
@@ -137,42 +141,42 @@ function App() {
             component={CreateScreen}
           />
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
             name="photogram.chat.screen"
             component={Chat}
           />
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
             name="photogram.roomdetails.screen"
             component={RoomDetail}
           />
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
             name="photogram.chatDetails.screen"
             component={RoomDetail}
           />
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
             name="photogram.users.screen"
             component={Users}
           />
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
             name="photogram.password.screen"
             component={Password}
           />
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
             name="photogram.edit.profile.screen"
             component={EditProfile}
           />
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
             name="photogram.image.view.screen"
             component={ImageView}
           />
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
             name="photogram.edit.group.info.screen"
             component={EditRoomDetails}
           />
@@ -181,6 +185,5 @@ function App() {
     </AuthContext.Provider>
   );
 }
-let codePushOptions = {checkFrequency: codePush.CheckFrequency.MANUAL};
 
 export default codePush(codePushOptions)(App);
