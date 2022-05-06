@@ -6,9 +6,17 @@ import {View, Text, TouchableOpacity, Image} from 'react-native';
 import {height, width} from '../../../constants';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {TextInput} from 'react-native-gesture-handler';
+import CodePush from 'react-native-code-push';
 
 export default function Profile({navigation}) {
   let [userData, setUserData] = useState();
+
+  function checkForUpdates() {
+    CodePush.sync({
+      updateDialog: true,
+      installMode: CodePush.InstallMode.IMMEDIATE,
+    });
+  }
 
   let getUser = useCallback(() => {
     try {
@@ -122,6 +130,20 @@ export default function Profile({navigation}) {
           {userData?.token}
         </Text>
       </View>
+      <TouchableOpacity
+        style={{
+          padding: 13,
+          borderRadius: 10,
+          backgroundColor: 'red',
+          alignItems: 'center',
+          marginVertical: 18,
+          marginHorizontal: 12,
+        }}
+        onPress={checkForUpdates()}>
+        <Text style={{fontSize: 17, fontWeight: 'bold', color: 'white'}}>
+          Check for updates
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }

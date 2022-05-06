@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useCallback, useState} from 'react';
 import {
   View,
   FlatList,
@@ -10,16 +10,15 @@ import {
   TextInput,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
 import GroupsListCard from '../../../../components/Cards/GroupsList';
-import {height, width} from '../../../../constants';
+import {height} from '../../../../constants';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {ScrollView} from 'react-native-gesture-handler';
 
 export default function Join({navigation}) {
   const [groups, setGroups] = useState([]);
 
-  let FetchGroups = async searchText => {
+  let FetchGroups = useCallback(async searchText => {
     let Lists = [];
     try {
       await firestore()
@@ -50,7 +49,11 @@ export default function Join({navigation}) {
           });
         });
     } catch (error) {}
-  };
+  }, []);
+
+  useEffect(() => {
+    FetchGroups();
+  }, [FetchGroups, groups]);
 
   let styles = StyleSheet.create({
     title: {
@@ -146,6 +149,9 @@ export default function Join({navigation}) {
                 style={{
                   justifyContent: 'center',
                   alignItems: 'center',
+                  position: 'absolute',
+                  top: 100,
+                  flex: 1,
                   display: 'flex',
                 }}>
                 <Text>Search For Groups</Text>

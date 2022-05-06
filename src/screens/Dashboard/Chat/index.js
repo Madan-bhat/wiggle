@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
+import messaging from '@react-native-firebase/messaging';
 import {
   FlatList,
   Image,
@@ -22,6 +23,7 @@ import {DecryptData, EncryptData} from '../../../functions';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import {ImageView} from '../../../components';
+import MessageCard from '../../../components/Cards/MessageCard';
 
 const styles = StyleSheet.create({
   container: {
@@ -170,7 +172,6 @@ export default function Chat(props) {
         .add({
           createdAt: Date.now(),
           messageText: EncryptData(messageText),
-          userName: userData.userName ? userData.userName : 'Tests',
           image: imageUri ? imageUri : null,
           uid: auth().currentUser.uid,
         })
@@ -187,24 +188,13 @@ export default function Chat(props) {
     const message = {
       registration_ids: userForToken,
       notification: {
+        title: props.route.params.headerTitle,
+        body: messageText,
         vibrate: 1,
         sound: 1,
         show_in_foreground: true,
         priority: 'high',
-        title: props.route.params.headerTitle,
-        body: messageText,
-        icon: props.route.params.item.groupImage,
         content_available: true,
-      },
-      data: {
-        body: messageText,
-        title: props.route.params.item.groupImage,
-        color: '#00ACD4',
-        priority: 'high',
-        icon: 'ic_notif',
-        group: 'GROUP',
-        id: 'id',
-        show_in_foreground: true,
       },
     };
 
@@ -213,70 +203,32 @@ export default function Chat(props) {
       Authorization: 'key=' + FIREBASE_API_KEY,
     });
 
-    let response = await fetch('https://fcm.googleapis.com/fcm/send', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(message),
-    });
-    response = await response.json();
+    try {
+      let response = await fetch('https://fcm.googleapis.com/fcm/send', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(message),
+      });
+      response = await response.json();
+      console.log('response ', response);
+    } catch (error) {
+      console.log('error ', error);
+    }
   };
+
+  function getNotificaton() {
+    try {
+      messaging().onMessage(payload => {
+        console.log(payload);
+      });
+    } catch (error) {}
+  }
+
+  useEffect(() => {
+    getNotificaton();
+  }, []);
 
   let flatlistRef = useRef();
-
-  let renderRow = ({item}) => {
-    return (
-      <View>
-        <View>
-          <View
-            style={{
-              padding: item.image ? 4 : 14,
-              borderTopLeftRadius: 18,
-              borderTopRightRadius: 18,
-              borderBottomLeftRadius:
-                item.uid === auth().currentUser.uid ? 18 : 0,
-              marginTop: 14,
-              borderBottomRightRadius:
-                item.uid === auth().currentUser.uid ? 0 : 18,
-              marginRight:
-                item.uid === auth().currentUser.uid ? 4 : width / 2.5,
-              marginLeft: item.uid === auth().currentUser.uid ? width / 2.5 : 4,
-              alignSelf:
-                item.uid !== auth().currentUser.uid ? 'flex-start' : 'flex-end',
-              backgroundColor:
-                item.uid === auth().currentUser?.uid ? '#45aaf4' : '#fff',
-            }}>
-            <TouchableOpacity
-              onPress={() =>
-                props.navigation.navigate('photogram.image.view.screen', {
-                  image: item.image,
-                })
-              }>
-              <Image
-                style={{
-                  height: item.image ? height / 4 : 0,
-                  width: item.image ? width / 1.5 : 0,
-                  borderTopLeftRadius: 18,
-                  borderTopRightRadius: 18,
-                  borderBottomLeftRadius: 18,
-                }}
-                source={{uri: item.image ? item.image : null}}
-              />
-            </TouchableOpacity>
-
-            <Text
-              style={{
-                fontFamily: 'Lato-Regular',
-                color: item.uid === auth().currentUser.uid ? 'white' : 'black',
-                textAlign:
-                  item.uid === auth().currentUser.uid ? 'right' : 'left',
-              }}>
-              {DecryptData(item.messageText)}
-            </Text>
-          </View>
-        </View>
-      </View>
-    );
-  };
 
   const takePhotoFromCamera = () => {
     ImageCropPicker.openCamera({
@@ -463,7 +415,9 @@ export default function Chat(props) {
           automaticallyAdjustContentInsets={false}
           showsVerticalScrollIndicator={false}
           data={messages}
-          renderItem={renderRow}
+          renderItem={({item}) => (
+            <MessageCard item={item} navigation={props.navigation} />
+          )}
         />
       </View>
 
