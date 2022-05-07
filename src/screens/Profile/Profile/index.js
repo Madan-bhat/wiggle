@@ -2,21 +2,47 @@
 import auth from '@react-native-firebase/auth';
 import { firebase } from '@react-native-firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { height, width } from '../../../constants';
+import {
+  View,
+  ScrollView,
+  Alert,
+  Text,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { TextInput } from 'react-native-gesture-handler';
-import CodePush from 'react-native-code-push';
+import { width } from '../../../constants/index';
+import codePush from 'react-native-code-push';
 
 export default function Profile({ navigation }) {
   let [userData, setUserData] = useState();
+  let [packageMetadata, setPackageMetadata] = useState();
 
-  function checkForUpdates() {
-    CodePush.sync({
-      updateDialog: true,
-      installMode: CodePush.InstallMode.IMMEDIATE,
+  useEffect(() => {
+    async function getPackageMetadata() {
+      const data = await codePush.getCurrentPackage();
+      console.log({ data });
+      if (data) {
+        setPackageMetadata(data);
+      }
+    }
+    getPackageMetadata();
+    // call once loaded
+  }, []);
+
+  const checkForUpdate = async () => {
+    codePush.checkForUpdate().then(update => {
+      if (!update) {
+        Alert.alert('UPDATED !', 'The app is up to date!');
+      } else {
+        Alert.alert('AN UPDATE IS AVAILABLE', 'An update is available! ');
+      }
     });
-  }
+    codePush.sync({
+      updateDialog: true,
+      installMode: codePush.InstallMode.IMMEDIATE,
+    });
+  };
 
   let getUser = useCallback(() => {
     try {
@@ -36,7 +62,7 @@ export default function Profile({ navigation }) {
   }, [getUser]);
 
   return (
-    <View>
+    <ScrollView>
       <View>
         <View
           style={{
@@ -134,16 +160,16 @@ export default function Profile({ navigation }) {
         style={{
           padding: 13,
           borderRadius: 10,
-          backgroundColor: 'red',
+          backgroundColor: 'black',
           alignItems: 'center',
           marginVertical: 18,
           marginHorizontal: 12,
         }}
-        onPress={checkForUpdates()}>
+        onPress={() => checkForUpdate()}>
         <Text style={{ fontSize: 17, fontWeight: 'bold', color: 'white' }}>
           Check for updates
         </Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }

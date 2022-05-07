@@ -1,4 +1,4 @@
 let primary = '#45aaf4';
-let secondary = '#0000000';
-
-export {primary, secondary};
+let secondary = '#fff';
+let dark = '#000';
+export { primary, secondary, dark };    
