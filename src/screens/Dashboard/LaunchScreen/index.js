@@ -8,6 +8,7 @@ import auth from '@react-native-firebase/auth';
 import { LaunchCard } from '../../../components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import messaging from '@react-native-firebase/messaging';
+import { width } from '../../../constants';
 
 export default function Launch({ navigation }) {
   const [groups, setGroups] = useState([]);
@@ -126,7 +127,6 @@ export default function Launch({ navigation }) {
           <RefreshControl onRefresh={refreshControl} refreshing={refreshing} />
         }
         data={groups}
-        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
           return (
             <LaunchCard

@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import messaging from '@react-native-firebase/messaging';
 import {
   FlatList,
@@ -14,16 +14,18 @@ import {
   StyleSheet,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {width, height} from '../../../constants/Dimesions/index';
+import { width, height } from '../../../constants/Dimesions/index';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {DecryptData, EncryptData} from '../../../functions';
+import { LinearTextGradient } from 'react-native-text-gradient';
+import { DecryptData, EncryptData } from '../../../functions';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
-import {ImageView} from '../../../components';
+import { ImageView } from '../../../components';
 import MessageCard from '../../../components/Cards/MessageCard';
+import { ActivityIndicator } from 'react-native-paper';
 
 const styles = StyleSheet.create({
   container: {
@@ -46,7 +48,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#FFFFFF',
     shadowColor: '#333333',
-    shadowOffset: {width: -1, height: -3},
+    shadowOffset: { width: -1, height: -3 },
     shadowRadius: 2,
     shadowOpacity: 0.4,
     paddingTop: 20,
@@ -111,6 +113,7 @@ const styles = StyleSheet.create({
 export default function Chat(props) {
   let [imageUri, setImageUri] = useState('');
   let [userData, setUserData] = useState();
+  let [loading, setLoading] = useState(true);
   let [userForToken, setUserForToken] = useState([]);
   let [messageText, setMessageText] = useState('');
   let [messages, setMessages] = useState([]);
@@ -144,6 +147,9 @@ export default function Chat(props) {
   }, []);
 
   useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
     fetchMessages();
   }, [fetchMessages]);
 
@@ -156,7 +162,7 @@ export default function Chat(props) {
         .get()
         .then(__val => {
           let Lists = [];
-          let {token} = __val.data();
+          let { token } = __val.data();
           Lists.push(token);
           setUserForToken(Lists);
         });
@@ -232,13 +238,12 @@ export default function Chat(props) {
 
   const takePhotoFromCamera = () => {
     ImageCropPicker.openCamera({
-      width: 720,
-      height: 1080,
       cropping: true,
       compressImageQuality: 1,
       mediaType: 'photo',
       includeBase64: true,
     }).then(image => {
+      console.log(image);
       setImageUri(`data:image/jpeg;base64,${image.data}`);
       bs.current.snapTo(1);
     });
@@ -246,14 +251,14 @@ export default function Chat(props) {
 
   const choosePhotoFromLibrary = () => {
     ImageCropPicker.openPicker({
-      width: 720,
-      height: 1080,
       cropping: true,
       compressImageQuality: 1,
+      multiple: true,
       mediaType: 'photo',
       includeBase64: true,
     }).then(image => {
-      setImageUri(`data:image/jpeg;base64,${image.data}`);
+      console.log(image);
+      // setImageUri(`data:image/jpeg;base64,${image.data}`);
       bs.current.snapTo(1);
     });
   };
@@ -261,7 +266,7 @@ export default function Chat(props) {
   let renderInner = () => {
     return (
       <View style={styles.panel}>
-        <View style={{alignItems: 'center'}}>
+        <View style={{ alignItems: 'center' }}>
           <Text style={styles.panelTitle}>Upload Photo</Text>
           <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
         </View>
@@ -307,162 +312,183 @@ export default function Chat(props) {
 
   return (
     <>
-      <View
-        style={{
-          padding: 8,
-          backgroundColor: '#FFF',
-          flexDirection: 'row',
-          display: 'flex',
-          alignItems: 'center',
-        }}>
-        <AntDesign
-          onPress={() => props.navigation.goBack()}
-          name="arrowleft"
-          style={{marginHorizontal: 8}}
-          size={24}
-          color="black"
-        />
-        <Image
-          source={{
-            uri: props.route.params.item.groupImage
-              ? props.route.params.item.groupImage
-              : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
-          }}
-          style={{width: 36, marginRight: 8, borderRadius: 80, height: 36}}
-        />
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() =>
-            props.navigation.navigate('photogram.chatDetails.screen', {
-              item: props.route.params.item,
-              route: props.route,
-            })
-          }>
-          <Text style={{fontFamily: 'Lato-Bold'}}>
-            {props.route.params.headerTitle}
-          </Text>
-          <Text
-            style={{
-              fontFamily: 'Lato-Regular',
-            }}>{`${props.route.params.item.members.length} members`}</Text>
-        </TouchableOpacity>
-      </View>
-      <Modal
-        style={{justifyContent: 'center', display: 'flex'}}
-        visible={imageUri ? true : false}>
-        <View style={{justifyContent: 'center', flex: 1}}>
-          <Ionicons
-            onPress={() => {
-              setImageUri(null);
-              setMessageText('');
-            }}
-            style={{top: 3, left: 3, position: 'absolute'}}
-            name="close"
-            size={24}
-            color="black"
-          />
-          <Image source={{uri: imageUri}} style={{height: height / 3, width}} />
-          <TextInput
-            placeholderTextColor="#000"
-            style={{color: '#000', fontFamily: 'Lato-Regular'}}
-            width={width}
-            placeholder="Type the message here ....."
-            onChangeText={_val => {
-              setMessageText(_val);
-            }}
-          />
-          <TouchableOpacity
-            style={{alignSelf: 'center', marginTop: 8}}
-            onPress={sendMessage}
-            disabled={
-              messageText.replace(/\s/g, '').length === 0 ? true : false
-            }>
-            <Text
-              style={{
-                fontFamily: 'Lato-Regular',
-                fontSize: 18,
-                color: '#45A4FF',
-              }}>
-              Send
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-      <BottomSheet
-        ref={bs}
-        snapPoints={[330, -5]}
-        renderContent={renderInner}
-        renderHeader={renderHeader}
-        initialSnap={1}
-        callbackNode={fall}
-        enabledGestureInteraction={true}
-      />
-      <View style={{flexDirection: 'column-reverse', flex: 1}}>
-        <FlatList
-          enableEmptySections={true}
-          scrollEnabled={true}
-          inverted={false}
-          scrollEventThrottle={100}
-          ref={flatlistRef}
+      {loading ? (
+        <View
           style={{
-            marginBottom: 12,
             flex: 1,
-            flexDirection: 'column',
-          }}
-          onContentSizeChange={() => {
-            flatlistRef.current.scrollToEnd({animated: true});
-          }}
-          automaticallyAdjustContentInsets={false}
-          showsVerticalScrollIndicator={false}
-          data={messages}
-          renderItem={({item}) => (
-            <MessageCard item={item} navigation={props.navigation} />
-          )}
-        />
-      </View>
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator />
+        </View>
+      ) : (
+        <>
+          <View
+            style={{
+              padding: 8,
+              backgroundColor: '#FFF',
+              flexDirection: 'row',
+              display: 'flex',
+              alignItems: 'center',
+            }}>
+            <AntDesign
+              onPress={() => props.navigation.goBack()}
+              name="arrowleft"
+              style={{ marginHorizontal: 8 }}
+              size={24}
+              color="black"
+            />
+            <Image
+              source={{
+                uri: props.route.params.item.groupImage
+                  ? props.route.params.item.groupImage
+                  : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
+              }}
+              style={{
+                width: 36,
+                marginRight: 8,
+                borderRadius: 80,
+                height: 36,
+              }}
+            />
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() =>
+                props.navigation.navigate('photogram.chatDetails.screen', {
+                  item: props.route.params.item,
+                  route: props.route,
+                })
+              }>
+              <Text style={{ fontFamily: 'Lato-Bold' }}>
+                {props.route.params.headerTitle}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: 'Lato-Regular',
+                }}>{`${props.route.params.item.members.length} members`}</Text>
+            </TouchableOpacity>
+          </View>
+          <Modal
+            style={{ justifyContent: 'center', display: 'flex' }}
+            visible={imageUri ? true : false}>
+            <View style={{ justifyContent: 'center', flex: 1 }}>
+              <Ionicons
+                onPress={() => {
+                  setImageUri(null);
+                  setMessageText('');
+                }}
+                style={{ top: 3, left: 3, position: 'absolute' }}
+                name="close"
+                size={24}
+                color="black"
+              />
+              <Image
+                source={{ uri: imageUri }}
+                style={{ height: height / 3, width }}
+              />
+              <TextInput
+                placeholderTextColor="#000"
+                style={{ color: '#000', fontFamily: 'Lato-Regular' }}
+                width={width}
+                placeholder="Type the message here ....."
+                onChangeText={_val => {
+                  setMessageText(_val);
+                }}
+              />
+              <TouchableOpacity
+                style={{ alignSelf: 'center', marginTop: 8 }}
+                onPress={sendMessage}
+                disabled={
+                  messageText.replace(/\s/g, '').length === 0 ? true : false
+                }>
+                <Text
+                  style={{
+                    fontFamily: 'Lato-Regular',
+                    fontSize: 18,
+                    color: '#45A4FF',
+                  }}>
+                  Send
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+          <BottomSheet
+            ref={bs}
+            snapPoints={[330, -5]}
+            renderContent={renderInner}
+            renderHeader={renderHeader}
+            initialSnap={1}
+            callbackNode={fall}
+            enabledGestureInteraction={true}
+          />
+          <View style={{ flexDirection: 'column-reverse', flex: 1 }}>
+            <FlatList
+              enableEmptySections={true}
+              scrollEnabled={true}
+              inverted={false}
+              scrollEventThrottle={100}
+              ref={flatlistRef}
+              style={{
+                marginBottom: 12,
+                flex: 1,
+                flexDirection: 'column',
+              }}
+              onContentSizeChange={() => {
+                flatlistRef.current.scrollToEnd({ animated: true });
+              }}
+              automaticallyAdjustContentInsets={false}
+              showsVerticalScrollIndicator={false}
+              data={messages}
+              renderItem={({ item }) => (
+                <MessageCard item={item} navigation={props.navigation} />
+              )}
+            />
+          </View>
 
-      <View
-        style={{
-          backgroundColor: '#FFF',
-          flexDirection: 'row',
-          display: 'flex',
-          alignItems: 'center',
-          width: width,
-        }}>
-        <Ionicons
-          onPress={() => bs.current.snapTo(0)}
-          style={{marginHorizontal: 6}}
-          name="images"
-          size={24}
-          color="black"
-        />
+          <View
+            style={{
+              backgroundColor: '#FFF',
+              flexDirection: 'row',
+              display: 'flex',
+              alignItems: 'center',
+              width: width,
+            }}>
+            <Ionicons
+              onPress={() => bs.current.snapTo(0)}
+              style={{ marginHorizontal: 6 }}
+              name="images"
+              size={24}
+              color="black"
+            />
 
-        <TextInput
-          placeholderTextColor="#000"
-          value={messageText}
-          onChangeText={_message_text => {
-            setMessageText(_message_text);
-          }}
-          placeholder={'Type the message here ......'}
-          style={{
-            padding: 12,
-            color: '#000',
-            width: '82%',
-            fontFamily: 'Lato-Regular',
-            backgroundColor: '#FFF',
-            bottom: 0,
-            zIndex: 100,
-          }}
-        />
+            <TextInput
+              placeholderTextColor="#000"
+              value={messageText}
+              onChangeText={_message_text => {
+                setMessageText(_message_text);
+              }}
+              placeholder={'Type the message here ......'}
+              style={{
+                padding: 12,
+                color: '#000',
+                width: '82%',
+                fontFamily: 'Lato-Regular',
+                backgroundColor: '#FFF',
+                bottom: 0,
+                zIndex: 100,
+              }}
+            />
 
-        <TouchableOpacity
-          onPress={sendMessage}
-          disabled={messageText.replace(/\s/g, '').length === 0 ? true : false}>
-          <Text style={{fontFamily: 'Lato-Regular', color: '#45A4FF'}}>
-            Send
-          </Text>
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity
+              onPress={sendMessage}
+              disabled={
+                messageText.replace(/\s/g, '').length === 0 ? true : false
+              }>
+              <Text style={{ fontFamily: 'Lato-Regular' }}>Send</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
     </>
   );
 }

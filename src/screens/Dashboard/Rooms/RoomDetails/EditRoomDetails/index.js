@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React, { useState, useEffect, memo, useCallback } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';

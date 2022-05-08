@@ -1,11 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useCallback, useEffect, useState} from 'react';
-import {View, Text, Image} from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, Image } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
-import {FlatList} from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth';
 
-export default function UsersList({data, members, ownerUid }) {
+export default function UsersList({ data, members, ownerUid }) {
   let [users, setUsers] = useState([]);
   let getAllUsersInGroup = useCallback(async () => {
     let usersFromDb = [];
@@ -15,7 +15,7 @@ export default function UsersList({data, members, ownerUid }) {
         .doc(data)
         .get()
         .then(_data => {
-          let {userName, createdAt, userImg, uid} = _data.data();
+          let { userName, createdAt, userImg, uid } = _data.data();
           usersFromDb.push({
             userName,
             createdAt,
@@ -35,7 +35,7 @@ export default function UsersList({data, members, ownerUid }) {
     <View>
       <FlatList
         data={users}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           return (
             <View
               style={{
@@ -46,7 +46,7 @@ export default function UsersList({data, members, ownerUid }) {
                 alignItems: 'center',
               }}>
               <Image
-                style={{width: 50, height: 50, borderRadius: 100}}
+                style={{ width: 50, height: 50, borderRadius: 100 }}
                 source={{
                   uri: item.image
                     ? item.image
@@ -61,6 +61,7 @@ export default function UsersList({data, members, ownerUid }) {
                 }}>
                 {item.userName}
               </Text>
+
               <Text
                 style={{
                   fontFamily: 'Lato-Bold',

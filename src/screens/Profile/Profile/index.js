@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import auth from '@react-native-firebase/auth';
 import { firebase } from '@react-native-firebase/firestore';
+import LinearGradient from 'react-native-linear-gradient';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
@@ -64,7 +65,7 @@ export default function Profile({ navigation }) {
   return (
     <ScrollView>
       <View>
-        <View
+        <LinearGradient
           style={{
             position: 'absolute',
             bottom: -30,
@@ -77,7 +78,10 @@ export default function Profile({ navigation }) {
             alignItems: 'center',
             justifyContent: 'center',
             right: 10,
-          }}>
+          }}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          colors={['#2193b0', '#6dd5ed']}>
           <FontAwesome
             onPress={() => navigation.navigate('photogram.edit.profile.screen')}
             style={{ left: 1 }}
@@ -85,7 +89,7 @@ export default function Profile({ navigation }) {
             size={32}
             color="white"
           />
-        </View>
+        </LinearGradient>
         <TouchableOpacity
           activeOpacity={3}
           onPress={() =>
@@ -156,19 +160,31 @@ export default function Profile({ navigation }) {
           {userData?.token}
         </Text>
       </View>
+
       <TouchableOpacity
         style={{
-          padding: 13,
+          padding: 18,
           borderRadius: 10,
-          backgroundColor: 'black',
           alignItems: 'center',
           marginVertical: 18,
           marginHorizontal: 12,
         }}
         onPress={() => checkForUpdate()}>
-        <Text style={{ fontSize: 17, fontWeight: 'bold', color: 'white' }}>
-          Check for updates
-        </Text>
+        <LinearGradient
+          style={{
+            padding: 18,
+            borderRadius: 10,
+            alignItems: 'center',
+            marginVertical: 18,
+            marginHorizontal: 12,
+          }}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          colors={['#2193b0', '#6dd5ed']}>
+          <Text style={{ fontSize: 17, fontWeight: 'bold', color: 'white' }}>
+            Check for updates
+          </Text>
+        </LinearGradient>
       </TouchableOpacity>
     </ScrollView>
   );

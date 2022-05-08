@@ -2,12 +2,12 @@
 /* eslint-disable react-native/no-inline-styles */
 import firestore from '@react-native-firebase/firestore';
 import moment from 'moment';
-import React,{useEffect} from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+import React, { useEffect } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { DecryptData } from '../../../functions';
 
-export default function LaunchCard({navigation, groupId, item, groupName}) {
+export default function LaunchCard({ navigation, groupId, item, groupName }) {
   let styles = StyleSheet.create({
     cardStyle: {
       shadowColor: '#000',
@@ -18,6 +18,7 @@ export default function LaunchCard({navigation, groupId, item, groupName}) {
     ImageStyle: {
       height: 50,
       width: 50,
+      marginLeft: 18,
       borderRadius: 900,
     },
   });
@@ -43,7 +44,7 @@ export default function LaunchCard({navigation, groupId, item, groupName}) {
 
   return (
     <TouchableOpacity
-    activeOpacity={1}
+      activeOpacity={1}
       onPress={() => {
         navigation.navigate('photogram.chat.screen', {
           headerTitle: groupName,
@@ -65,8 +66,8 @@ export default function LaunchCard({navigation, groupId, item, groupName}) {
             marginVertical: 12,
             marginHorizontal: 24,
           }}>
-          <View style={{flexDirection: 'row', marginVertical: 12}}>
-            <Text style={{position: 'absolute', left: 300}}>
+          <View style={{ flexDirection: 'row', marginVertical: 12 }}>
+            <Text style={{ position: 'absolute', left: 300 }}>
               {item.members.lengths}
             </Text>
             <Image
@@ -77,8 +78,8 @@ export default function LaunchCard({navigation, groupId, item, groupName}) {
               }}
               style={styles.ImageStyle}
             />
-            <View style={{marginLeft: 8}}>
-              <Text style={{fontFamily: 'Lato-Bold'}}>{item.groupName}</Text>
+            <View style={{ marginLeft: 8 }}>
+              <Text style={{ fontFamily: 'Lato-Bold' }}>{item.groupName}</Text>
               <Text
                 style={{
                   fontFamily: 'Lato-Regular',

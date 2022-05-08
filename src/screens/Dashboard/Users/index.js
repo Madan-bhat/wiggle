@@ -1,29 +1,54 @@
 import { firebase } from '@react-native-firebase/firestore';
-import React, { useEffect } from 'react';
-import { View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { AllUsers } from '../../../components';
 
 export default function Users({ route }) {
-  useEffect(function () {
+  let [users, setUsers] = useState([]);
+
+  function getUsers() {
     firebase
       .firestore()
       .collection('users')
-      .onSnapshot(value => {
+      .get()
+      .then(value => {
         value.docs.forEach(_data => {
           let Lists = [];
-          Lists.push(_data.data());
-          let data = Lists.indexOf(route.params.members, -1);
+          let { email, userName, userImg, groups, token, uid } = _data.data();
+          List.push({
+            email,
+            userName,
+            userImg,
+            groups,
+            token,
+            uid,
+          });
+          setUsers(List);
         });
       });
-  });
+  }
+
+  useEffect(() => {
+    getUsers();
+  }, []);
 
   return (
     <View>
       <FlatList
-        data={route.params.members}
+        data={users}
         renderItem={({ item }) => {
-          return <AllUsers item={item} />;
+          return (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                flex: 1,
+              }}>
+              <Text style={{ fontWeight: 'bold', fontSize: 24 }}>
+                I am the only developer 😊
+              </Text>
+            </View>
+          );
         }}
       />
     </View>

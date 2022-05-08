@@ -17,6 +17,7 @@ import { UsersList } from '../../../../components';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Lightbox from 'react-native-lightbox';
+import LinearGradient from 'react-native-linear-gradient';
 
 export default function RoomDetail({ route, navigation }) {
   let [user, setUser] = useState();
@@ -126,20 +127,22 @@ export default function RoomDetail({ route, navigation }) {
             </Text>
           </View>
           {route.params.item?.ownerUid === auth().currentUser.uid ? (
-            <View
+            <LinearGradient
               style={{
                 position: 'absolute',
                 bottom: -30,
                 elevation: 18,
                 borderRadius: 100,
                 height: 75,
-                backgroundColor: '#45aaf4',
                 zIndex: 100,
                 width: 75,
                 alignItems: 'center',
                 justifyContent: 'center',
                 right: 10,
-              }}>
+              }}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              colors={['#2193b0', '#6dd5ed']}>
               <FontAwesome
                 onPress={() =>
                   navigation.navigate('photogram.edit.group.info.screen', {
@@ -151,7 +154,7 @@ export default function RoomDetail({ route, navigation }) {
                 size={32}
                 color="white"
               />
-            </View>
+            </LinearGradient>
           ) : (
             <></>
           )}

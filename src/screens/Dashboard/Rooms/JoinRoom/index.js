@@ -52,7 +52,9 @@ export default function Join({ navigation }) {
   }, []);
 
   useEffect(() => {
+    setTimeout(() => {
     FetchGroups();
+    }, 1000);
   }, [FetchGroups, groups]);
 
   let styles = StyleSheet.create({
@@ -137,7 +139,7 @@ export default function Join({ navigation }) {
 
       <View
         style={{
-          backgroundColor: '#45A4FF',
+          backgroundColor: '#fff',
           height,
           borderTopStartRadius: 24,
         }}>

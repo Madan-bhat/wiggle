@@ -23,6 +23,10 @@ target 'photogram_chat' do
 
   pod 'appcenter-crashes', :path => '../node_modules/appcenter-crashes'
 
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+
+  pod 'RNTextGradientView', :path => '../node_modules/react-native-text-gradient'
+
   target 'photogram_chatTests' do
     inherit! :complete
     # Pods for testing

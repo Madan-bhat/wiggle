@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -15,11 +15,11 @@ import { Picker } from '@react-native-picker/picker';
 import { height } from '../../../../constants';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ImagePicker from 'react-native-image-crop-picker';
-import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { ScrollView } from 'react-native-gesture-handler';
 import { EncryptData } from '../../../../functions';
+import LinearGradient from 'react-native-linear-gradient';
 
 export default function Create({ navigation }) {
   const [pickerValue, setPickerValue] = useState(1);
@@ -28,9 +28,6 @@ export default function Create({ navigation }) {
   const [password, setPassword] = useState('');
   const [description, setDescription] = useState('');
   const [imageUri, setImageUri] = useState();
-  const [imageUrl, setImageUrl] = useState();
-  const [visible, setVisible] = useState();
-  const [transferred, setTransferred] = useState('');
   const [uploading, setUploading] = useState(false);
 
   let styles = StyleSheet.create({
@@ -78,7 +75,6 @@ export default function Create({ navigation }) {
       color: '#45A4FF',
     },
     createButton: {
-      backgroundColor: '#45A4FF',
       padding: 18,
       marginHorizontal: 12,
       marginTop: 28,
@@ -101,40 +97,6 @@ export default function Create({ navigation }) {
     });
   };
 
-  const uploadImage = async () => {
-    if (!imageUri) {
-      return null;
-    } else {
-      const path = `photos/${auth().currentUser.uid}/${Date.now()}`;
-      return new Promise(async (resolve, rej) => {
-        const response = await fetch(imageUri);
-        const file = await response.blob();
-        let upload = storage().ref(path).put(file);
-        upload.on(
-          'state_changed',
-          snapshot => {
-            setUploading(true);
-            setTransferred(
-              Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100,
-            );
-          },
-          err => {
-            rej(err);
-          },
-          async () => {
-            const url = await upload.snapshot.ref.getDownloadURL();
-            setImageUrl(url);
-            setVisible(false);
-            setUploading(false);
-            resolve(url);
-            setImageUri(null);
-            return url;
-          },
-        );
-      });
-    }
-  };
-
   let createGroup = async () => {
     try {
       firestore()
@@ -155,7 +117,7 @@ export default function Create({ navigation }) {
               numberOfMembers: pickerValue,
               ownerUid: auth().currentUser.uid,
               description,
-              password: EncryptData(password),
+              password: password ? EncryptData(password) : null,
               type,
               requests: type === 'Approval' ? [] : null,
               members: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
@@ -174,9 +136,9 @@ export default function Create({ navigation }) {
             .then(() => {
               navigation.goBack();
             })
-            .catch(e => alert(e));
+            .catch(e => console.log(e));
         })
-        .catch(e => alert(e));
+        .catch(e => console.log(e));
     } catch (error) {}
   };
 
@@ -219,6 +181,7 @@ export default function Create({ navigation }) {
           }}
           style={styles.groupImage}
         />
+
         <Pressable onPress={PickImage}>
           <Text style={styles.imagePickerStyle}>Choose Photo</Text>
         </Pressable>
@@ -292,24 +255,38 @@ export default function Create({ navigation }) {
           style={styles.nameInput}
         />
       ) : null}
-      <Pressable
-        disabled={groupName.replace(/\s/g, '').length < 5 ? true : false}
-        style={styles.createButton}
-        onPress={() => createGroup()}>
-        {uploading === true ? (
-          <ActivityIndicator size={24} color={'#fff'} />
-        ) : (
-          <Text
-            style={{
-              textAlign: 'center',
-              fontSize: 18,
-              color: '#fff',
-              fontWeight: 'bold',
-            }}>
-            Create
-          </Text>
-        )}
-      </Pressable>
+      <LinearGradient
+        style={{
+          padding: 18,
+          marginHorizontal: 12,
+          marginTop: 28,
+          borderRadius: 12,
+          opacity: groupName.replace(/\s/g, '').length < 5 ? 0.5 : 18,
+          shadowColor: '#000',
+          elevation: groupName.replace(/\s/g, '').length < 5 ? 0 : 18,
+          marginBottom: 28,
+        }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        colors={['#2193b0', '#6dd5ed']}>
+        <Pressable
+          disabled={groupName.replace(/\s/g, '').length < 5 ? true : false}
+          onPress={() => createGroup()}>
+          {uploading === true ? (
+            <ActivityIndicator size={24} color={'#fff'} />
+          ) : (
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: 18,
+                color: '#fff',
+                fontWeight: 'bold',
+              }}>
+              Create
+            </Text>
+          )}
+        </Pressable>
+      </LinearGradient>
     </ScrollView>
   );
 }

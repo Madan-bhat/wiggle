@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { width } from '../../../../../constants';
 import { DecryptData } from '../../../../../functions';
+import LinearGradient from 'react-native-linear-gradient';
 
 const Password = ({ route, navigation }) => {
   let [password, setPassword] = useState('');
