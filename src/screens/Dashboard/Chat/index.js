@@ -258,7 +258,7 @@ export default function Chat(props) {
       includeBase64: true,
     }).then(image => {
       console.log(image);
-      // setImageUri(`data:image/jpeg;base64,${image.data}`);
+      setImageUri(`data:image/jpeg;base64,${image.data}`);
       bs.current.snapTo(1);
     });
   };

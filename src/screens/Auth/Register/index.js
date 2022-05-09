@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -7,15 +7,17 @@ import {
   TextInput,
   Alert,
   Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import AuthContext from '../../../context/AuthContext/index';
 import firestore from '@react-native-firebase/firestore';
 
 import auth from '@react-native-firebase/auth';
-import {height, width} from '../../../constants';
-export default function Register({navigation}) {
+import { height, width } from '../../../constants';
+export default function Register({ navigation }) {
   let [email, setEmail] = useState('');
   let [userName, setUserName] = useState('');
+  let [loading, setLoading] = useState(false);
   let [password, setPassword] = useState('');
   let [isKeyboardShown, setKeyboardshowed] = useState(false);
   let [isFocused, setFocused] = useState('');
@@ -31,18 +33,23 @@ export default function Register({navigation}) {
 
   const RegisterWithEmailAndPassword = () => {
     try {
+      setLoading(true);
       auth()
         .createUserWithEmailAndPassword(email, password)
         .then(user => {
-          firestore().collection('users').doc(user.user.uid).set({
-            uid: user.user.uid,
-            userName,
-            email,
-            groups: [],
-            createdAt: Date.now(),
-            userImg: '',
-            token: '',
-          });
+          firestore()
+            .collection('users')
+            .doc(user.user.uid)
+            .set({
+              uid: user.user.uid,
+              userName,
+              email,
+              groups: [],
+              createdAt: Date.now(),
+              userImg: '',
+              token: '',
+            })
+            .then(() => setLoading(false));
         })
         .catch(e => {
           Alert.alert(e?.message);
@@ -188,7 +195,11 @@ export default function Register({navigation}) {
               : false
           }
           style={styles.RegisterButton}>
-          <Text style={styles.RegisterButtonText}>{'Register'}</Text>
+          {loading ? (
+            <ActivityIndicator color={'#fff'} size={18} />
+          ) : (
+            <Text style={styles.RegisterButtonText}>{'Login'}</Text>
+          )}
         </TouchableOpacity>
       </View>
       <View
@@ -199,13 +210,13 @@ export default function Register({navigation}) {
           position: 'absolute',
           bottom: isKeyboardShown ? -20 : 36,
         }}>
-        <Text style={{fontWeight: 'bold'}}>
+        <Text style={{ fontWeight: 'bold' }}>
           Already have an account ?{' '}
           <Text
             onPress={() => {
               navigation.navigate('photogram.login.screen');
             }}
-            style={{color: '#45A4FF'}}>
+            style={{ color: '#45A4FF' }}>
             Login
           </Text>
         </Text>

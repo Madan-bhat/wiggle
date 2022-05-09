@@ -1,6 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, RefreshControl } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  BackHandler,
+  RefreshControl,
+} from 'react-native';
 import { FloatingAction } from 'react-native-floating-action';
 import { FlatList } from 'react-native-gesture-handler';
 import firestore from '@react-native-firebase/firestore';
@@ -9,6 +15,7 @@ import { LaunchCard } from '../../../components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import messaging from '@react-native-firebase/messaging';
 import { width } from '../../../constants';
+import {} from 'react-native-web';
 
 export default function Launch({ navigation }) {
   const [groups, setGroups] = useState([]);
