@@ -7,7 +7,6 @@ import {
   Image,
   Text,
   TextInput,
-  ScrollView,
   TouchableOpacity,
   View,
   Modal,
@@ -19,8 +18,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { LinearTextGradient } from 'react-native-text-gradient';
-import { DecryptData, EncryptData } from '../../../functions';
+import { EncryptData } from '../../../functions';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import { ImageView } from '../../../components';
@@ -112,7 +110,7 @@ const styles = StyleSheet.create({
 
 export default function Chat(props) {
   let [imageUri, setImageUri] = useState('');
-  let [userData, setUserData] = useState();
+  let [state, setUserData] = useState();
   let [loading, setLoading] = useState(true);
   let [userForToken, setUserForToken] = useState([]);
   let [messageText, setMessageText] = useState('');
@@ -399,7 +397,7 @@ export default function Chat(props) {
                 style={{ alignSelf: 'center', marginTop: 8 }}
                 onPress={sendMessage}
                 disabled={
-                  messageText.replace(/\s/g, '').length === 0 ? true : false
+                  messageText.replace(/\s/g, '').length === 0 ? false : false
                 }>
                 <Text
                   style={{
