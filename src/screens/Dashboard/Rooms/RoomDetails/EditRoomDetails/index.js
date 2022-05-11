@@ -38,7 +38,7 @@ function EditRoomDetails(props) {
   const [visible, setVisible] = useState(false);
   const [groupName, setgroupName] = useState('');
   const [password, setPassword] = useState('');
-  const [firestorePass, setFirestorePass] = useState('');
+  const [firestoreData, setFirestoreData] = useState({});
   const [currentPassword, setCurrentPassword] = useState('');
 
   const takePhotoFromCamera = () => {
@@ -80,8 +80,9 @@ function EditRoomDetails(props) {
             : props.route.params.info.item.groupName,
           password: EncryptData(password)
             ? EncryptData(password)
-            : firestorePass,
+            : firestoreData?.password,
           groupImage: imageUri || null,
+          type: password.length > 3 ? 'Approval' : 'Any one can join',
           uid: auth().currentUser.uid,
         })
         .then(() => {
@@ -90,20 +91,23 @@ function EditRoomDetails(props) {
     }
   };
 
-  const getGroupPassword = useCallback(() => {
+  const getGroupPasswordAndtype = useCallback(() => {
     try {
       firestore()
         .collection('groups')
         .doc(props.route.params.info.item.id)
         .onSnapshot(_data => {
-          setFirestorePass(_data.data().password);
+          setFirestoreData({
+            password: _data?.data().password,
+            type: _data.data().type,
+          });
         });
-    } catch (error) {}
+    } catch (error) { }
   }, [props.route.params.info.item.id]);
 
   useEffect(() => {
-    getGroupPassword();
-  }, [getGroupPassword]);
+    getGroupPasswordAndtype();
+  }, [getGroupPasswordAndtype]);
 
   let renderInner = () => {
     return (
@@ -238,6 +242,15 @@ function EditRoomDetails(props) {
           <Text style={{ marginTop: padding - 6, marginLeft: padding - 6 }}>
             Current Password
           </Text>
+          {firestoreData.type !== 'Any one can join' ? <TextInput
+            onChangeText={val => setCurrentPassword(val)}
+            style={{
+              fontSize: padding - 4,
+              borderBottomColor: 'rgba(0,0,0,0.4)',
+              marginHorizontal: 18,
+              borderBottomWidth: 1,
+            }}
+          /> : <></>}
           <TextInput
             onChangeText={val => setCurrentPassword(val)}
             style={{

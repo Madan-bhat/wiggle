@@ -33,6 +33,7 @@ export default function Join({ navigation }) {
               ownerUid,
               members,
               password,
+              type,
               createdAt,
             } = data.data();
             Lists.push({
@@ -41,6 +42,7 @@ export default function Join({ navigation }) {
               id: data.id,
               groupImage,
               ownerUid,
+              type,
               password,
               members,
               createdAt,
@@ -48,12 +50,12 @@ export default function Join({ navigation }) {
             setGroups(Lists);
           });
         });
-    } catch (error) {}
+    } catch (error) { }
   }, []);
 
   useEffect(() => {
     setTimeout(() => {
-    FetchGroups();
+      FetchGroups();
     }, 1000);
   }, [FetchGroups, groups]);
 

@@ -33,8 +33,9 @@ export default function RoomDetail({ route, navigation }) {
         .then(user => {
           setUser(user.data());
         });
-    } catch (error) {}
+    } catch (error) { }
   }, [route.params.item.ownerUid]);
+
 
   let getGroupWithImages = useCallback(async () => {
     let Lists = [];
@@ -53,11 +54,11 @@ export default function RoomDetail({ route, navigation }) {
             setGroupImages(Lists);
           });
         });
-    } catch (error) {}
+    } catch (error) { }
   }, [route.params.item.id]);
 
   const joinGroup = id => {
-    if (route.params.item.password?.length !== 0) {
+    if (route.params.item.type !== 'Any one can join') {
       navigation.navigate('photogram.password.screen', {
         password: route.params.item.password,
         item: route.params.item,
@@ -68,7 +69,8 @@ export default function RoomDetail({ route, navigation }) {
         .doc(route.params.id)
         .update({
           members: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
-        });
+        })
+        .then(() => navigation.goBack());
     }
     // } else {
 
@@ -98,7 +100,8 @@ export default function RoomDetail({ route, navigation }) {
           }}>
           <View
             style={{
-              marginTop: '48%',
+              position: 'absolute',
+              bottom: 0,
               marginHorizontal: 8,
               shadowColor: '#000',
               shadowRadius: 18,
@@ -109,7 +112,7 @@ export default function RoomDetail({ route, navigation }) {
                 fontFamily: 'Lato-Bold',
                 textShadowRadius: 39,
                 textShadowColor: '#000',
-                fontSize: 48,
+                fontSize: route.params.item.groupName.length * 2,
                 color: '#FFF',
               }}>
               {route.params.item.groupName}
@@ -186,7 +189,7 @@ export default function RoomDetail({ route, navigation }) {
           return (
             <>
               {route.params.item.members?.indexOf(auth().currentUser.uid) >
-              -1 ? (
+                -1 ? (
                 <>
                   <TouchableOpacity
                     onPress={() =>

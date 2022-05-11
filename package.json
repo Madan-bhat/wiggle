@@ -14,6 +14,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/cli": "^7.0.3",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-firebase/app": "^12.8.0",
     "@react-native-firebase/auth": "^12.8.0",
@@ -29,6 +30,7 @@
     "appcenter-crashes": "^4.4.4",
     "crypto-js": "^4.1.1",
     "dayjs": "^1.10.7",
+    "globally": "^0.0.0",
     "moment": "^2.29.1",
     "react": "17.0.2",
     "react-dom": "^17.0.2",
@@ -51,7 +53,8 @@
     "react-native-text-gradient": "^0.1.7",
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "^0.17.1",
-    "reanimated-bottom-sheet": "^1.0.0-alpha.22"
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22",
+    "styled-components": "^5.3.5"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",

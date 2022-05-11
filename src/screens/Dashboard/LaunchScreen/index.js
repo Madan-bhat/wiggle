@@ -14,8 +14,8 @@ import auth from '@react-native-firebase/auth';
 import { LaunchCard } from '../../../components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import messaging from '@react-native-firebase/messaging';
-import { width } from '../../../constants';
-import {} from 'react-native-web';
+import { height, width } from '../../../constants';
+import { } from 'react-native-web';
 
 export default function Launch({ navigation }) {
   const [groups, setGroups] = useState([]);
@@ -74,7 +74,7 @@ export default function Launch({ navigation }) {
             setGroups(Lists);
           });
         });
-    } catch (error) {}
+    } catch (error) { }
   }, []);
 
   let refreshControl = () => {
@@ -134,6 +134,15 @@ export default function Launch({ navigation }) {
           <RefreshControl onRefresh={refreshControl} refreshing={refreshing} />
         }
         data={groups}
+        style={{ height }}
+        ListEmptyComponent={() => (
+          <View
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontFamily: 'Lato-Bold', fontSize: 18 }}>
+              {'You can join a group by pressing + icon'}
+            </Text>
+          </View>
+        )}
         renderItem={({ item }) => {
           return (
             <LaunchCard

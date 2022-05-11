@@ -2,11 +2,21 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+} from 'react-native';
 import { width, height } from '../../../constants/Dimesions';
 import { DecryptData } from '../../../functions';
+import styled from 'styled-components';
+import Rainbow_blue from '../../../../assets/Rainbow.jpg';
 
 export default function MessageCard({ item, navigation }) {
+  let Image_background = Image.resolveAssetSource(Rainbow_blue).uri;
+
   let [user, setUser] = useState();
 
   let getUser = useCallback(() => {
@@ -18,7 +28,7 @@ export default function MessageCard({ item, navigation }) {
         .then(_user => {
           setUser(_user.data());
         });
-    } catch (e) {}
+    } catch (e) { }
   }, [item.uid]);
 
   useEffect(() => {
@@ -28,31 +38,38 @@ export default function MessageCard({ item, navigation }) {
   return (
     <View>
       <View style={{ position: 'absolute', top: 24 }}>
-        {user?.uid === auth().currentUser.uid ? (
-          <></>
-        ) : (
+        {user?.uid === auth().currentUser.uid ? null : (
           <Image
             source={{
-              uri: user?.userImg
-                ? user?.userImg
-                : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
+              uri:
+                user?.uid === auth().currentUser.uid
+                  ? null
+                  : user?.userImg
+                    ? user?.userImg
+                    : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
             }}
             style={{
-              width: 36,
-              marginRight: 8,
-              borderRadius: 85,
-              marginLeft: 8,
-              height: 36,
+              width: user?.uid === auth().currentUser.uid ? 0 : 36,
+              marginRight: user?.uid === auth().currentUser.uid ? 0 : 8,
+              borderRadius: user?.uid === auth().currentUser.uid ? 0 : 85,
+              marginLeft: user?.uid === auth().currentUser.uid ? 0 : 8,
+              height: user?.uid === auth().currentUser.uid ? 0 : 36,
             }}
           />
         )}
       </View>
       <View>
-        <View
+        <ImageBackground
+          imageStyle={{ borderRadius: 18 }}
+          source={
+            user?.uid === auth().currentUser.uid
+              ? require('../../../../assets/Dania.jpg')
+              : null
+          }
           style={{
             padding: item.image ? 0 : 24,
             paddingRight: item.image ? 0 : 24,
-            paddingBottom: item.image ? 18 : 24,
+            paddingBottom: item.image ? 0 : 24,
             paddingTop: item.image ? 0 : 24,
             borderRadius: 18,
             marginTop: 14,
@@ -61,7 +78,7 @@ export default function MessageCard({ item, navigation }) {
             alignSelf:
               item.uid !== auth().currentUser.uid ? 'flex-start' : 'flex-end',
             backgroundColor:
-              item.uid === auth().currentUser?.uid ? '#45aaf4' : '#fff',
+              item.uid === auth().currentUser?.uid ? null : '#fff',
           }}>
           <TouchableOpacity
             onPress={() =>
@@ -81,6 +98,8 @@ export default function MessageCard({ item, navigation }) {
           <Text
             style={{
               marginRight: item.image ? 8 : 0,
+              fontWeight: '800',
+              fontSize: 18,
               marginLeft: item.image ? 8 : 0,
               marginTop: item.image ? 8 : 0,
               fontFamily: 'Lato-Regular',
@@ -88,7 +107,7 @@ export default function MessageCard({ item, navigation }) {
             }}>
             {DecryptData(item.messageText)}
           </Text>
-        </View>
+        </ImageBackground>
       </View>
     </View>
   );

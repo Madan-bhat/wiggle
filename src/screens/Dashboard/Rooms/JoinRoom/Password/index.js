@@ -72,6 +72,8 @@ const Password = ({ route, navigation }) => {
   });
 
   const JoinGroup = () => {
+    alert(DecryptData(route.params.password))
+
     if (DecryptData(route.params.password) === password) {
       firestore()
         .collection('groups')

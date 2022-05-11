@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -23,10 +23,11 @@ import LinearGradient from 'react-native-linear-gradient';
 
 export default function Create({ navigation }) {
   const [pickerValue, setPickerValue] = useState(1);
-  const [type, setType] = useState();
+  const [type, setType] = useState('Any one can join');
   const [groupName, setGroupName] = useState('');
   const [password, setPassword] = useState('');
   const [description, setDescription] = useState('');
+  const [loading, setLoading] = useState(false)
   const [imageUri, setImageUri] = useState();
   const [uploading, setUploading] = useState(false);
 
@@ -98,6 +99,7 @@ export default function Create({ navigation }) {
   };
 
   let createGroup = async () => {
+    setLoading(true)
     try {
       firestore()
         .collection('groups')
@@ -134,12 +136,13 @@ export default function Create({ navigation }) {
                 });
             })
             .then(() => {
+              setLoading(false);
               navigation.goBack();
             })
             .catch(e => console.log(e));
         })
         .catch(e => console.log(e));
-    } catch (error) {}
+    } catch (error) { }
   };
 
   return (
@@ -233,6 +236,8 @@ export default function Create({ navigation }) {
           <Text style={styles.numberOfMembers}>Type</Text>
           <Picker
             mode={'dialog'}
+            prompt="Type"
+
             selectedValue={type}
             onValueChange={(itemValue, value) => {
               setType(itemValue);
@@ -268,11 +273,11 @@ export default function Create({ navigation }) {
         }}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        colors={['#2193b0', '#6dd5ed']}>
+        colors={['#be93c5', '#7bc6cc']}>
         <Pressable
           disabled={groupName.replace(/\s/g, '').length < 5 ? true : false}
           onPress={() => createGroup()}>
-          {uploading === true ? (
+          {loading === true ? (
             <ActivityIndicator size={24} color={'#fff'} />
           ) : (
             <Text

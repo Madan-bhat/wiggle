@@ -2,6 +2,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import messaging from '@react-native-firebase/messaging';
+import storage from '@react-native-firebase/storage';
+
 import {
   FlatList,
   Image,
@@ -14,7 +16,7 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { width, height } from '../../../constants/Dimesions/index';
-import firestore from '@react-native-firebase/firestore';
+import firestore, { firebase } from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -109,9 +111,12 @@ const styles = StyleSheet.create({
 });
 
 export default function Chat(props) {
-  let [imageUri, setImageUri] = useState('');
+  let [image, setImage] = useState('');
   let [state, setUserData] = useState();
   let [loading, setLoading] = useState(true);
+  let [transferred, setTransferred] = useState();
+  let [visible, setVisible] = useState();
+
   let [userForToken, setUserForToken] = useState([]);
   let [messageText, setMessageText] = useState('');
   let [messages, setMessages] = useState([]);
@@ -129,7 +134,7 @@ export default function Chat(props) {
           });
           setMessages(allMsg);
         });
-    } catch (e) {}
+    } catch (e) { }
   }, [props.route.params.id]);
 
   let getUser = useCallback(async () => {
@@ -141,7 +146,7 @@ export default function Chat(props) {
         .then(_userData => {
           setUserData(_userData.data());
         });
-    } catch (e) {}
+    } catch (e) { console.log(e) }
   }, []);
 
   useEffect(() => {
@@ -167,6 +172,23 @@ export default function Chat(props) {
     });
   }, [getUser, props.route.params.item.members, props.route.params.members]);
 
+  const uploadImage = async () => {
+    let upload = storage()
+      .ref(`chatImages/${auth().currentUser.uid + '/' + Date.now()}`)
+      .putString(`${image.data}`, storage.StringFormat.BASE64);
+    upload.on('state_changed', taskSnapshot => {
+      console.log(
+        (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) * 100,
+      );
+    });
+    upload.then(taskSnapshot => {
+      async () => {
+        let data_url = upload.snapshot.ref.getDownloadURL();
+        console.log(data_url);
+      };
+    });
+  };
+
   let sendMessage = () => {
     try {
       firestore()
@@ -176,14 +198,17 @@ export default function Chat(props) {
         .add({
           createdAt: Date.now(),
           messageText: EncryptData(messageText),
-          image: imageUri ? imageUri : null,
+          image: image ? image : null,
           uid: auth().currentUser.uid,
         })
-        .then(() => sendPushNotification());
+        .then(() => sendPushNotification())
+        .catch(e => console.log(e));
       setMessageText('');
-      setImageUri(null);
+      setImage('');
       bs.current.snapTo(1);
-    } catch (e) {}
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const sendPushNotification = async () => {
@@ -220,43 +245,31 @@ export default function Chat(props) {
     }
   };
 
-  function getNotificaton() {
-    try {
-      messaging().onMessage(payload => {
-        console.log(payload);
-      });
-    } catch (error) {}
-  }
-
-  useEffect(() => {
-    getNotificaton();
-  }, []);
-
   let flatlistRef = useRef();
 
   const takePhotoFromCamera = () => {
     ImageCropPicker.openCamera({
+      width: 720,
+      height: 1080,
       cropping: true,
       compressImageQuality: 1,
       mediaType: 'photo',
       includeBase64: true,
-    }).then(image => {
-      console.log(image);
-      setImageUri(`data:image/jpeg;base64,${image.data}`);
+    }).then(image_data => {
+      console.log(image_data)
+      setImage(`data:image/jpeg;base64,${image_data.data}`);
       bs.current.snapTo(1);
     });
   };
 
-  const choosePhotoFromLibrary = () => {
-    ImageCropPicker.openPicker({
+  const choosePhotoFromLibrary = async () => {
+    await ImageCropPicker.openPicker({
       cropping: true,
       compressImageQuality: 1,
-      multiple: true,
       mediaType: 'photo',
       includeBase64: true,
-    }).then(image => {
-      console.log(image);
-      setImageUri(`data:image/jpeg;base64,${image.data}`);
+    }).then(image_data => {
+      setImage(`data:image/jpeg;base64,${image_data.data}`);
       bs.current.snapTo(1);
     });
   };
@@ -368,11 +381,11 @@ export default function Chat(props) {
           </View>
           <Modal
             style={{ justifyContent: 'center', display: 'flex' }}
-            visible={imageUri ? true : false}>
+            visible={image ? true : false}>
             <View style={{ justifyContent: 'center', flex: 1 }}>
               <Ionicons
                 onPress={() => {
-                  setImageUri(null);
+                  setImage(null);
                   setMessageText('');
                 }}
                 style={{ top: 3, left: 3, position: 'absolute' }}
@@ -381,7 +394,7 @@ export default function Chat(props) {
                 color="black"
               />
               <Image
-                source={{ uri: imageUri }}
+                source={{ uri: image }}
                 style={{ height: height / 3, width }}
               />
               <TextInput

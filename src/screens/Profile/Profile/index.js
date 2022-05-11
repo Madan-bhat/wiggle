@@ -55,7 +55,7 @@ export default function Profile({ navigation }) {
         .then(_data => {
           setUserData(_data.data());
         });
-    } catch (error) {}
+    } catch (error) { }
   }, []);
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function Profile({ navigation }) {
   }, [getUser]);
 
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View>
         <LinearGradient
           style={{
@@ -81,7 +81,7 @@ export default function Profile({ navigation }) {
           }}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          colors={['#2193b0', '#6dd5ed']}>
+          colors={['#be93c5', '#7bc6cc']}>
           <FontAwesome
             onPress={() => navigation.navigate('photogram.edit.profile.screen')}
             style={{ left: 1 }}
@@ -180,12 +180,12 @@ export default function Profile({ navigation }) {
           }}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          colors={['#2193b0', '#6dd5ed']}>
+          colors={['#be93c5', '#7bc6cc']}>
           <Text style={{ fontSize: 17, fontWeight: 'bold', color: 'white' }}>
             Check for updates
           </Text>
         </LinearGradient>
       </TouchableOpacity>
-    </ScrollView>
+    </ScrollView >
   );
 }
