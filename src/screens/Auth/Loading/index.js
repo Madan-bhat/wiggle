@@ -1,5 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, PermissionsAndroid, Platform, Text } from 'react-native';
+import {
+  View,
+  ImageBackground,
+  ActivityIndicator,
+  PermissionsAndroid,
+  Platform,
+  Text,
+} from 'react-native';
 import { AuthContext } from '../../../context';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -37,8 +44,16 @@ export default function Loading({ navigation }) {
     }, 1000);
   });
   return (
-    <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Made By Madan</Text>
-    </View>
+    <ImageBackground
+      source={require('../../../../assets/background.png')}
+      style={{
+        flex: 1,
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <ActivityIndicator color='="#fff' size={24} />
+    </ImageBackground>
   );
 }
