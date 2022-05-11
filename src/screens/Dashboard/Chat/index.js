@@ -134,7 +134,7 @@ export default function Chat(props) {
           });
           setMessages(allMsg);
         });
-    } catch (e) { }
+    } catch (e) {}
   }, [props.route.params.id]);
 
   let getUser = useCallback(async () => {
@@ -146,13 +146,15 @@ export default function Chat(props) {
         .then(_userData => {
           setUserData(_userData.data());
         });
-    } catch (e) { console.log(e) }
+    } catch (e) {
+      console.log(e);
+    }
   }, []);
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 500);
     fetchMessages();
   }, [fetchMessages]);
 
@@ -171,23 +173,6 @@ export default function Chat(props) {
         });
     });
   }, [getUser, props.route.params.item.members, props.route.params.members]);
-
-  const uploadImage = async () => {
-    let upload = storage()
-      .ref(`chatImages/${auth().currentUser.uid + '/' + Date.now()}`)
-      .putString(`${image.data}`, storage.StringFormat.BASE64);
-    upload.on('state_changed', taskSnapshot => {
-      console.log(
-        (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) * 100,
-      );
-    });
-    upload.then(taskSnapshot => {
-      async () => {
-        let data_url = upload.snapshot.ref.getDownloadURL();
-        console.log(data_url);
-      };
-    });
-  };
 
   let sendMessage = () => {
     try {
@@ -256,7 +241,7 @@ export default function Chat(props) {
       mediaType: 'photo',
       includeBase64: true,
     }).then(image_data => {
-      console.log(image_data)
+      console.log(image_data);
       setImage(`data:image/jpeg;base64,${image_data.data}`);
       bs.current.snapTo(1);
     });
@@ -312,15 +297,6 @@ export default function Chat(props) {
       </View>
     </View>
   );
-
-  let RenderModal = uri => {
-    return (
-      <Modal>
-        <ImageView image={uri} />
-      </Modal>
-    );
-  };
-
   return (
     <>
       {loading ? (

@@ -151,20 +151,41 @@ function EditProfile(props, { navigation }) {
           <Text style={styles.panelTitle}>Upload Photo</Text>
           <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
         </View>
-        <TouchableOpacity
-          style={styles.panelButton}
-          onPress={takePhotoFromCamera}>
-          <Text style={styles.panelButtonTitle}>Take Photo</Text>
+        <ImageBackground
+          imageStyle={{
+            borderRadius: 10,
+          }}
+          source={require('../../../../assets/Dania.jpg')}
+          style={styles.panelButton}>
+          <View style={styles.panelButton} onPress={takePhotoFromCamera}>
+            <Text style={styles.panelButtonTitle}>Take Photo</Text>
+          </View>
+        </ImageBackground>
+        <TouchableOpacity onPress={choosePhotoFromLibrary}>
+          <ImageBackground
+            imageStyle={{
+              borderRadius: 10,
+            }}
+            source={require('../../../../assets/Dania.jpg')}
+            style={styles.panelButton}>
+            <View style={styles.panelButton}>
+              <Text style={styles.panelButtonTitle}>Choose From Library</Text>
+            </View>
+          </ImageBackground>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.panelButton}
-          onPress={choosePhotoFromLibrary}>
-          <Text style={styles.panelButtonTitle}>Choose From Library</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.panelButton}
-          onPress={() => bs.current.snapTo(1)}>
-          <Text style={styles.panelButtonTitle}>Cancel</Text>
+        <TouchableOpacity onPress={() => bs.current.snapTo(1)}>
+          <ImageBackground
+            imageStyle={{
+              borderRadius: 10,
+            }}
+            source={require('../../../../assets/Dania.jpg')}
+            style={styles.panelButton}>
+            <View
+              style={styles.panelButton}
+              onPress={() => bs.current.snapTo(1)}>
+              <Text style={styles.panelButtonTitle}>Cancel</Text>
+            </View>
+          </ImageBackground>
         </TouchableOpacity>
       </View>
     );
@@ -226,58 +247,91 @@ function EditProfile(props, { navigation }) {
         callbackNode={fall}
         enabledGestureInteraction={true}
       />
-      <KeyboardAvoidingView enabled={true} behavior={'padding'}>
-        <TouchableOpacity
-          style={{ alignSelf: 'center' }}
-          onPress={() => bs.current.snapTo(0)}>
-          <ImageBackground
-            source={{
-              uri: imageUri
-                ? imageUri
-                : userData
-                ? userData.userImg ||
-                  'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png'
-                : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
-            }}
-            style={{ height: 100, width: 100 }}
-            imageStyle={{ borderRadius: 15 }}>
-            <View
-              style={{
-                backgroundColor: 'rgba(0,0,0,0.20)',
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: 15,
-              }}>
-              <MaterialCommunityIcons
-                name="camera"
-                size={35}
-                color="#fff"
+      <Animated.View
+        // eslint-disable-next-line react-native/no-inline-styles
+        style={{
+          margin: 20,
+          opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),
+        }}>
+        <KeyboardAvoidingView enabled={true} behavior={'padding'}>
+          <TouchableOpacity
+            style={{ alignSelf: 'center' }}
+            onPress={() => bs.current.snapTo(0)}>
+            <ImageBackground
+              source={{
+                uri: imageUri
+                  ? imageUri
+                  : userData
+                  ? userData.userImg ||
+                    'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png'
+                  : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
+              }}
+              style={{ height: 100, width: 100 }}
+              imageStyle={{ borderRadius: 15 }}>
+              <View
                 style={{
-                  alignItems: 'center',
+                  backgroundColor: 'rgba(0,0,0,0.20)',
+                  flex: 1,
                   justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 15,
+                }}>
+                <MaterialCommunityIcons
+                  name="camera"
+                  size={35}
+                  color="#fff"
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                />
+              </View>
+            </ImageBackground>
+          </TouchableOpacity>
+
+          {/* Main */}
+          <View style={{ marginTop: padding + 6 }}>
+            <View>
+              <Text style={{ marginLeft: padding - 6 }}>First Name</Text>
+              <TextInput
+                onChangeText={val => setFirstName(val)}
+                style={{
+                  fontSize: padding - 4,
+                  borderBottomColor: 'rgba(0,0,0,0.4)',
+                  marginHorizontal: 18,
+                  borderBottomWidth: 1,
                 }}
               />
             </View>
-          </ImageBackground>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => uploadImage()}>
-          <Text
-            style={{
-              fontSize: padding - 6,
-              color: '#128EF2',
-              marginTop: '3%',
-              alignSelf: 'center',
-            }}>
-            {'Set this as profile photo'}
-          </Text>
-        </TouchableOpacity>
-        {/* Main */}
-        <View style={{ marginTop: padding + 6 }}>
+            <View style={{ marginVertical: padding }}>
+              <Text style={{ marginLeft: padding - 6 }}>Last Name</Text>
+              <TextInput
+                onChangeText={val => setLastName(val)}
+                style={{
+                  fontSize: padding - 4,
+                  borderBottomColor: 'rgba(0,0,0,0.4)',
+                  marginHorizontal: 18,
+                  borderBottomWidth: 1,
+                }}
+              />
+            </View>
+          </View>
+          <View style={{ marginBottom: padding }}>
+            <Text style={{ marginLeft: padding - 6 }}>website</Text>
+            <TextInput
+              onChangeText={val => setWeb(val)}
+              style={{
+                fontSize: padding - 4,
+                borderBottomColor: 'rgba(0,0,0,0.4)',
+                marginHorizontal: 18,
+                borderBottomWidth: 1,
+              }}
+            />
+          </View>
           <View>
-            <Text style={{ marginLeft: padding - 6 }}>First Name</Text>
+            <Text style={{ marginLeft: padding - 6 }}>Bio</Text>
             <TextInput
-              onChangeText={val => setFirstName(val)}
+              onChangeText={val => setBio(val)}
               style={{
                 fontSize: padding - 4,
                 borderBottomColor: 'rgba(0,0,0,0.4)',
@@ -286,44 +340,8 @@ function EditProfile(props, { navigation }) {
               }}
             />
           </View>
-          <View style={{ marginVertical: padding }}>
-            <Text style={{ marginLeft: padding - 6 }}>Last Name</Text>
-            <TextInput
-              onChangeText={val => setLastName(val)}
-              style={{
-                fontSize: padding - 4,
-                borderBottomColor: 'rgba(0,0,0,0.4)',
-                marginHorizontal: 18,
-                borderBottomWidth: 1,
-              }}
-            />
-          </View>
-        </View>
-        <View style={{ marginBottom: padding }}>
-          <Text style={{ marginLeft: padding - 6 }}>website</Text>
-          <TextInput
-            onChangeText={val => setWeb(val)}
-            style={{
-              fontSize: padding - 4,
-              borderBottomColor: 'rgba(0,0,0,0.4)',
-              marginHorizontal: 18,
-              borderBottomWidth: 1,
-            }}
-          />
-        </View>
-        <View>
-          <Text style={{ marginLeft: padding - 6 }}>Bio</Text>
-          <TextInput
-            onChangeText={val => setBio(val)}
-            style={{
-              fontSize: padding - 4,
-              borderBottomColor: 'rgba(0,0,0,0.4)',
-              marginHorizontal: 18,
-              borderBottomWidth: 1,
-            }}
-          />
-        </View>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </Animated.View>
       <Modal
         animationType="slide"
         style={{
@@ -405,9 +423,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   panelButton: {
-    padding: 13,
+    padding: 8,
     borderRadius: 10,
-    backgroundColor: '#45A4F9',
     alignItems: 'center',
     marginVertical: 7,
   },

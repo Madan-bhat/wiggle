@@ -3,6 +3,7 @@ import {
   View,
   TouchableOpacity,
   Text,
+  ImageBackground,
   StyleSheet,
   TextInput,
   Alert,
@@ -117,11 +118,10 @@ export default function Register({ navigation }) {
       backgroundColor: '#45A4FF',
       marginTop: 12,
       display: 'flex',
-      left: 0,
-      marginRight: width / 4,
-      borderRadius: 6,
-      paddingLeft: 34,
-      paddingRight: 34,
+      borderRadius: 8,
+      right: 0,
+      paddingLeft: 48,
+      paddingRight: 48,
       alignSelf: 'flex-end',
       shadowColor: '#000',
       elevation: 8,
@@ -180,11 +180,14 @@ export default function Register({ navigation }) {
         />
       </View>
       <View style={styles.RegisterButtonContainer}>
-        <Text style={styles.ForgotPasswordText}>Forgot Password ?</Text>
+        <Text style={styles.ForgotPasswordText}>{''}</Text>
+
         <TouchableOpacity
           onPress={() => {
             email.replace(/\s/g, '').length === 0 ||
             password.replace(/\s/g, '').length === 0
+              ? null
+              : loading
               ? null
               : RegisterWithEmailAndPassword();
           }}
@@ -193,13 +196,17 @@ export default function Register({ navigation }) {
             password.replace(/\s/g, '').length === 0
               ? true
               : false
-          }
-          style={styles.RegisterButton}>
-          {loading ? (
-            <ActivityIndicator color={'#fff'} size={18} />
-          ) : (
-            <Text style={styles.RegisterButtonText}>{'Login'}</Text>
-          )}
+          }>
+          <ImageBackground
+            imageStyle={{ borderRadius: 8 }}
+            style={styles.RegisterButton}
+            source={require('../../../../assets/Dania.jpg')}>
+            {loading ? (
+              <ActivityIndicator color={'#fff'} size={18} />
+            ) : (
+              <Text style={styles.RegisterButtonText}>{'Register'}</Text>
+            )}
+          </ImageBackground>
         </TouchableOpacity>
       </View>
       <View

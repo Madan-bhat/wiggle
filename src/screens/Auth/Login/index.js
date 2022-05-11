@@ -1,26 +1,45 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   TouchableOpacity,
   Text,
   StyleSheet,
+  ActivityIndicator,
+  Keyboard,
   TextInput,
   Alert,
+  ImageBackground,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import {height, width} from '../../../constants';
+import { height, width } from '../../../constants';
 
-export default function Login({navigation}) {
+export default function Login({ navigation }) {
   let [email, setEmail] = useState('');
   let [password, setPassword] = useState('');
+  let [loading, setLoading] = useState(false);
+  let [isKeyboardShown, setKeyboard] = useState(false);
+
   let [isFocused, setFocused] = useState('');
+
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboard(true);
+    });
+    Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboard(false);
+    });
+  });
 
   const LoginWithEmailAndPassword = () => {
     try {
+      setLoading(true);
       auth()
         .signInWithEmailAndPassword(email, password)
         .catch(e => {
           Alert.alert(e?.message);
+        })
+        .then(() => {
+          setLoading(false);
         });
     } catch (error) {}
   };
@@ -72,14 +91,13 @@ export default function Login({navigation}) {
     },
     LoginButton: {
       padding: 18,
-      backgroundColor: '#45A4FF',
       marginTop: 12,
       display: 'flex',
       left: 0,
       marginRight: width / 4,
-      borderRadius: 6,
-      paddingLeft: 34,
-      paddingRight: 34,
+      borderRadius: 8,
+      paddingLeft: 42,
+      paddingRight: 42,
       alignSelf: 'flex-end',
       shadowColor: '#000',
       elevation: 8,
@@ -114,9 +132,9 @@ export default function Login({navigation}) {
           onChangeText={_email => setEmail(_email)}
         />
         <TextInput
-          keyboardType="visible-password"
+          keyboardType="email-address"
           value={password}
-          secureTextEntry
+          secureTextEntry={true}
           placeholder="Password"
           placeholderTextColor={
             isFocused === 'Password' ? '#45A4FF' : 'rgba(0,0,0,0.6)'
@@ -133,6 +151,8 @@ export default function Login({navigation}) {
             email.replace(/\s/g, '').length === 0 ||
             password.replace(/\s/g, '').length === 0
               ? null
+              : loading
+              ? null
               : LoginWithEmailAndPassword();
           }}
           disabled={
@@ -140,9 +160,17 @@ export default function Login({navigation}) {
             password.replace(/\s/g, '').length === 0
               ? true
               : false
-          }
-          style={styles.LoginButton}>
-          <Text style={styles.LoginButtonText}>{'Login'}</Text>
+          }>
+          <ImageBackground
+            imageStyle={{ borderRadius: 8 }}
+            style={styles.LoginButton}
+            source={require('../../../../assets/Dania.jpg')}>
+            {loading ? (
+              <ActivityIndicator color={'#fff'} size={18} />
+            ) : (
+              <Text style={styles.LoginButtonText}>{'Login'}</Text>
+            )}
+          </ImageBackground>
         </TouchableOpacity>
       </View>
       <View
@@ -151,15 +179,15 @@ export default function Login({navigation}) {
           alignItems: 'center',
           display: 'flex',
           position: 'absolute',
-          bottom: 36,
+          bottom: isKeyboardShown ? -20 : 36,
         }}>
-        <Text style={{fontWeight: 'bold'}}>
+        <Text style={{ fontWeight: 'bold' }}>
           Don't have an account ?{' '}
           <Text
             onPress={() => {
               navigation.navigate('photogram.register.screen');
             }}
-            style={{color: '#45A4FF'}}>
+            style={{ color: '#45A4FF' }}>
             Register
           </Text>
         </Text>

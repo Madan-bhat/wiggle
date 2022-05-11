@@ -6,6 +6,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  ImageBackground,
   StyleSheet,
   ToastAndroid,
 } from 'react-native';
@@ -15,76 +16,28 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const Password = ({ route, navigation }) => {
   let [password, setPassword] = useState('');
-  const styles = StyleSheet.create({
-    borderStyleBase: {
-      width: 30,
-      height: 45,
-    },
-
-    borderStyleHighLighted: {
-      borderColor: '#03DAC6',
-    },
-
-    underlineStyleBase: {
-      width: 30,
-      height: 45,
-      borderWidth: 0,
-      borderBottomWidth: 1,
-    },
-    panelHeader: {
-      alignItems: 'center',
-    },
-    panelHandle: {
-      width: 40,
-      height: 8,
-      borderRadius: 4,
-      backgroundColor: '#00000040',
-      marginBottom: 10,
-    },
-    panelTitle: {
-      fontSize: 27,
-      height: 35,
-    },
-    panelSubtitle: {
-      fontSize: 14,
-      color: 'gray',
-      height: 30,
-      marginBottom: 10,
-    },
-    panelButton: {
-      marginTop: 24,
-      padding: 13,
-      width: width / 2,
-      borderRadius: 10,
-      backgroundColor: '#45A4F9',
-      alignItems: 'center',
-      marginVertical: 7,
-    },
-    panelButtonTitle: {
-      fontSize: 17,
-      fontWeight: 'bold',
-      color: 'white',
-    },
-
-    underlineStyleHighLighted: {
-      borderColor: '#03DAC6',
-    },
-  });
 
   const JoinGroup = () => {
-    alert(DecryptData(route.params.password))
-
-    if (DecryptData(route.params.password) === password) {
+    if (route.params.password !== '') {
+      if (DecryptData(route.params.password) === password) {
+        firestore()
+          .collection('groups')
+          .doc(route.params.item.id)
+          .update({
+            members: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
+          });
+        ToastAndroid.show('Password is correct', 12);
+        navigation.navigate('photogram.dashboard.screen');
+      } else {
+        ToastAndroid.show('Password is incorrect', 12);
+      }
+    } else {
       firestore()
         .collection('groups')
         .doc(route.params.item.id)
         .update({
           members: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
         });
-      ToastAndroid.show('Password is correct', 12);
-      navigation.navigate('photogram.dashboard.screen');
-    } else {
-      ToastAndroid.show('Password is incorrect', 12);
     }
   };
 
@@ -115,15 +68,48 @@ const Password = ({ route, navigation }) => {
           setPassword(_val);
         }}
       />
-      <TouchableOpacity
-        style={styles.panelButton}
-        onPress={takePhotoFromCamera => {
-          JoinGroup();
-        }}>
-        <Text style={styles.panelButtonTitle}>Join</Text>
+      <TouchableOpacity style={{ marginTop: 18 }} onPress={() => JoinGroup()}>
+        <ImageBackground
+          imageStyle={{
+            borderRadius: 10,
+          }}
+          source={require('../../../../../../assets/Dania.jpg')}
+          style={styles.panelButton}>
+          <View style={styles.panelButton}>
+            <Text style={styles.panelButtonTitle}>Join</Text>
+          </View>
+        </ImageBackground>
       </TouchableOpacity>
     </View>
   );
 };
+
+let styles = StyleSheet.create({
+  panelTitle: {
+    fontSize: 27,
+    height: 35,
+    color: '#fff',
+  },
+  panelSubtitle: {
+    fontSize: 14,
+    color: '#fff',
+
+    height: 30,
+    marginBottom: 10,
+  },
+  panelButtonTitle: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  panelButton: {
+    padding: 8,
+    width: width - 24,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: 7,
+    marginHorizontal: 8,
+  },
+});
 
 export default Password;

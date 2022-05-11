@@ -28,7 +28,7 @@ export default function MessageCard({ item, navigation }) {
         .then(_user => {
           setUser(_user.data());
         });
-    } catch (e) { }
+    } catch (e) {}
   }, [item.uid]);
 
   useEffect(() => {
@@ -45,8 +45,8 @@ export default function MessageCard({ item, navigation }) {
                 user?.uid === auth().currentUser.uid
                   ? null
                   : user?.userImg
-                    ? user?.userImg
-                    : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
+                  ? user?.userImg
+                  : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
             }}
             style={{
               width: user?.uid === auth().currentUser.uid ? 0 : 36,

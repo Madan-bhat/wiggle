@@ -81,7 +81,8 @@ export default function Profile({ navigation }) {
           }}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          colors={['#be93c5', '#7bc6cc']}>
+          colors={['#FEAC5E', '#C779D0', '#4BC0C8']}
+        >
           <FontAwesome
             onPress={() => navigation.navigate('photogram.edit.profile.screen')}
             style={{ left: 1 }}
@@ -180,7 +181,8 @@ export default function Profile({ navigation }) {
           }}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          colors={['#be93c5', '#7bc6cc']}>
+          colors={['#FEAC5E', '#C779D0', '#4BC0C8']}
+        >
           <Text style={{ fontSize: 17, fontWeight: 'bold', color: 'white' }}>
             Check for updates
           </Text>

@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   FlatList,
+  StyleSheet,
   Image,
   Text,
   ImageBackground,
@@ -33,9 +34,8 @@ export default function RoomDetail({ route, navigation }) {
         .then(user => {
           setUser(user.data());
         });
-    } catch (error) { }
+    } catch (error) {}
   }, [route.params.item.ownerUid]);
-
 
   let getGroupWithImages = useCallback(async () => {
     let Lists = [];
@@ -54,7 +54,7 @@ export default function RoomDetail({ route, navigation }) {
             setGroupImages(Lists);
           });
         });
-    } catch (error) { }
+    } catch (error) {}
   }, [route.params.item.id]);
 
   const joinGroup = id => {
@@ -112,7 +112,7 @@ export default function RoomDetail({ route, navigation }) {
                 fontFamily: 'Lato-Bold',
                 textShadowRadius: 39,
                 textShadowColor: '#000',
-                fontSize: route.params.item.groupName.length * 2,
+                fontSize: 38,
                 color: '#FFF',
               }}>
               {route.params.item.groupName}
@@ -145,7 +145,7 @@ export default function RoomDetail({ route, navigation }) {
               }}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              colors={['#2193b0', '#6dd5ed']}>
+              colors={['#FEAC5E', '#C779D0', '#4BC0C8']}>
               <FontAwesome
                 onPress={() =>
                   navigation.navigate('photogram.edit.group.info.screen', {
@@ -189,7 +189,7 @@ export default function RoomDetail({ route, navigation }) {
           return (
             <>
               {route.params.item.members?.indexOf(auth().currentUser.uid) >
-                -1 ? (
+              -1 ? (
                 <>
                   <TouchableOpacity
                     onPress={() =>
@@ -272,30 +272,58 @@ export default function RoomDetail({ route, navigation }) {
                   marginTop: 6,
                   textAlign: 'center',
                 }}>
-                Add
+                {''}
               </Text>
             </TouchableOpacity>
           ) : null
         ) : null}
       </View>
-
-      <TouchableOpacity
-        onPress={() => joinGroup()}
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: 12,
-        }}>
-        <Text
-          style={{
-            fontFamily: 'Lato-Bold',
-            fontSize: 18,
-            color: '#45A4FF',
-          }}>
-          {route.name === 'photogram.chatDetails.screen' ? '' : 'Join'}
-        </Text>
-      </TouchableOpacity>
+      {route.name === 'photogram.chatDetails.screen' ? (
+        <></>
+      ) : (
+        <TouchableOpacity onPress={() => joinGroup()}>
+          <ImageBackground
+            imageStyle={{
+              borderRadius: 10,
+            }}
+            source={require('../../../../../assets/Dania.jpg')}
+            style={styles.panelButton}>
+            <View style={styles.panelButton}>
+              <Text style={styles.panelButtonTitle}>
+                {' '}
+                {route.name === 'photogram.chatDetails.screen' ? '' : 'Join'}
+              </Text>
+            </View>
+          </ImageBackground>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
+
+let styles = StyleSheet.create({
+  panelTitle: {
+    fontSize: 27,
+    height: 35,
+    color: '#fff',
+  },
+  panelSubtitle: {
+    fontSize: 14,
+    color: '#fff',
+
+    height: 30,
+    marginBottom: 10,
+  },
+  panelButtonTitle: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  panelButton: {
+    padding: 8,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: 7,
+    marginHorizontal: 8,
+  },
+});

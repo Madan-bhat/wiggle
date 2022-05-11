@@ -65,12 +65,7 @@ function EditRoomDetails(props) {
   };
 
   const onUpdate = async () => {
-    if (DecryptData(firestorePass) === password && groupName.length < 3) {
-      if (DecryptData(firestorePass !== currentPassword)) {
-        ToastAndroid.show('Password do not match', 12);
-      }
-      setupdating(false);
-    } else {
+    if (firestoreData.type !== 'Approval') {
       firestore()
         .collection('groups')
         .doc(props.route.params.info.item.id)
@@ -88,6 +83,34 @@ function EditRoomDetails(props) {
         .then(() => {
           setupdating(false);
         });
+    } else {
+      if (
+        DecryptData(firestoreData.password) === password &&
+        groupName.length < 3
+      ) {
+        if (DecryptData(firestoreData.password !== currentPassword)) {
+          ToastAndroid.show('Password do not match', 12);
+        }
+        setupdating(false);
+      } else {
+        firestore()
+          .collection('groups')
+          .doc(props.route.params.info.item.id)
+          .update({
+            groupName: groupName
+              ? groupName
+              : props.route.params.info.item.groupName,
+            password: EncryptData(password)
+              ? EncryptData(password)
+              : firestoreData?.password,
+            groupImage: imageUri || null,
+            type: password.length > 3 ? 'Approval' : 'Any one can join',
+            uid: auth().currentUser.uid,
+          })
+          .then(() => {
+            setupdating(false);
+          });
+      }
     }
   };
 
@@ -102,7 +125,7 @@ function EditRoomDetails(props) {
             type: _data.data().type,
           });
         });
-    } catch (error) { }
+    } catch (error) {}
   }, [props.route.params.info.item.id]);
 
   useEffect(() => {
@@ -116,20 +139,41 @@ function EditRoomDetails(props) {
           <Text style={styles.panelTitle}>Upload Photo</Text>
           <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
         </View>
-        <TouchableOpacity
-          style={styles.panelButton}
-          onPress={takePhotoFromCamera}>
-          <Text style={styles.panelButtonTitle}>Take Photo</Text>
+        <ImageBackground
+          imageStyle={{
+            borderRadius: 10,
+          }}
+          source={require('../../../../../../assets/Dania.jpg')}
+          style={styles.panelButton}>
+          <View style={styles.panelButton} onPress={takePhotoFromCamera}>
+            <Text style={styles.panelButtonTitle}>Take Photo</Text>
+          </View>
+        </ImageBackground>
+        <TouchableOpacity onPress={choosePhotoFromLibrary}>
+          <ImageBackground
+            imageStyle={{
+              borderRadius: 10,
+            }}
+            source={require('../../../../../../assets/Dania.jpg')}
+            style={styles.panelButton}>
+            <View style={styles.panelButton}>
+              <Text style={styles.panelButtonTitle}>Choose From Library</Text>
+            </View>
+          </ImageBackground>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.panelButton}
-          onPress={choosePhotoFromLibrary}>
-          <Text style={styles.panelButtonTitle}>Choose From Library</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.panelButton}
-          onPress={() => bs.current.snapTo(1)}>
-          <Text style={styles.panelButtonTitle}>Cancel</Text>
+        <TouchableOpacity onPress={() => bs.current.snapTo(1)}>
+          <ImageBackground
+            imageStyle={{
+              borderRadius: 10,
+            }}
+            source={require('../../../../../../assets/Dania.jpg')}
+            style={styles.panelButton}>
+            <View
+              style={styles.panelButton}
+              onPress={() => bs.current.snapTo(1)}>
+              <Text style={styles.panelButtonTitle}>Cancel</Text>
+            </View>
+          </ImageBackground>
         </TouchableOpacity>
       </View>
     );
@@ -239,27 +283,24 @@ function EditRoomDetails(props) {
           </View>
         </View>
         <View>
-          <Text style={{ marginTop: padding - 6, marginLeft: padding - 6 }}>
-            Current Password
-          </Text>
-          {firestoreData.type !== 'Any one can join' ? <TextInput
-            onChangeText={val => setCurrentPassword(val)}
-            style={{
-              fontSize: padding - 4,
-              borderBottomColor: 'rgba(0,0,0,0.4)',
-              marginHorizontal: 18,
-              borderBottomWidth: 1,
-            }}
-          /> : <></>}
-          <TextInput
-            onChangeText={val => setCurrentPassword(val)}
-            style={{
-              fontSize: padding - 4,
-              borderBottomColor: 'rgba(0,0,0,0.4)',
-              marginHorizontal: 18,
-              borderBottomWidth: 1,
-            }}
-          />
+          {firestoreData.type !== 'Any one can join' ? (
+            <>
+              <Text style={{ marginTop: padding - 6, marginLeft: padding - 6 }}>
+                Current Password
+              </Text>
+              <TextInput
+                onChangeText={val => setCurrentPassword(val)}
+                style={{
+                  fontSize: padding - 4,
+                  borderBottomColor: 'rgba(0,0,0,0.4)',
+                  marginHorizontal: 18,
+                  borderBottomWidth: 1,
+                }}
+              />
+            </>
+          ) : (
+            <></>
+          )}
         </View>
         <View>
           <Text style={{ marginTop: padding - 6, marginLeft: padding - 6 }}>
@@ -357,9 +398,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   panelButton: {
-    padding: 13,
+    padding: 8,
     borderRadius: 10,
-    backgroundColor: '#45A4F9',
     alignItems: 'center',
     marginVertical: 7,
   },

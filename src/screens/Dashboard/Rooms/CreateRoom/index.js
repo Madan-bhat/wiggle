@@ -273,7 +273,7 @@ export default function Create({ navigation }) {
         }}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        colors={['#be93c5', '#7bc6cc']}>
+        colors={['#FEAC5E', '#C779D0', '#4BC0C8']}>
         <Pressable
           disabled={groupName.replace(/\s/g, '').length < 5 ? true : false}
           onPress={() => createGroup()}>
