@@ -12,11 +12,9 @@ import {
 import { width, height } from '../../../constants/Dimesions';
 import { DecryptData } from '../../../functions';
 import styled from 'styled-components';
-import Rainbow_blue from '../../../../assets/Rainbow.jpg';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 export default function MessageCard({ item, navigation }) {
-  let Image_background = Image.resolveAssetSource(Rainbow_blue).uri;
-
   let [user, setUser] = useState();
 
   let getUser = useCallback(() => {
@@ -31,12 +29,18 @@ export default function MessageCard({ item, navigation }) {
     } catch (e) {}
   }, [item.uid]);
 
+  const copyToClipboard = messageText => {
+    Clipboard.setString(messageText);
+  };
+
   useEffect(() => {
     getUser();
   }, [getUser]);
 
   return (
-    <View>
+    <TouchableOpacity
+      activeOpacity={3}
+      onLongPress={() => copyToClipboard(DecryptData(item.messageText))}>
       <View style={{ position: 'absolute', top: 24 }}>
         {user?.uid === auth().currentUser.uid ? null : (
           <Image
@@ -79,15 +83,13 @@ export default function MessageCard({ item, navigation }) {
               item.uid !== auth().currentUser.uid ? 'flex-start' : 'flex-end',
             backgroundColor:
               item.uid === auth().currentUser?.uid ? null : '#fff',
-          }}
-        >
+          }}>
           <TouchableOpacity
             onPress={() =>
               navigation.navigate('photogram.image.view.screen', {
                 image: item.image,
               })
-            }
-          >
+            }>
             <Image
               style={{
                 height: item.image ? height / 4 : 0,
@@ -106,12 +108,11 @@ export default function MessageCard({ item, navigation }) {
               marginTop: item.image ? 8 : 0,
               fontFamily: 'Lato-Regular',
               color: item.uid === auth().currentUser.uid ? 'white' : 'black',
-            }}
-          >
+            }}>
             {DecryptData(item.messageText)}
           </Text>
         </ImageBackground>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
