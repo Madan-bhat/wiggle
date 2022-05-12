@@ -52,7 +52,8 @@ export default function LaunchCard({ navigation, groupId, item, groupName }) {
           item: item,
           members: item.members,
         });
-      }}>
+      }}
+    >
       <ScrollView>
         <View
           style={{
@@ -65,7 +66,8 @@ export default function LaunchCard({ navigation, groupId, item, groupName }) {
             backgroundColor: '#fff',
             marginVertical: 12,
             marginHorizontal: 24,
-          }}>
+          }}
+        >
           <View style={{ flexDirection: 'row', marginVertical: 12 }}>
             <Text style={{ position: 'absolute', left: 300 }}>
               {item.members.lengths}
@@ -85,7 +87,8 @@ export default function LaunchCard({ navigation, groupId, item, groupName }) {
                   fontFamily: 'Lato-Regular',
                   fontSize: 12,
                   marginTop: 2,
-                }}>
+                }}
+              >
                 {moment(item.createdAt).format('LL')}
               </Text>
             </View>

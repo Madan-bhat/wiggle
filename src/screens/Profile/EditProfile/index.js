@@ -37,6 +37,7 @@ function EditProfile(props, { navigation }) {
   const [uploading, setUploading] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [userName, setUserName] = useState('');
   const [userData, setUserData] = useState('');
   const [nickname, setNickName] = useState('');
 
@@ -65,6 +66,14 @@ function EditProfile(props, { navigation }) {
     });
   };
 
+  async function getUserbyUsername() {
+    const usersColRef = firestore().collection('users');
+    const nameDoc = await usersColRef
+      .where('nickname', '==', userName.replace(/\sg/g, ' ').toLowerCase())
+      .get();
+    setNickName(nameDoc.empty);
+  }
+
   const getUser = () => {
     firestore()
       .collection('users')
@@ -77,11 +86,13 @@ function EditProfile(props, { navigation }) {
       });
   };
   useEffect(() => {
+    getUserbyUsername();
+
     const cleanUp = getUser();
     let userName = firstName + ' ' + lastName;
-    setNickName(userName.replace(/\s/g, ''));
+    setUserName(userName);
     return () => cleanUp;
-  }, []);
+  }, [firstName, getUserbyUsername, lastName]);
   useEffect(() => {});
 
   const onUpdate = async () => {
@@ -90,21 +101,25 @@ function EditProfile(props, { navigation }) {
     ) {
       Alert.alert('Username should be atleast 3 charactors');
     } else {
-      firestore()
-        .collection('users')
-        .doc(auth().currentUser.uid)
-        .update({
-          userName: firstName + ' ' + lastName,
-          nickname,
-          userImg: imageUrl || null,
-          uid: auth().currentUser.uid,
-          createdAt: Date.now(),
-          bio,
-          web,
-        })
-        .then(() => {
-          setupdating(false);
-        });
+      if (!nickname) {
+        Alert.alert('Username Already taken');
+      } else {
+        firestore()
+          .collection('users')
+          .doc(auth().currentUser.uid)
+          .update({
+            userName: firstName + ' ' + lastName,
+            nickname,
+            userImg: imageUrl || null,
+            uid: auth().currentUser.uid,
+            createdAt: Date.now(),
+            bio,
+            web,
+          })
+          .then(() => {
+            setupdating(false);
+          });
+      }
     }
   };
 

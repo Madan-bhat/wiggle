@@ -50,7 +50,8 @@ const Password = ({ route, navigation }) => {
           textAlign: 'center',
           marginHorizontal: 6,
           marginVertical: 24,
-        }}>
+        }}
+      >
         {'Please enter the password to join'}
       </Text>
       <TextInput
@@ -74,7 +75,8 @@ const Password = ({ route, navigation }) => {
             borderRadius: 10,
           }}
           source={require('../../../../../../assets/Dania.jpg')}
-          style={styles.panelButton}>
+          style={styles.panelButton}
+        >
           <View style={styles.panelButton}>
             <Text style={styles.panelButtonTitle}>Join</Text>
           </View>

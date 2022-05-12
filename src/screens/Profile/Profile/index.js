@@ -55,7 +55,7 @@ export default function Profile({ navigation }) {
         .then(_data => {
           setUserData(_data.data());
         });
-    } catch (error) { }
+    } catch (error) {}
   }, []);
 
   useEffect(() => {
@@ -97,7 +97,8 @@ export default function Profile({ navigation }) {
             navigation.navigate('photogram.image.view.screen', {
               image: userData?.userImg,
             })
-          }>
+          }
+        >
           <Image
             source={{ uri: userData?.userImg }}
             style={{ width, height: 256, backgroundColor: 'rgba(0,0,0,0.5)' }}
@@ -113,7 +114,8 @@ export default function Profile({ navigation }) {
             position: 'absolute',
             fontSize: 36,
             marginTop: 24,
-          }}>
+          }}
+        >
           {userData?.userName}
         </Text>
       </View>
@@ -124,7 +126,8 @@ export default function Profile({ navigation }) {
             fontSize: 24 - 4,
             fontWeight: 'bold',
             marginHorizontal: 18,
-          }}>
+          }}
+        >
           {userData?.userName}
         </Text>
       </View>
@@ -135,7 +138,8 @@ export default function Profile({ navigation }) {
             fontSize: 24 - 4,
             fontWeight: 'bold',
             marginHorizontal: 18,
-          }}>
+          }}
+        >
           {userData?.email}
         </Text>
       </View>
@@ -146,7 +150,8 @@ export default function Profile({ navigation }) {
             fontSize: 24 - 4,
             fontWeight: 'bold',
             marginHorizontal: 18,
-          }}>
+          }}
+        >
           {userData?.uid}
         </Text>
       </View>
@@ -157,7 +162,8 @@ export default function Profile({ navigation }) {
             fontSize: 24 - 4,
             fontWeight: 'bold',
             marginHorizontal: 18,
-          }}>
+          }}
+        >
           {userData?.token}
         </Text>
       </View>
@@ -170,7 +176,8 @@ export default function Profile({ navigation }) {
           marginVertical: 18,
           marginHorizontal: 12,
         }}
-        onPress={() => checkForUpdate()}>
+        onPress={() => checkForUpdate()}
+      >
         <LinearGradient
           style={{
             padding: 18,
@@ -188,6 +195,6 @@ export default function Profile({ navigation }) {
           </Text>
         </LinearGradient>
       </TouchableOpacity>
-    </ScrollView >
+    </ScrollView>
   );
 }

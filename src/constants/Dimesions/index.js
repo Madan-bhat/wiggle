@@ -1,5 +1,5 @@
-import {Dimensions} from 'react-native';
+import { Dimensions } from 'react-native';
 
-let {width, height} = Dimensions.get('window');
+let { width, height } = Dimensions.get('window');
 
-export {width, height};
+export { width, height };

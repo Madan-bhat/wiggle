@@ -52,7 +52,8 @@ export default function Loading({ navigation }) {
         height: '100%',
         alignItems: 'center',
         justifyContent: 'center',
-      }}>
+      }}
+    >
       <ActivityIndicator color='="#fff' size={24} />
     </ImageBackground>
   );

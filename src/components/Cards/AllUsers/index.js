@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
-import {FlatList} from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 
-export default function AllUsers({item}) {
+export default function AllUsers({ item }) {
   let [users, setUsers] = useState([]);
   useEffect(() => {
     let Lists = [];
@@ -15,7 +15,7 @@ export default function AllUsers({item}) {
           .get()
           .then(users => {
             users.docs.forEach(_user_data => {
-              let {createdAt, token, groups, userImg, userName, uid, email} =
+              let { createdAt, token, groups, userImg, userName, uid, email } =
                 _user_data.data();
               Lists.push({
                 createdAt,
@@ -37,7 +37,7 @@ export default function AllUsers({item}) {
     <View>
       <FlatList
         data={users}
-        renderItem={({itemFromFlatlist}) => (
+        renderItem={({ itemFromFlatlist }) => (
           <Text>{JSON.stringify(itemFromFlatlist.userName)}</Text>
         )}
       />

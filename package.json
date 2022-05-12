@@ -10,8 +10,11 @@
     "app:clean": "cd android && ./gradlew clean",
     "app:release": "cd android && ./gradlew assembleRelease",
     "test": "jest",
-    "run:debugger": "cd ~/Documents/react-native/photogram_chat & alacritty -e yarn start; yarn android",
-    "lint": "eslint ."
+    "run:debugger": "yarn start; yarn android",
+    "lint": "eslint .",
+    "commit": "git commit -m ",
+    "prepare": "husky install",
+    "windows": "react-native run-windows"
   },
   "dependencies": {
     "@react-native-community/cli": "^7.0.3",
@@ -54,7 +57,8 @@
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "^0.17.1",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "react-native-windows": "0.68.3"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
@@ -65,20 +69,29 @@
     "babel-loader": "^8.2.2",
     "babel-plugin-react-native-web": "^0.17.1",
     "eslint": "^7.32.0",
+    "husky": "^8.0.0",
     "jest": "^27.2.0",
     "metro-react-native-babel-preset": "^0.66.2",
+    "pinst": "^3.0.0",
     "react-native-codegen": "^0.0.7",
     "react-test-renderer": "17.0.2",
     "url-loader": "^4.1.1",
     "webpack": "^5.53.0",
     "webpack-cli": "^4.8.0",
-    "webpack-dev-server": "^4.2.1"
+    "webpack-dev-server": "^4.2.1",
+    "metro-config": "^0.67.0"
   },
   "jest": {
     "preset": "react-native",
     "setupFilesAfterEnv": [
       "@testing-library/jest-native/extend-expect"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "prettier --write . && git add -A .",
+      "format": "prettier --write ."
+    }
   },
   "rnpm": {
     "assets": [

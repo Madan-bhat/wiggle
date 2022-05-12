@@ -50,7 +50,7 @@ export default function Join({ navigation }) {
             setGroups(Lists);
           });
         });
-    } catch (error) { }
+    } catch (error) {}
   }, []);
 
   useEffect(() => {
@@ -86,7 +86,8 @@ export default function Join({ navigation }) {
           flexDirection: 'row',
           display: 'flex',
           alignItems: 'center',
-        }}>
+        }}
+      >
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign
             name="left"
@@ -103,7 +104,8 @@ export default function Join({ navigation }) {
             textShadowRadius: 24,
             elevation: 6,
             fontSize: 46,
-          }}>
+          }}
+        >
           Join
         </Text>
       </View>
@@ -116,7 +118,8 @@ export default function Join({ navigation }) {
           alignItems: 'center',
           backgroundColor: 'rgba(0,0,0,0.1)',
           marginHorizontal: 24,
-        }}>
+        }}
+      >
         <AntDesign
           style={{ marginLeft: 12 }}
           name="search1"
@@ -144,7 +147,8 @@ export default function Join({ navigation }) {
           backgroundColor: '#fff',
           height,
           borderTopStartRadius: 24,
-        }}>
+        }}
+      >
         <ScrollView>
           <FlatList
             style={{ marginBottom: 24 }}
@@ -157,7 +161,8 @@ export default function Join({ navigation }) {
                   top: 100,
                   flex: 1,
                   display: 'flex',
-                }}>
+                }}
+              >
                 <Text>Search For Groups</Text>
               </View>
             }

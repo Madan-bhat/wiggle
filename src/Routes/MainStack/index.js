@@ -1,8 +1,8 @@
 /* eslint-disable no-shadow */
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import {Launch, Search} from '../../screens';
+import { Launch, Search } from '../../screens';
 
 export default function MainStack() {
   let MainDrawerStack = createDrawerNavigator();

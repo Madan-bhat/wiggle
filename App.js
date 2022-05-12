@@ -41,7 +41,8 @@ function App() {
     return (
       <AuthContext.Provider>
         <MainDrawerStack.Navigator
-          drawerContent={props => <DrawerContent {...props} />}>
+          drawerContent={props => <DrawerContent {...props} />}
+        >
           <MainDrawerStack.Screen
             name="photogram.launch.screen"
             options={{

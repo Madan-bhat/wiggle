@@ -79,13 +79,15 @@ export default function MessageCard({ item, navigation }) {
               item.uid !== auth().currentUser.uid ? 'flex-start' : 'flex-end',
             backgroundColor:
               item.uid === auth().currentUser?.uid ? null : '#fff',
-          }}>
+          }}
+        >
           <TouchableOpacity
             onPress={() =>
               navigation.navigate('photogram.image.view.screen', {
                 image: item.image,
               })
-            }>
+            }
+          >
             <Image
               style={{
                 height: item.image ? height / 4 : 0,
@@ -104,7 +106,8 @@ export default function MessageCard({ item, navigation }) {
               marginTop: item.image ? 8 : 0,
               fontFamily: 'Lato-Regular',
               color: item.uid === auth().currentUser.uid ? 'white' : 'black',
-            }}>
+            }}
+          >
             {DecryptData(item.messageText)}
           </Text>
         </ImageBackground>

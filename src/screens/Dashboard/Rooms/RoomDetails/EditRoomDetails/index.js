@@ -144,7 +144,8 @@ function EditRoomDetails(props) {
             borderRadius: 10,
           }}
           source={require('../../../../../../assets/Dania.jpg')}
-          style={styles.panelButton}>
+          style={styles.panelButton}
+        >
           <View style={styles.panelButton} onPress={takePhotoFromCamera}>
             <Text style={styles.panelButtonTitle}>Take Photo</Text>
           </View>
@@ -155,7 +156,8 @@ function EditRoomDetails(props) {
               borderRadius: 10,
             }}
             source={require('../../../../../../assets/Dania.jpg')}
-            style={styles.panelButton}>
+            style={styles.panelButton}
+          >
             <View style={styles.panelButton}>
               <Text style={styles.panelButtonTitle}>Choose From Library</Text>
             </View>
@@ -167,10 +169,12 @@ function EditRoomDetails(props) {
               borderRadius: 10,
             }}
             source={require('../../../../../../assets/Dania.jpg')}
-            style={styles.panelButton}>
+            style={styles.panelButton}
+          >
             <View
               style={styles.panelButton}
-              onPress={() => bs.current.snapTo(1)}>
+              onPress={() => bs.current.snapTo(1)}
+            >
               <Text style={styles.panelButtonTitle}>Cancel</Text>
             </View>
           </ImageBackground>
@@ -196,11 +200,13 @@ function EditRoomDetails(props) {
     <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
       <View style={{ backgroundColor: '#FFF', padding: padding - 4 }}>
         <SafeAreaView
-          style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+        >
           <TouchableOpacity
             onPress={() => {
               props.navigation.goBack();
-            }}>
+            }}
+          >
             <MaterialIcons name="close" size={28} color="#000" />
           </TouchableOpacity>
           <Text
@@ -210,7 +216,8 @@ function EditRoomDetails(props) {
               fontWeight: 'bold',
               left: 0,
               alignSelf: 'flex-start',
-            }}>
+            }}
+          >
             {'Edit Profile'}
           </Text>
           {updating ? (
@@ -220,7 +227,8 @@ function EditRoomDetails(props) {
               onPress={() => {
                 setupdating(true);
                 onUpdate();
-              }}>
+              }}
+            >
               <MaterialIcons name="done" size={28} color="#128EF2" />
             </TouchableOpacity>
           )}
@@ -238,7 +246,8 @@ function EditRoomDetails(props) {
       <KeyboardAvoidingView enabled={true} behavior={'padding'}>
         <TouchableOpacity
           style={{ alignSelf: 'center' }}
-          onPress={() => bs.current.snapTo(0)}>
+          onPress={() => bs.current.snapTo(0)}
+        >
           <ImageBackground
             source={{
               uri: imageUri
@@ -246,7 +255,8 @@ function EditRoomDetails(props) {
                 : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
             }}
             style={{ height: 100, width: 100 }}
-            imageStyle={{ borderRadius: 15 }}>
+            imageStyle={{ borderRadius: 15 }}
+          >
             <View
               style={{
                 backgroundColor: 'rgba(0,0,0,0.20)',
@@ -254,7 +264,8 @@ function EditRoomDetails(props) {
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderRadius: 15,
-              }}>
+              }}
+            >
               <MaterialCommunityIcons
                 name="camera"
                 size={35}
@@ -324,13 +335,15 @@ function EditRoomDetails(props) {
           justifyContent: 'center',
           alignSelf: 'center',
         }}
-        visible={visible}>
+        visible={visible}
+      >
         <View
           style={{
             justifyContent: 'center',
             alignSelf: 'center',
             marginTop: '50%',
-          }}>
+          }}
+        >
           <Text style={{ fontWeight: '700', fontSize: height / 18 }}>
             Uploading
           </Text>
@@ -340,7 +353,8 @@ function EditRoomDetails(props) {
               fontSize: height / 28,
               alignSelf: 'center',
               marginTop: 24,
-            }}>
+            }}
+          >
             {transferred} %
           </Text>
         </View>

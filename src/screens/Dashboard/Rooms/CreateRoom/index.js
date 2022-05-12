@@ -27,7 +27,7 @@ export default function Create({ navigation }) {
   const [groupName, setGroupName] = useState('');
   const [password, setPassword] = useState('');
   const [description, setDescription] = useState('');
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState();
   const [uploading, setUploading] = useState(false);
 
@@ -99,7 +99,7 @@ export default function Create({ navigation }) {
   };
 
   let createGroup = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       firestore()
         .collection('groups')
@@ -142,7 +142,7 @@ export default function Create({ navigation }) {
             .catch(e => console.log(e));
         })
         .catch(e => console.log(e));
-    } catch (error) { }
+    } catch (error) {}
   };
 
   return (
@@ -154,7 +154,8 @@ export default function Create({ navigation }) {
           flexDirection: 'row',
           display: 'flex',
           alignItems: 'center',
-        }}>
+        }}
+      >
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign
             name="left"
@@ -171,7 +172,8 @@ export default function Create({ navigation }) {
             textShadowRadius: 24,
             elevation: 6,
             fontSize: 46,
-          }}>
+          }}
+        >
           Create
         </Text>
       </View>
@@ -210,7 +212,8 @@ export default function Create({ navigation }) {
             onValueChange={(itemValue, value) => {
               setPickerValue(itemValue);
             }}
-            style={styles.picker}>
+            style={styles.picker}
+          >
             <Picker.Item label="2" value="2" />
             <Picker.Item label="3" value="3" />
             <Picker.Item label="4" value="4" />
@@ -237,12 +240,12 @@ export default function Create({ navigation }) {
           <Picker
             mode={'dialog'}
             prompt="Type"
-
             selectedValue={type}
             onValueChange={(itemValue, value) => {
               setType(itemValue);
             }}
-            style={styles.picker}>
+            style={styles.picker}
+          >
             <Picker.Item label="Any one can Join" value="Any one can Join" />
             <Picker.Item label="Approval" value="Approval" />
           </Picker>
@@ -273,10 +276,12 @@ export default function Create({ navigation }) {
         }}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        colors={['#FEAC5E', '#C779D0', '#4BC0C8']}>
+        colors={['#FEAC5E', '#C779D0', '#4BC0C8']}
+      >
         <Pressable
           disabled={groupName.replace(/\s/g, '').length < 5 ? true : false}
-          onPress={() => createGroup()}>
+          onPress={() => createGroup()}
+        >
           {loading === true ? (
             <ActivityIndicator size={24} color={'#fff'} />
           ) : (
@@ -286,7 +291,8 @@ export default function Create({ navigation }) {
                 fontSize: 18,
                 color: '#fff',
                 fontWeight: 'bold',
-              }}>
+              }}
+            >
               Create
             </Text>
           )}

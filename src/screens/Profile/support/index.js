@@ -8,7 +8,8 @@ export default function Support() {
         justifyContent: 'center',
         alignItems: 'center',
         flex: 1,
-      }}>
+      }}
+    >
       <Text style={{ fontWeight: 'bold', fontSize: 24 }}>
         I am the only developer 😊
       </Text>

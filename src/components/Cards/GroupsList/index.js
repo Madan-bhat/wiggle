@@ -3,13 +3,13 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
-import React, {useEffect, useState} from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
-import {Button, Card} from 'react-native-paper';
-import {height} from '../../../constants';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { Button, Card } from 'react-native-paper';
+import { height } from '../../../constants';
 
-export default function GroupsListCard({item, navigation}) {
+export default function GroupsListCard({ item, navigation }) {
   let [isInGroup, setIngroup] = useState(false);
 
   let styles = StyleSheet.create({
@@ -40,8 +40,9 @@ export default function GroupsListCard({item, navigation}) {
             backgroundColor: '#fff',
             marginVertical: 12,
             marginHorizontal: 24,
-          }}>
-          <View style={{flexDirection: 'row', marginVertical: 12}}>
+          }}
+        >
+          <View style={{ flexDirection: 'row', marginVertical: 12 }}>
             <Image
               source={{
                 uri: item.groupImage
@@ -50,14 +51,15 @@ export default function GroupsListCard({item, navigation}) {
               }}
               style={styles.ImageStyle}
             />
-            <View style={{marginLeft: 8}}>
-              <Text style={{fontFamily: 'Lato-Bold'}}>{item.groupName}</Text>
+            <View style={{ marginLeft: 8 }}>
+              <Text style={{ fontFamily: 'Lato-Bold' }}>{item.groupName}</Text>
               <Text
                 style={{
                   fontFamily: 'Lato-Regular',
                   fontSize: 12,
                   marginTop: 2,
-                }}>
+                }}
+              >
                 {moment(item.createdAt).format('LLL')}
               </Text>
 
@@ -70,13 +72,15 @@ export default function GroupsListCard({item, navigation}) {
                       id: item.id,
                     })
                   }
-                  style={{marginTop: 12}}>
+                  style={{ marginTop: 12 }}
+                >
                   <Text
                     style={{
                       fontSize: 16,
                       fontFamily: 'Lato-Regular',
                       color: '#45A4FF',
-                    }}>
+                    }}
+                  >
                     Already in group
                   </Text>
                 </TouchableOpacity>
@@ -88,13 +92,15 @@ export default function GroupsListCard({item, navigation}) {
                       id: item.id,
                     })
                   }
-                  style={{marginTop: 12}}>
+                  style={{ marginTop: 12 }}
+                >
                   <Text
                     style={{
                       fontSize: 16,
                       fontFamily: 'Lato-Regular',
                       color: '#45A4FF',
-                    }}>
+                    }}
+                  >
                     Details
                   </Text>
                 </TouchableOpacity>

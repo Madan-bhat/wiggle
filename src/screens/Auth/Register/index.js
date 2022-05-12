@@ -15,47 +15,67 @@ import firestore from '@react-native-firebase/firestore';
 
 import auth from '@react-native-firebase/auth';
 import { height, width } from '../../../constants';
+import { DecryptData, EncryptData } from '../../../functions';
 export default function Register({ navigation }) {
   let [email, setEmail] = useState('');
+  let [nickname, setNickname] = useState('');
   let [userName, setUserName] = useState('');
   let [loading, setLoading] = useState(false);
   let [password, setPassword] = useState('');
+  let [firebaseUsername, setFirebaseUsername] = useState('');
+
   let [isKeyboardShown, setKeyboardshowed] = useState(false);
   let [isFocused, setFocused] = useState('');
 
+  async function getUserbyUsername() {
+    const usersColRef = firestore().collection('users');
+    const nameDoc = await usersColRef
+      .where('nickname', '==', userName.replace(/\sg/g, ' ').toLowerCase())
+      .get();
+    console.log(nameDoc.empty);
+    setFirebaseUsername(nameDoc.empty);
+  }
+
   useEffect(() => {
+    getUserbyUsername();
     Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardshowed(true);
     });
     Keyboard.addListener('keyboardDidHide', () => {
       setKeyboardshowed(false);
     });
-  });
+  }, [userName, getUserbyUsername]);
 
   const RegisterWithEmailAndPassword = () => {
-    try {
-      setLoading(true);
-      auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then(user => {
-          firestore()
-            .collection('users')
-            .doc(user.user.uid)
-            .set({
-              uid: user.user.uid,
-              userName,
-              email,
-              groups: [],
-              createdAt: Date.now(),
-              userImg: '',
-              token: '',
-            })
-            .then(() => setLoading(false));
-        })
-        .catch(e => {
-          Alert.alert(e?.message);
-        });
-    } catch (error) {}
+    if (!firebaseUsername) {
+      Alert.alert('Username already taken');
+    } else {
+      try {
+        setLoading(true);
+        auth()
+          .createUserWithEmailAndPassword(email, password)
+          .then(user => {
+            firestore()
+              .collection('users')
+              .doc(user.user.uid)
+              .set({
+                uid: user.user.uid,
+                userName: EncryptData(userName),
+                email,
+                nickname: userName.replace(/\s/g, '').toLowerCase(),
+
+                groups: [],
+                createdAt: Date.now(),
+                userImg: '',
+                token: '',
+              })
+              .then(() => setLoading(false));
+          })
+          .catch(e => {
+            Alert.alert(e?.message);
+          });
+      } catch (error) {}
+    }
   };
 
   const styles = StyleSheet.create({

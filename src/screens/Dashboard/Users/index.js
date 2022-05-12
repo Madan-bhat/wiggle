@@ -15,7 +15,7 @@ export default function Users({ route }) {
         value.docs.forEach(_data => {
           let Lists = [];
           let { email, userName, userImg, groups, token, uid } = _data.data();
-          List.push({
+          Lists.push({
             email,
             userName,
             userImg,
@@ -23,7 +23,7 @@ export default function Users({ route }) {
             token,
             uid,
           });
-          setUsers(List);
+          setUsers(Lists);
         });
       });
   }
@@ -43,7 +43,8 @@ export default function Users({ route }) {
                 justifyContent: 'center',
                 alignItems: 'center',
                 flex: 1,
-              }}>
+              }}
+            >
               <Text style={{ fontWeight: 'bold', fontSize: 24 }}>
                 I am the only developer 😊
               </Text>

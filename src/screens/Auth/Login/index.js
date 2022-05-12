@@ -160,11 +160,13 @@ export default function Login({ navigation }) {
             password.replace(/\s/g, '').length === 0
               ? true
               : false
-          }>
+          }
+        >
           <ImageBackground
             imageStyle={{ borderRadius: 8 }}
             style={styles.LoginButton}
-            source={require('../../../../assets/Dania.jpg')}>
+            source={require('../../../../assets/Dania.jpg')}
+          >
             {loading ? (
               <ActivityIndicator color={'#fff'} size={18} />
             ) : (
@@ -180,14 +182,16 @@ export default function Login({ navigation }) {
           display: 'flex',
           position: 'absolute',
           bottom: isKeyboardShown ? -20 : 36,
-        }}>
+        }}
+      >
         <Text style={{ fontWeight: 'bold' }}>
           Don't have an account ?{' '}
           <Text
             onPress={() => {
               navigation.navigate('photogram.register.screen');
             }}
-            style={{ color: '#45A4FF' }}>
+            style={{ color: '#45A4FF' }}
+          >
             Register
           </Text>
         </Text>

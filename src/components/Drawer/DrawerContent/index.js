@@ -1,5 +1,5 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, StyleSheet } from 'react-native';
 import {
   useTheme,
   Avatar,
@@ -11,15 +11,16 @@ import {
   TouchableRipple,
   Switch,
 } from 'react-native-paper';
-import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
-import {TouchableOpacity} from 'react-native';
+import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
+import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {AuthContext} from '../../../context';
+import { AuthContext } from '../../../context';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import { DecryptData } from '../../../functions';
 
-export default function DrawerContent(props, {navigation}) {
+export default function DrawerContent(props, { navigation }) {
   let [user, setUser] = useState();
   const paperTheme = useTheme();
 
@@ -38,7 +39,7 @@ export default function DrawerContent(props, {navigation}) {
   }, []);
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props}>
         <View style={styles.drawerContent}>
           <View style={styles.userInfoSection}>
@@ -46,7 +47,7 @@ export default function DrawerContent(props, {navigation}) {
               onPress={() =>
                 props.navigation.navigate('photogram.edit.profile.screen')
               }
-              style={{flexDirection: 'row', marginTop: 15}}>
+              style={{ flexDirection: 'row', marginTop: 15 }}>
               <Avatar.Image
                 source={{
                   uri: user
@@ -57,17 +58,21 @@ export default function DrawerContent(props, {navigation}) {
                 }}
                 size={50}
               />
-              <View style={{marginLeft: 15, flexDirection: 'column'}}>
+              <View style={{ marginLeft: 15, flexDirection: 'column' }}>
                 <Title style={styles.title}>
-                  {user ? (user.userName ? user.userName : 'Test') : 'Text'}
+                  {user
+                    ? user.userName
+                      ? DecryptData(user.userName)
+                      : 'Test'
+                    : 'Text'}
                 </Title>
                 <Caption style={styles.caption}>
                   @
                   {user
                     ? user.userName
-                      ? user.userName.toLowerCase()
+                      ? DecryptData(user?.userName).toLowerCase()
                       : 'Test'
-                    : 'Text'}
+                    : 'Test'}
                 </Caption>
               </View>
             </TouchableOpacity>
@@ -90,7 +95,7 @@ export default function DrawerContent(props, {navigation}) {
 
           <Drawer.Section style={styles.drawerSection}>
             <DrawerItem
-              icon={({color, size}) => (
+              icon={({ color, size }) => (
                 <Icon name="home-outline" color={color} size={size} />
               )}
               label="Home"
@@ -99,7 +104,7 @@ export default function DrawerContent(props, {navigation}) {
               }}
             />
             <DrawerItem
-              icon={({color, size}) => (
+              icon={({ color, size }) => (
                 <Icon name="account-outline" color={color} size={size} />
               )}
               label="Profile"
@@ -109,7 +114,7 @@ export default function DrawerContent(props, {navigation}) {
             />
 
             <DrawerItem
-              icon={({color, size}) => (
+              icon={({ color, size }) => (
                 <Ionicons name="settings-outline" size={24} color={color} />
               )}
               label="Settings"
@@ -118,7 +123,7 @@ export default function DrawerContent(props, {navigation}) {
               }}
             />
             <DrawerItem
-              icon={({color, size}) => (
+              icon={({ color, size }) => (
                 <Icon name="email-mark-as-unread" size={24} color={color} />
               )}
               label="Invitations"
@@ -144,7 +149,7 @@ export default function DrawerContent(props, {navigation}) {
       </DrawerContentScrollView>
       <Drawer.Section style={styles.bottomDrawerSection}>
         <DrawerItem
-          icon={({color, size}) => (
+          icon={({ color, size }) => (
             <Icon name="exit-to-app" color={color} size={size} />
           )}
           label="Sign Out"

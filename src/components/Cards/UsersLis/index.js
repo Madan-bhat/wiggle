@@ -4,6 +4,7 @@ import { View, Text, Image } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import { FlatList } from 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth';
+import { DecryptData } from '../../../functions';
 
 export default function UsersList({ data, members, ownerUid }) {
   let [users, setUsers] = useState([]);
@@ -59,7 +60,7 @@ export default function UsersList({ data, members, ownerUid }) {
                   marginLeft: 8,
                   fontSize: 18,
                 }}>
-                {item.userName}
+                {DecryptData(item.userName)}
               </Text>
 
               <Text

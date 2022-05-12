@@ -1,6 +1,6 @@
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import {Login, Loading, Register} from '../../screens';
+import { Login, Loading, Register } from '../../screens';
 
 export default function LoginStack() {
   let LoginStackScreen = createNativeStackNavigator();

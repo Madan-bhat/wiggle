@@ -8,7 +8,8 @@ export default function ImageView({ route }) {
       cropWidth={Dimensions.get('window').width}
       cropHeight={Dimensions.get('window').height}
       imageWidth={Dimensions.get('window').width}
-      imageHeight={Dimensions.get('window').height}>
+      imageHeight={Dimensions.get('window').height}
+    >
       <Image
         resizeMode="contain"
         style={{
