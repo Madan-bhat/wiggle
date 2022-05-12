@@ -250,7 +250,7 @@ export default function Chat(props) {
   const choosePhotoFromLibrary = async () => {
     await ImageCropPicker.openPicker({
       cropping: true,
-      compressImageQuality: 1,
+      compressImageQuality: 0.8,
       mediaType: 'photo',
       includeBase64: true,
     }).then(image_data => {
@@ -268,20 +268,17 @@ export default function Chat(props) {
         </View>
         <TouchableOpacity
           style={styles.panelButton}
-          onPress={takePhotoFromCamera}
-        >
+          onPress={takePhotoFromCamera}>
           <Text style={styles.panelButtonTitle}>Take Photo</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.panelButton}
-          onPress={choosePhotoFromLibrary}
-        >
+          onPress={choosePhotoFromLibrary}>
           <Text style={styles.panelButtonTitle}>Choose From Library</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.panelButton}
-          onPress={() => bs.current.snapTo(1)}
-        >
+          onPress={() => bs.current.snapTo(1)}>
           <Text style={styles.panelButtonTitle}>Cancel</Text>
         </TouchableOpacity>
       </View>
@@ -308,8 +305,7 @@ export default function Chat(props) {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
-          }}
-        >
+          }}>
           <ActivityIndicator />
         </View>
       ) : (
@@ -321,8 +317,7 @@ export default function Chat(props) {
               flexDirection: 'row',
               display: 'flex',
               alignItems: 'center',
-            }}
-          >
+            }}>
             <AntDesign
               onPress={() => props.navigation.goBack()}
               name="arrowleft"
@@ -350,22 +345,19 @@ export default function Chat(props) {
                   item: props.route.params.item,
                   route: props.route,
                 })
-              }
-            >
+              }>
               <Text style={{ fontFamily: 'Lato-Bold' }}>
                 {props.route.params.headerTitle}
               </Text>
               <Text
                 style={{
                   fontFamily: 'Lato-Regular',
-                }}
-              >{`${props.route.params.item.members.length} members`}</Text>
+                }}>{`${props.route.params.item.members.length} members`}</Text>
             </TouchableOpacity>
           </View>
           <Modal
             style={{ justifyContent: 'center', display: 'flex' }}
-            visible={image ? true : false}
-          >
+            visible={image ? true : false}>
             <View style={{ justifyContent: 'center', flex: 1 }}>
               <Ionicons
                 onPress={() => {
@@ -395,15 +387,13 @@ export default function Chat(props) {
                 onPress={sendMessage}
                 disabled={
                   messageText.replace(/\s/g, '').length === 0 ? false : false
-                }
-              >
+                }>
                 <Text
                   style={{
                     fontFamily: 'Lato-Regular',
                     fontSize: 18,
                     color: '#45A4FF',
-                  }}
-                >
+                  }}>
                   Send
                 </Text>
               </TouchableOpacity>
@@ -449,8 +439,7 @@ export default function Chat(props) {
               display: 'flex',
               alignItems: 'center',
               width: width,
-            }}
-          >
+            }}>
             <Ionicons
               onPress={() => bs.current.snapTo(0)}
               style={{ marginHorizontal: 6 }}
@@ -481,8 +470,7 @@ export default function Chat(props) {
               onPress={sendMessage}
               disabled={
                 messageText.replace(/\s/g, '').length === 0 ? true : false
-              }
-            >
+              }>
               <Text style={{ fontFamily: 'Lato-Regular' }}>Send</Text>
             </TouchableOpacity>
           </View>
