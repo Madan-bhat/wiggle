@@ -12,7 +12,7 @@ import {
 import { width, height } from '../../../constants/Dimesions';
 import { DecryptData } from '../../../functions';
 import styled from 'styled-components';
-import Clipboard from '@react-native-clipboard/clipboard';
+import Clipboard from '@react-native-community/clipboard';
 
 export default function MessageCard({ item, navigation }) {
   let [user, setUser] = useState();
