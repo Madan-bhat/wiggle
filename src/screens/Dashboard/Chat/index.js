@@ -5,6 +5,7 @@ import messaging from '@react-native-firebase/messaging';
 import storage from '@react-native-firebase/storage';
 
 import {
+  ImageBackground,
   FlatList,
   Image,
   Text,
@@ -266,20 +267,41 @@ export default function Chat(props) {
           <Text style={styles.panelTitle}>Upload Photo</Text>
           <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
         </View>
-        <TouchableOpacity
-          style={styles.panelButton}
-          onPress={takePhotoFromCamera}>
-          <Text style={styles.panelButtonTitle}>Take Photo</Text>
+        <ImageBackground
+          imageStyle={{
+            borderRadius: 10,
+          }}
+          source={require('../../../../assets/Dania.jpg')}
+          style={styles.panelButton}>
+          <View style={styles.panelButton} onPress={takePhotoFromCamera}>
+            <Text style={styles.panelButtonTitle}>Take Photo</Text>
+          </View>
+        </ImageBackground>
+        <TouchableOpacity onPress={choosePhotoFromLibrary}>
+          <ImageBackground
+            imageStyle={{
+              borderRadius: 10,
+            }}
+            source={require('../../../../assets/Dania.jpg')}
+            style={styles.panelButton}>
+            <View style={styles.panelButton}>
+              <Text style={styles.panelButtonTitle}>Choose From Library</Text>
+            </View>
+          </ImageBackground>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.panelButton}
-          onPress={choosePhotoFromLibrary}>
-          <Text style={styles.panelButtonTitle}>Choose From Library</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.panelButton}
-          onPress={() => bs.current.snapTo(1)}>
-          <Text style={styles.panelButtonTitle}>Cancel</Text>
+        <TouchableOpacity onPress={() => bs.current.snapTo(1)}>
+          <ImageBackground
+            imageStyle={{
+              borderRadius: 10,
+            }}
+            source={require('../../../../assets/Dania.jpg')}
+            style={styles.panelButton}>
+            <View
+              style={styles.panelButton}
+              onPress={() => bs.current.snapTo(1)}>
+              <Text style={styles.panelButtonTitle}>Cancel</Text>
+            </View>
+          </ImageBackground>
         </TouchableOpacity>
       </View>
     );
