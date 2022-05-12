@@ -13,7 +13,6 @@
     "run:debugger": "yarn start; yarn android",
     "lint": "eslint .",
     "commit": "git commit -m ",
-    "prepare": "husky install",
     "windows": "react-native run-windows"
   },
   "dependencies": {
@@ -85,12 +84,6 @@
     "setupFilesAfterEnv": [
       "@testing-library/jest-native/extend-expect"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "prettier --write . && git add -A .",
-      "format": "prettier --write ."
-    }
   },
   "rnpm": {
     "assets": [
