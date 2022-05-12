@@ -45,15 +45,14 @@ export default function Loading({ navigation }) {
   });
   return (
     <ImageBackground
-      source={require('../../../../assets/background.png')}
+      source={require('../../../../assets/background.jpg')}
       style={{
         flex: 1,
         width: '100%',
         height: '100%',
         alignItems: 'center',
         justifyContent: 'center',
-      }}
-    >
+      }}>
       <ActivityIndicator color='="#fff' size={24} />
     </ImageBackground>
   );
