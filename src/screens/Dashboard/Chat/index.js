@@ -77,9 +77,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   panelButton: {
-    padding: 13,
+    padding: 8,
     borderRadius: 10,
-    backgroundColor: '#45A4F9',
     alignItems: 'center',
     marginVertical: 7,
   },

@@ -4,6 +4,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {
   View,
+  ToastAndroid,
   Text,
   TouchableOpacity,
   Image,
@@ -31,6 +32,7 @@ export default function MessageCard({ item, navigation }) {
 
   const copyToClipboard = messageText => {
     Clipboard.setString(messageText);
+    ToastAndroid.show('Copied to Clipboard', ToastAndroid.SHORT);
   };
 
   useEffect(() => {

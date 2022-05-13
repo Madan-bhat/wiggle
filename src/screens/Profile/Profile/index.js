@@ -14,6 +14,7 @@ import {
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { width } from '../../../constants/index';
 import codePush from 'react-native-code-push';
+import { DecryptData } from '../../../functions';
 
 export default function Profile({ navigation }) {
   let [userData, setUserData] = useState();
@@ -81,8 +82,7 @@ export default function Profile({ navigation }) {
           }}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          colors={['#FEAC5E', '#C779D0', '#4BC0C8']}
-        >
+          colors={['#FEAC5E', '#C779D0', '#4BC0C8']}>
           <FontAwesome
             onPress={() => navigation.navigate('photogram.edit.profile.screen')}
             style={{ left: 1 }}
@@ -97,8 +97,7 @@ export default function Profile({ navigation }) {
             navigation.navigate('photogram.image.view.screen', {
               image: userData?.userImg,
             })
-          }
-        >
+          }>
           <Image
             source={{ uri: userData?.userImg }}
             style={{ width, height: 256, backgroundColor: 'rgba(0,0,0,0.5)' }}
@@ -114,9 +113,8 @@ export default function Profile({ navigation }) {
             position: 'absolute',
             fontSize: 36,
             marginTop: 24,
-          }}
-        >
-          {userData?.userName}
+          }}>
+          {DecryptData(userData?.userName)}
         </Text>
       </View>
       <View>
@@ -126,9 +124,8 @@ export default function Profile({ navigation }) {
             fontSize: 24 - 4,
             fontWeight: 'bold',
             marginHorizontal: 18,
-          }}
-        >
-          {userData?.userName}
+          }}>
+          {DecryptData(userData?.userName)}
         </Text>
       </View>
       <View>
@@ -138,8 +135,7 @@ export default function Profile({ navigation }) {
             fontSize: 24 - 4,
             fontWeight: 'bold',
             marginHorizontal: 18,
-          }}
-        >
+          }}>
           {userData?.email}
         </Text>
       </View>
@@ -150,8 +146,7 @@ export default function Profile({ navigation }) {
             fontSize: 24 - 4,
             fontWeight: 'bold',
             marginHorizontal: 18,
-          }}
-        >
+          }}>
           {userData?.uid}
         </Text>
       </View>
@@ -162,8 +157,7 @@ export default function Profile({ navigation }) {
             fontSize: 24 - 4,
             fontWeight: 'bold',
             marginHorizontal: 18,
-          }}
-        >
+          }}>
           {userData?.token}
         </Text>
       </View>
@@ -176,8 +170,7 @@ export default function Profile({ navigation }) {
           marginVertical: 18,
           marginHorizontal: 12,
         }}
-        onPress={() => checkForUpdate()}
-      >
+        onPress={() => checkForUpdate()}>
         <LinearGradient
           style={{
             padding: 18,
@@ -188,8 +181,7 @@ export default function Profile({ navigation }) {
           }}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          colors={['#FEAC5E', '#C779D0', '#4BC0C8']}
-        >
+          colors={['#FEAC5E', '#C779D0', '#4BC0C8']}>
           <Text style={{ fontSize: 17, fontWeight: 'bold', color: 'white' }}>
             Check for updates
           </Text>
