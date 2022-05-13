@@ -19,6 +19,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Lightbox from 'react-native-lightbox';
 import LinearGradient from 'react-native-linear-gradient';
+import { DecryptData } from '../../../../functions';
 
 export default function RoomDetail({ route, navigation }) {
   let [user, setUser] = useState();
@@ -90,16 +91,14 @@ export default function RoomDetail({ route, navigation }) {
           navigation.navigate('photogram.image.view.screen', {
             image: route.params.item.groupImage,
           })
-        }
-      >
+        }>
         <ImageBackground
           style={{ width, height: height / 3 }}
           source={{
             uri: route.params.item.groupImage
               ? route.params.item.groupImage
               : 'https://media.istockphoto.com/vectors/profile-picture-vector-illustration-vector-id587805156?k=20&m=587805156&s=612x612&w=0&h=Ok_jDFC5J1NgH20plEgbQZ46XheiAF8sVUKPvocne6Y=',
-          }}
-        >
+          }}>
           <View
             style={{
               position: 'absolute',
@@ -108,8 +107,7 @@ export default function RoomDetail({ route, navigation }) {
               shadowColor: '#000',
               shadowRadius: 18,
               elevation: 8,
-            }}
-          >
+            }}>
             <Text
               style={{
                 fontFamily: 'Lato-Bold',
@@ -117,8 +115,7 @@ export default function RoomDetail({ route, navigation }) {
                 textShadowColor: '#000',
                 fontSize: 38,
                 color: '#FFF',
-              }}
-            >
+              }}>
               {route.params.item.groupName}
             </Text>
             <Text
@@ -128,9 +125,8 @@ export default function RoomDetail({ route, navigation }) {
                 textShadowColor: '#000',
                 fontSize: 16,
                 color: '#FFF',
-              }}
-            >
-              created By {user ? user.userName : 'unknown'},{' '}
+              }}>
+              created By {user ? DecryptData(user.userName) : 'unknown'},{' '}
               {moment(route.params.item.createdAt).format('L')}
             </Text>
           </View>
@@ -150,8 +146,7 @@ export default function RoomDetail({ route, navigation }) {
               }}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              colors={['#FEAC5E', '#C779D0', '#4BC0C8']}
-            >
+              colors={['#FEAC5E', '#C779D0', '#4BC0C8']}>
               <FontAwesome
                 onPress={() =>
                   navigation.navigate('photogram.edit.group.info.screen', {
@@ -176,8 +171,7 @@ export default function RoomDetail({ route, navigation }) {
           marginLeft: 12,
           marginTop: 12,
           marginVertical: 4,
-        }}
-      >
+        }}>
         Media , Photos
       </Text>
       <FlatList
@@ -203,8 +197,7 @@ export default function RoomDetail({ route, navigation }) {
                       navigation.navigate('photogram.image.view.screen', {
                         image: item.image,
                       })
-                    }
-                  >
+                    }>
                     <Image
                       source={{ uri: item.image }}
                       style={{
@@ -235,15 +228,13 @@ export default function RoomDetail({ route, navigation }) {
               backgroundColor: '#fff',
               flexDirection: 'row',
               justifyContent: 'space-between',
-            }}
-          >
+            }}>
             <Text
               style={{
                 fontFamily: 'Lato-Bold',
                 fontSize: 17,
                 color: '#333',
-              }}
-            >
+              }}>
               {route.params.item.members.length} members
             </Text>
             <AntDesign
@@ -274,16 +265,14 @@ export default function RoomDetail({ route, navigation }) {
                 navigation.navigate('photogram.users.screen', {
                   members: route.params.item.members,
                 })
-              }
-            >
+              }>
               <Text
                 style={{
                   fontFamily: 'Lato-Regular',
                   fontSize: 16,
                   marginTop: 6,
                   textAlign: 'center',
-                }}
-              >
+                }}>
                 {''}
               </Text>
             </TouchableOpacity>
@@ -299,8 +288,7 @@ export default function RoomDetail({ route, navigation }) {
               borderRadius: 10,
             }}
             source={require('../../../../../assets/Dania.jpg')}
-            style={styles.panelButton}
-          >
+            style={styles.panelButton}>
             <View style={styles.panelButton}>
               <Text style={styles.panelButtonTitle}>
                 {' '}

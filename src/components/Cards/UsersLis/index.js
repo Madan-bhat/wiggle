@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, ImageBackground, Image } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import { FlatList } from 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth';
@@ -62,23 +62,25 @@ export default function UsersList({ data, members, ownerUid }) {
                 }}>
                 {DecryptData(item.userName)}
               </Text>
-
-              <Text
+              <ImageBackground
                 style={{
-                  fontFamily: 'Lato-Bold',
-                  color: '#FFF',
                   position: 'absolute',
                   borderRadius: 25,
                   padding: item.uid === ownerUid ? 8 : 0,
                   left: '89%',
-                  backgroundColor: '#45A4FF',
-                }}>
-                {item.uid === ownerUid ? 'Admin' : null}
-              </Text>
-              <Text
+                }}
+                imageStyle={{ borderRadius: 4 }}
+                source={require('../../../../assets/Dania.jpg')}>
+                <Text
+                  style={{
+                    fontFamily: 'Lato-Bold',
+                    color: '#FFF',
+                  }}>
+                  {item.uid === ownerUid ? 'Admin' : null}
+                </Text>
+              </ImageBackground>
+              <ImageBackground
                 style={{
-                  fontFamily: 'Lato-Bold',
-                  color: '#FFF',
                   position: 'absolute',
                   borderRadius: 25,
                   paddingTop:
@@ -107,14 +109,21 @@ export default function UsersList({ data, members, ownerUid }) {
                       : 0,
                   left: '89%',
                   zIndex: item.uid === ownerUid ? -100 : 100,
-                  backgroundColor: '#00d084',
-                }}>
-                {item.uid === ownerUid
-                  ? ''
-                  : item.uid === auth().currentUser.uid
-                  ? 'You'
-                  : ''}
-              </Text>
+                }}
+                imageStyle={{ borderRadius: 4 }}
+                source={require('../../../../assets/Quepal.jpg')}>
+                <Text
+                  style={{
+                    fontFamily: 'Lato-Bold',
+                    color: '#FFF',
+                  }}>
+                  {item.uid === ownerUid
+                    ? ''
+                    : item.uid === auth().currentUser.uid
+                    ? 'You'
+                    : ''}
+                </Text>
+              </ImageBackground>
             </View>
           );
         }}

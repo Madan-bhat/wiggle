@@ -234,14 +234,11 @@ export default function Chat(props) {
 
   const takePhotoFromCamera = () => {
     ImageCropPicker.openCamera({
-      width: 720,
-      height: 1080,
       cropping: true,
-      compressImageQuality: 1,
+      compressImageQuality: 0.8,
       mediaType: 'photo',
       includeBase64: true,
     }).then(image_data => {
-      console.log(image_data);
       setImage(`data:image/jpeg;base64,${image_data.data}`);
       bs.current.snapTo(1);
     });
@@ -272,7 +269,7 @@ export default function Chat(props) {
           }}
           source={require('../../../../assets/Dania.jpg')}
           style={styles.panelButton}>
-          <View style={styles.panelButton} onPress={takePhotoFromCamera}>
+          <View style={styles.panelButton} onPress={() => takePhotoFromCamera()}>
             <Text style={styles.panelButtonTitle}>Take Photo</Text>
           </View>
         </ImageBackground>
