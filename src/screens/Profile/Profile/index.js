@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
 import auth from '@react-native-firebase/auth';
 import { firebase } from '@react-native-firebase/firestore';
@@ -60,6 +61,7 @@ export default function Profile({ navigation }) {
   }, []);
 
   useEffect(() => {
+
     getUser();
   }, [getUser]);
 
@@ -114,7 +116,8 @@ export default function Profile({ navigation }) {
             fontSize: 36,
             marginTop: 24,
           }}>
-          {DecryptData(userData?.userName)}
+                   {userData?DecryptData(userData?.userName):'Test'}
+
         </Text>
       </View>
       <View>
@@ -125,7 +128,7 @@ export default function Profile({ navigation }) {
             fontWeight: 'bold',
             marginHorizontal: 18,
           }}>
-          {DecryptData(userData?.userName)}
+          {userData?DecryptData(userData?.userName):'Test'}
         </Text>
       </View>
       <View>
