@@ -10,35 +10,29 @@ import {
   StyleSheet,
   ToastAndroid,
 } from 'react-native';
-import { width } from '../../../../../constants';
-import { DecryptData } from '../../../../../functions';
 import LinearGradient from 'react-native-linear-gradient';
+import { width } from '../../../constants';
+import { DecryptData } from '../../../functions';
+import { Alert } from 'react-native-windows';
 
-const Password = ({ route, navigation }) => {
-  let [password, setPassword] = useState('');
-
-  const JoinGroup = () => {
-    if (route.params.password !== '') {
-      if (DecryptData(route.params.password) === password) {
-        firestore()
-          .collection('groups')
-          .doc(route.params.item.id)
-          .update({
-            members: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
-          });
-        ToastAndroid.show('Password is correct', 12);
-        navigation.navigate('photogram.dashboard.screen');
-      } else {
-        ToastAndroid.show('Password is incorrect', 12);
-      }
-    } else {
-      firestore()
-        .collection('groups')
-        .doc(route.params.item.id)
-        .update({
-          members: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
-        });
-    }
+const ForgotPassword = ({ route, navigation }) => {
+  let [email, setEmail] = useState('');
+  const actionCodeSettings = {
+    handleCodeInApp: true,
+    // URL must be whitelisted in the Firebase Console.
+    url: 'https://photogram-chat-7e841.firebaseapp.com/__/auth/action?mode=action&oobCode=code',
+    android: {
+      packageName: 'com.wiggle',
+    },
+  };
+  const sendEmail = () => {
+    auth()
+      .sendPasswordResetEmail(email)
+      .then(_data => ToastAndroid.show('Password reset email sent', 12))
+      .catch(e => {
+        console.log(e);
+        Alert.alert(e.message);
+      });
   };
 
   return (
@@ -51,11 +45,11 @@ const Password = ({ route, navigation }) => {
           marginHorizontal: 6,
           marginVertical: 24,
         }}>
-        {'Please enter the password to join'}
+        {'Please enter the Email'}
       </Text>
       <TextInput
-        keyboardType="visible-password"
-        placeholder="Password"
+        keyboardType="email-address"
+        placeholder="Email"
         style={{
           width: width - 24,
           backgroundColor: '#fff',
@@ -65,18 +59,21 @@ const Password = ({ route, navigation }) => {
         }}
         textAlign={'center'}
         onChangeText={_val => {
-          setPassword(_val);
+          setEmail(_val);
         }}
       />
-      <TouchableOpacity style={{ marginTop: 18 }} onPress={() => JoinGroup()}>
+      <TouchableOpacity
+        disabled={email.replace(/\s/g, '').length === 0 ? true : false}
+        style={{ marginTop: 18 }}
+        onPress={() => sendEmail()}>
         <ImageBackground
           imageStyle={{
             borderRadius: 10,
           }}
-          source={require('../../../../../../assets/Dania.jpg')}
+          source={require('../../../../assets/Dania.jpg')}
           style={styles.panelButton}>
           <View style={styles.panelButton}>
-            <Text style={styles.panelButtonTitle}>Join</Text>
+            <Text style={styles.panelButtonTitle}>Send Link</Text>
           </View>
         </ImageBackground>
       </TouchableOpacity>
@@ -112,4 +109,4 @@ let styles = StyleSheet.create({
   },
 });
 
-export default Password;
+export default ForgotPassword;

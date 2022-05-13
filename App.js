@@ -28,6 +28,7 @@ import { Text } from 'react-native';
 import { AuthContext } from './src/context';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import { ForgotPassword } from './src/screens/Auth';
 
 let codePushOptions = { checkFrequency: codePush.CheckFrequency.MANUAL };
 
@@ -41,8 +42,7 @@ function App() {
     return (
       <AuthContext.Provider>
         <MainDrawerStack.Navigator
-          drawerContent={props => <DrawerContent {...props} />}
-        >
+          drawerContent={props => <DrawerContent {...props} />}>
           <MainDrawerStack.Screen
             name="photogram.launch.screen"
             options={{
@@ -111,6 +111,11 @@ function App() {
             options={{ headerShown: false }}
             name="photogram.login.screen"
             component={Login}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="photogram.forgot.password.screen"
+            component={ForgotPassword}
           />
           <Stack.Screen
             options={{ headerShown: false }}

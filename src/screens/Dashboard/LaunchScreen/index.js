@@ -13,10 +13,10 @@ import { FloatingAction } from 'react-native-floating-action';
 import { FlatList } from 'react-native-gesture-handler';
 import firestore from '@react-native-firebase/firestore';
 import { FAB, Portal, Provider } from 'react-native-paper';
-import auth from '@react-native-firebase/auth';
 import { LaunchCard } from '../../../components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import messaging from '@react-native-firebase/messaging';
+import auth from '@react-native-firebase/auth';
 import BottomSheet from 'reanimated-bottom-sheet';
 
 import { height, width } from '../../../constants';
@@ -118,15 +118,13 @@ export default function Launch({ navigation }) {
           onPress={() => {
             navigation.navigate('photogram.create.screen');
             bs.current.snapTo(1);
-          }}
-        >
+          }}>
           <ImageBackground
             imageStyle={{
               borderRadius: 10,
             }}
             source={require('../../../../assets/Dania.jpg')}
-            style={styles.panelButton}
-          >
+            style={styles.panelButton}>
             <View style={styles.panelButton}>
               <Text style={styles.panelButtonTitle}>Create</Text>
             </View>
@@ -136,15 +134,13 @@ export default function Launch({ navigation }) {
           onPress={() => {
             navigation.navigate('photogram.join.screen');
             bs.current.snapTo(1);
-          }}
-        >
+          }}>
           <ImageBackground
             imageStyle={{
               borderRadius: 10,
             }}
             source={require('../../../../assets/Dania.jpg')}
-            style={styles.panelButton}
-          >
+            style={styles.panelButton}>
             <View style={styles.panelButton}>
               <Text style={styles.panelButtonTitle}>Join</Text>
             </View>
@@ -228,8 +224,7 @@ export default function Launch({ navigation }) {
         flex: 1,
 
         backgroundColor: '#FFF',
-      }}
-    >
+      }}>
       <BottomSheet
         ref={bs}
         snapPoints={[330, -5]}
@@ -248,8 +243,7 @@ export default function Launch({ navigation }) {
           opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),
           display: 'flex',
           alignItems: 'center',
-        }}
-      >
+        }}>
         <Ionicons
           onPress={() => navigation.openDrawer()}
           name="ios-menu"
@@ -265,8 +259,7 @@ export default function Launch({ navigation }) {
             textShadowRadius: 24,
             elevation: 6,
             fontSize: 46,
-          }}
-        >
+          }}>
           Wiggle
         </Text>
       </Animated.View>
@@ -279,8 +272,7 @@ export default function Launch({ navigation }) {
         style={{ height }}
         ListEmptyComponent={() => (
           <View
-            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-          >
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ fontFamily: 'Lato-Bold', fontSize: 18 }}>
               {'You can join a group by pressing + icon'}
             </Text>
@@ -322,8 +314,7 @@ export default function Launch({ navigation }) {
             bottom: 24,
             right: 24,
           }}
-          source={require('../../../../assets/Dania.jpg')}
-        >
+          source={require('../../../../assets/Dania.jpg')}>
           <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#fff' }}>
             +
           </Text>

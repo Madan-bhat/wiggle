@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   ImageBackground,
-  ActivityIndicator,
   PermissionsAndroid,
   Platform,
   Text,
@@ -11,6 +10,7 @@ import { AuthContext } from '../../../context';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
+import { ActivityIndicator } from 'react-native-paper';
 
 export default function Loading({ navigation }) {
   const [fcm, setFcm] = useState('');
@@ -53,7 +53,7 @@ export default function Loading({ navigation }) {
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-      <ActivityIndicator color='="#fff' size={24} />
+      <ActivityIndicator color={'#FFF'} size={32} />
     </ImageBackground>
   );
 }
