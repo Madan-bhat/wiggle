@@ -77,10 +77,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   panelButton: {
-    padding: 8,
+    padding: 6,
     borderRadius: 10,
     alignItems: 'center',
-    marginVertical: 7,
+    marginVertical: 4,
   },
   panelButtonTitle: {
     fontSize: 17,
