@@ -3,13 +3,16 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import messaging from '@react-native-firebase/messaging';
 import storage from '@react-native-firebase/storage';
+import moment from 'moment';
 
 import {
   ImageBackground,
   FlatList,
+  Alert,
   Image,
   Text,
   TextInput,
+  AsyncStorage,
   TouchableOpacity,
   View,
   Modal,
@@ -27,6 +30,7 @@ import Animated from 'react-native-reanimated';
 import { ImageView } from '../../../components';
 import MessageCard from '../../../components/Cards/MessageCard';
 import { ActivityIndicator } from 'react-native-paper';
+import { FlashList } from '@shopify/flash-list';
 
 const styles = StyleSheet.create({
   container: {
@@ -121,6 +125,13 @@ export default function Chat(props) {
   let [messageText, setMessageText] = useState('');
   let [messages, setMessages] = useState([]);
 
+  let MessageFormat = {
+    createdAt: Date.now(),
+    messageText: EncryptData(messageText),
+    image: image ? image : null,
+    uid: auth().currentUser.uid,
+  };
+
   let fetchMessages = useCallback(async () => {
     try {
       await firestore()
@@ -137,6 +148,32 @@ export default function Chat(props) {
     } catch (e) {}
   }, [props.route.params.id]);
 
+  function groupedDays(messages) {
+    return messages.reduce((acc, el, i) => {
+      const messageDay = moment(el.created_at).format('YYYY-MM-DD');
+      if (acc[messageDay]) {
+        return { ...acc, [messageDay]: acc[messageDay].concat([el]) };
+      }
+      return { ...acc, [messageDay]: [el] };
+    }, {});
+  }
+
+  function generateItems(messages) {
+    const days = groupedDays(messages);
+    const sortedDays = Object.keys(days).sort(
+      (x, y) => moment(y, 'YYYY-MM-DD').unix() - moment(x, 'YYYY-MM-DD').unix(),
+    );
+    const items = sortedDays.reduce((acc, date) => {
+      const sortedMessages = days[date].sort(
+        (x, y) => new Date(y.created_at) - new Date(x.created_at),
+      );
+      return acc.concat([...sortedMessages, { type: 'day', date, id: date }]);
+    }, []);
+    let Lists = [];
+    Lists.push(items);
+    // setMessages(Lists);
+  }
+
   let getUser = useCallback(async () => {
     try {
       await firestore()
@@ -152,11 +189,12 @@ export default function Chat(props) {
   }, []);
 
   useEffect(() => {
+    console.log(generateItems);
     setTimeout(() => {
       setLoading(false);
     }, 500);
     fetchMessages();
-  }, [fetchMessages]);
+  }, [fetchMessages, props.route.params.id]);
 
   useEffect(() => {
     getUser();
@@ -174,7 +212,19 @@ export default function Chat(props) {
     });
   }, [getUser, props.route.params.item.members, props.route.params.members]);
 
-  let sendMessage = () => {
+  let sendMessage = async () => {
+    // // const currentMessages = await AsyncStorage.getItem(
+    // //   `${props.route.params.id}/messages`,
+    // // );
+    // // const messageArray = JSON.parse(currentMessages);
+    // // messageArray.push(MessageFormat);
+    // // await AsyncStorage.setItem(
+    // //   `${props.route.params.id}/messages`,
+    // //   JSON.stringify(messageArray),
+    // messages.push(...messages, MessageFormat);
+
+    // );
+
     try {
       firestore()
         .collection('groups')
@@ -192,7 +242,7 @@ export default function Chat(props) {
       setImage('');
       bs.current.snapTo(1);
     } catch (e) {
-      console.log(e);
+      Alert.alert(e);
     }
   };
 
@@ -269,7 +319,9 @@ export default function Chat(props) {
           }}
           source={require('../../../../assets/Dania.jpg')}
           style={styles.panelButton}>
-          <View style={styles.panelButton} onPress={() => takePhotoFromCamera()}>
+          <View
+            style={styles.panelButton}
+            onPress={() => takePhotoFromCamera()}>
             <Text style={styles.panelButtonTitle}>Take Photo</Text>
           </View>
         </ImageBackground>
@@ -427,10 +479,10 @@ export default function Chat(props) {
             enabledGestureInteraction={true}
           />
           <View style={{ flexDirection: 'column-reverse', flex: 1 }}>
-            <FlatList
-              enableEmptySections={true}
-              scrollEnabled={true}
-              inverted={false}
+            <FlashList
+              // enableEmptySections={true}
+              // scrollEnabled={true}
+              // inverted={false}
               scrollEventThrottle={100}
               ref={flatlistRef}
               style={{
@@ -438,15 +490,18 @@ export default function Chat(props) {
                 flex: 1,
                 flexDirection: 'column',
               }}
+              estimatedItemSize={50}
               onContentSizeChange={() => {
                 flatlistRef.current.scrollToEnd({ animated: true });
               }}
-              automaticallyAdjustContentInsets={false}
-              showsVerticalScrollIndicator={false}
+              // automaticallyAdjustContentInsets={false}
+              // showsVerticalScrollIndicator={false}
               data={messages}
-              renderItem={({ item }) => (
-                <MessageCard item={item} navigation={props.navigation} />
-              )}
+              renderItem={({ item, index }) => {
+                return (
+                  <MessageCard item={item} navigation={props.navigation} />
+                );
+              }}
             />
           </View>
 

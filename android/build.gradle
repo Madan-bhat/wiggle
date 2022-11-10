@@ -1,4 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
     ext {
@@ -6,7 +7,14 @@ buildscript {
         minSdkVersion = 21
         compileSdkVersion = 30
         targetSdkVersion = 30
-        ndkVersion = "20.1.5948944"
+        if (System.properties['os.arch'] == "aarch64") {
+            // For M1 Users we need to use the NDK 24 which added support for aarch64
+            ndkVersion = "24.0.8215888"
+        } else {
+    ndkVersion = "20.1.5948944"
+            // Otherwise we default to the side-by-side NDK version from AGP.
+                   }
+    
     }
     repositories {
         google()

@@ -22,7 +22,7 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import { height, width } from '../../../constants';
 import Animated from 'react-native-reanimated';
 
-export default function Launch({ navigation }) {
+export default function Chats({ navigation }) {
   const [groups, setGroups] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 

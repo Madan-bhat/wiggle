@@ -62,7 +62,7 @@ export default function DrawerContent(props, { navigation }) {
                 <Title style={styles.title}>
                   {user
                     ? user.userName
-                      ? DecryptData(user.userName)
+                      ? DecryptData(user?.userName)
                       : 'Test'
                     : 'Text'}
                 </Title>

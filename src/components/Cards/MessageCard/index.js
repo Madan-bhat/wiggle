@@ -41,6 +41,7 @@ export default function MessageCard({ item, navigation }) {
 
   return (
     <TouchableOpacity
+      style={{ marginBottom: 10 }}
       activeOpacity={3}
       onLongPress={() => copyToClipboard(DecryptData(item.messageText))}>
       <View style={{ position: 'absolute', top: 24 }}>
@@ -65,13 +66,13 @@ export default function MessageCard({ item, navigation }) {
         )}
       </View>
       <View>
-        <ImageBackground
+        <View
           imageStyle={{ borderRadius: 18 }}
-          source={
-            user?.uid === auth().currentUser.uid
-              ? require('../../../../assets/Dania.jpg')
-              : null
-          }
+          // source={
+          //   user?.uid === auth().currentUser.uid
+          //     ? require('../../../../assets/Dania.jpg')
+          //     : null
+          // }
           style={{
             padding: item.image ? 0 : 24,
             paddingRight: item.image ? 0 : 24,
@@ -79,6 +80,7 @@ export default function MessageCard({ item, navigation }) {
             paddingTop: item.image ? 0 : 24,
             borderRadius: 18,
             marginTop: 14,
+            backgroundColor:auth().currentUser.uid == user?.uid ? "#4A90E2" : '#fff'
             marginRight: item.uid === auth().currentUser.uid ? 12 : width / 2.5,
             marginLeft: item.uid === auth().currentUser.uid ? width / 2.5 : 52,
             alignSelf:
@@ -113,7 +115,7 @@ export default function MessageCard({ item, navigation }) {
             }}>
             {DecryptData(item.messageText)}
           </Text>
-        </ImageBackground>
+        </View>
       </View>
     </TouchableOpacity>
   );
