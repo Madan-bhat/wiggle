@@ -31,6 +31,13 @@ import { ImageView } from '../../../components';
 import MessageCard from '../../../components/Cards/MessageCard';
 import { ActivityIndicator } from 'react-native-paper';
 import { FlashList } from '@shopify/flash-list';
+import {
+  GiftedChat,
+  Bubble,
+  Actions,
+  MessageImage,
+  Send,
+} from 'react-native-gifted-chat';
 
 const styles = StyleSheet.create({
   container: {
@@ -138,7 +145,7 @@ export default function Chat(props) {
         .collection('groups')
         .doc(props.route.params.id)
         .collection('Messages')
-        .orderBy('createdAt', 'asc')
+        .orderBy('createdAt', 'desc')
         .onSnapshot(_val => {
           let allMsg = _val.docs.map(_data => {
             return _data.data();
@@ -213,6 +220,15 @@ export default function Chat(props) {
   }, [getUser, props.route.params.item.members, props.route.params.members]);
 
   let sendMessage = async () => {
+    const mymsg = {
+      text: messageText ? messageText : null,
+      sentBy: auth().currentUser.uid,
+      image: image || null,
+      createdAt: Date.now(),
+      user: {
+        _id: `${auth().currentUser.uid}`,
+      },
+    };
     // // const currentMessages = await AsyncStorage.getItem(
     // //   `${props.route.params.id}/messages`,
     // // );
@@ -231,10 +247,14 @@ export default function Chat(props) {
         .doc(props.route.params.id)
         .collection('Messages')
         .add({
-          createdAt: Date.now(),
-          messageText: EncryptData(messageText),
-          image: image ? image : null,
-          uid: auth().currentUser.uid,
+          ...mymsg,
+          // createdAt: Date.now(),
+          // messageText: EncryptData(messageText),
+          // image: image ? image : null,
+          // user: {
+          //   _id: `${auth().currentUser.uid}`,
+          // },
+          // uid: auth().currentUser.uid,
         })
         .then(() => sendPushNotification())
         .catch(e => console.log(e));
@@ -278,6 +298,63 @@ export default function Chat(props) {
     } catch (error) {
       console.log('error ', error);
     }
+  };
+
+  const openCamera = () => {
+    ImagePicker.openCamera({
+      width: 1080,
+      height: 2000,
+    }).then(image => {
+      setMessageImageUri(image.path);
+    });
+  };
+
+  function renderActions(props) {
+    return (
+      <Actions
+        {...props}
+        options={{
+          ['Pick Image From Library']: choosePhotoFromLibrary,
+          ['Camera']: openCamera,
+        }}
+        icon={() => <AntDesign name={'camera'} size={28} color={'black'} />}
+        onSend={args => onSend(args)}
+      />
+    );
+  }
+
+  const onSend = () => {
+    const mymsg = {
+      text: messageText ? messageText : null,
+      sentBy: auth().currentUser.uid,
+      sentTo: props.params.uid,
+      image: image || null,
+      time: moment().format('hh:mm A'),
+      createdAt: new Date(),
+      user: {
+        _id: `${auth().currentUser.uid}`,
+      },
+    };
+    const docid =
+      props.params.uid > auth().currentUser.uid
+        ? auth().currentUser.uid + '-' + props.params.uid
+        : props.params.uid + '-' + auth().currentUser.uid;
+    firestore()
+      .collection('chatrooms')
+      .doc(docid)
+      .collection('messages')
+      .add({
+        ...mymsg,
+        token: 'something',
+        createdAt: firestore.FieldValue.serverTimestamp(),
+      })
+      .then(() => {
+        sendPushNotification();
+        setMessageImageUri(null);
+        setMessageImage(null);
+      });
+    setText('');
+    setMessageImage(null);
   };
 
   let flatlistRef = useRef();
@@ -478,11 +555,42 @@ export default function Chat(props) {
             callbackNode={fall}
             enabledGestureInteraction={true}
           />
-          <View style={{ flexDirection: 'column-reverse', flex: 1 }}>
-            <FlashList
-              // enableEmptySections={true}
-              // scrollEnabled={true}
-              // inverted={false}
+          <GiftedChat
+            onInputTextChanged={text => setMessageText(text)}
+            renderSend={props => (
+              <Send {...props} disabled={image || messageText ? false : true} />
+            )}
+            renderMessageImage={props => {
+              return (
+                <MessageImage
+                  {...props}
+                  imageStyle={{ width: width / 1.2, height: height / 4.5 }}
+                />
+              );
+            }}
+            messages={messages}
+            renderActions={renderActions}
+            renderBubble={props => {
+              return (
+                <Bubble
+                  {...props}
+                  wrapperStyle={{
+                    right: {
+                      backgroundColor: '#229AC9',
+                    },
+                    left: {
+                      backgroundColor: '#DFDFDF',
+                    },
+                  }}
+                />
+              );
+            }}
+            user={{
+              _id: auth().currentUser.uid,
+            }}
+            onSend={messages => sendMessage(messages)}
+          />
+          {/* <FlashList
               scrollEventThrottle={100}
               ref={flatlistRef}
               style={{
@@ -494,8 +602,6 @@ export default function Chat(props) {
               onContentSizeChange={() => {
                 flatlistRef.current.scrollToEnd({ animated: true });
               }}
-              // automaticallyAdjustContentInsets={false}
-              // showsVerticalScrollIndicator={false}
               data={messages}
               renderItem={({ item, index }) => {
                 return (
@@ -545,8 +651,7 @@ export default function Chat(props) {
                 messageText.replace(/\s/g, '').length === 0 ? true : false
               }>
               <Text style={{ fontFamily: 'Lato-Regular' }}>Send</Text>
-            </TouchableOpacity>
-          </View>
+            </TouchableOpacity> */}
         </>
       )}
     </>

@@ -58,23 +58,7 @@ export default function DrawerContent(props, { navigation }) {
                 }}
                 size={50}
               />
-              <View style={{ marginLeft: 15, flexDirection: 'column' }}>
-                <Title style={styles.title}>
-                  {user
-                    ? user.userName
-                      ? DecryptData(user?.userName)
-                      : 'Test'
-                    : 'Text'}
-                </Title>
-                <Caption style={styles.caption}>
-                  @
-                  {user
-                    ? user.userName
-                      ? DecryptData(user?.userName).toLowerCase()
-                      : 'Test'
-                    : 'Test'}
-                </Caption>
-              </View>
+              <View style={{ marginLeft: 15, flexDirection: 'column' }}></View>
             </TouchableOpacity>
 
             <View style={styles.row}>

@@ -8,7 +8,7 @@ import { DrawerContent, ImageView } from './src/components';
 import {
   CreateRoom as CreateScreen,
   JoinRoom as JoinScreen,
-  Launch,
+  Launch as Groups,
   Loading,
   Login,
   Profile,
@@ -22,21 +22,35 @@ import {
   Password,
   EditProfile,
   EditRoomDetails,
+  Chats,
 } from './src/screens';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import { Text } from 'react-native';
 import { AuthContext } from './src/context';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { ForgotPassword } from './src/screens/Auth';
+import UserList from './src/screens/Dashboard/UserList';
 
 let codePushOptions = { checkFrequency: codePush.CheckFrequency.MANUAL };
 
 function App() {
   let [user, setUser] = useState();
   let [userData, setUserData] = useState();
+
   let Stack = createNativeStackNavigator();
   let MainDrawerStack = createDrawerNavigator();
+  const Tab = createMaterialTopTabNavigator();
+
+  function LaunchScreen() {
+    return (
+      <Tab.Navigator>
+        <Tab.Screen name="Chats" component={Chats} />
+        <Tab.Screen name="Groups" component={Groups} />
+      </Tab.Navigator>
+    );
+  }
 
   let DashBoard = () => {
     return (
@@ -47,12 +61,14 @@ function App() {
             name="photogram.launch.screen"
             options={{
               title: (
-                <Text style={{ fontFamily: 'Lato-Bold' }}>{'Wiggle'}</Text>
+                <Text style={{ fontFamily: 'Lato-Bold', fontSize: 50 }}>
+                  {'Wiggle'}
+                </Text>
               ),
               headerLeft: null,
               headerShown: false,
             }}
-            component={Launch}
+            component={LaunchScreen}
           />
           <MainDrawerStack.Screen
             name="photogram.search.screen"
@@ -185,6 +201,11 @@ function App() {
             options={{ headerShown: false }}
             name="photogram.edit.group.info.screen"
             component={EditRoomDetails}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="photogram.user.list.screen"
+            component={UserList}
           />
         </Stack.Navigator>
       </NavigationContainer>

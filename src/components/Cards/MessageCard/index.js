@@ -80,7 +80,7 @@ export default function MessageCard({ item, navigation }) {
             paddingTop: item.image ? 0 : 24,
             borderRadius: 18,
             marginTop: 14,
-            backgroundColor:auth().currentUser.uid == user?.uid ? "#4A90E2" : '#fff'
+            backgroundColor:auth().currentUser.uid === user?.uid ? "#4A90E2" : '#fff',
             marginRight: item.uid === auth().currentUser.uid ? 12 : width / 2.5,
             marginLeft: item.uid === auth().currentUser.uid ? width / 2.5 : 52,
             alignSelf:

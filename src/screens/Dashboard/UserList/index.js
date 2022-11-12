@@ -6,11 +6,18 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
+  Image,
   BackHandler,
   RefreshControl,
-  Pressable,
+  TextInput,
+  Button,
+  AsyncStorage,
 } from 'react-native';
 import { FloatingAction } from 'react-native-floating-action';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
+import { ScrollView } from 'react-native-gesture-handler';
+import moment from 'moment';
 import { FlatList } from 'react-native-gesture-handler';
 import firestore from '@react-native-firebase/firestore';
 import { FAB, Portal, Provider } from 'react-native-paper';
@@ -22,16 +29,29 @@ import BottomSheet from 'reanimated-bottom-sheet';
 
 import { height, width } from '../../../constants';
 import Animated from 'react-native-reanimated';
-import { FlashList } from '@shopify/flash-list';
+import mmkv from 'react-native-mmkv';
+import UserLists from '../../../components/Cards/UserLists';
 
-export default function Chats({ navigation }) {
-  const [groups, setGroups] = useState([]);
+export default function UserList({ navigation }) {
+  const [users, setUsers] = useState([]);
+  const [requested, setRequested] = useState();
   const [refreshing, setRefreshing] = useState(false);
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#fff',
+    },
+    cardStyle: {
+      shadowColor: '#000',
+      elevation: 8,
+      flexDirection: 'row',
+      marginHorizontal: 12,
+    },
+    ImageStyle: {
+      height: 50,
+      width: 50,
+      marginLeft: 18,
+      borderRadius: 900,
     },
     commandButton: {
       padding: 15,
@@ -109,88 +129,23 @@ export default function Chats({ navigation }) {
     },
   });
 
-  let renderInner = () => {
-    return (
-      <View style={styles.panel}>
-        <View style={{ alignItems: 'center' }}>
-          <Text style={styles.panelTitle}>Join</Text>
-          <Text style={styles.panelSubtitle}>Join or Create a group</Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('photogram.create.screen');
-            bs.current.snapTo(1);
-          }}>
-          <ImageBackground
-            imageStyle={{
-              borderRadius: 10,
-            }}
-            source={require('../../../../assets/Dania.jpg')}
-            style={styles.panelButton}>
-            <View style={styles.panelButton}>
-              <Text style={styles.panelButtonTitle}>Create</Text>
-            </View>
-          </ImageBackground>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('photogram.join.screen');
-            bs.current.snapTo(1);
-          }}>
-          <ImageBackground
-            imageStyle={{
-              borderRadius: 10,
-            }}
-            source={require('../../../../assets/Dania.jpg')}
-            style={styles.panelButton}>
-            <View style={styles.panelButton}>
-              <Text style={styles.panelButtonTitle}>Join</Text>
-            </View>
-          </ImageBackground>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
-  let renderHeader = () => (
-    <View style={styles.header}>
-      <View style={styles.panelHeader}>
-        <View style={styles.panelHandle} />
-      </View>
-    </View>
-  );
-
-  let bs;
-  let fall;
-  bs = React.createRef();
-  fall = new Animated.Value(1);
-
-  let fetchGroups = useCallback(async () => {
+  let fetchUsers = useCallback(async searchText => {
     let Lists = [];
 
     try {
       await firestore()
-        .collection('chats')
+        .collection('users')
+        .where('userName', '>=', searchText)
         .onSnapshot(_doc => {
           _doc.docs.forEach(data => {
-            let {
-              description,
-              groupName,
-              groupImage,
-              ownerUid,
-              members,
-              createdAt,
-            } = data.data();
+            let { uid, userName, userImg, token } = data.data();
             Lists.push({
-              description,
-              groupName,
-              id: data.id,
-              groupImage,
-              ownerUid,
-              members,
-              createdAt,
+              uid,
+              userName,
+              userImg,
+              token,
             });
-            setGroups(Lists);
+            setUsers(Lists);
           });
         });
     } catch (error) {}
@@ -198,7 +153,7 @@ export default function Chats({ navigation }) {
 
   let refreshControl = () => {
     setRefreshing(true);
-    fetchGroups().then(setRefreshing(false));
+    fetchUsers().then(setRefreshing(false));
   };
 
   async function requestUserPermission() {
@@ -216,8 +171,8 @@ export default function Chats({ navigation }) {
   }, []);
 
   useEffect(() => {
-    fetchGroups();
-  }, [fetchGroups]);
+    fetchUsers();
+  }, []);
 
   return (
     <View
@@ -226,63 +181,44 @@ export default function Chats({ navigation }) {
 
         backgroundColor: '#FFF',
       }}>
-      <BottomSheet
-        ref={bs}
-        snapPoints={[330, -5]}
-        renderContent={renderInner}
-        renderHeader={renderHeader}
-        initialSnap={1}
-        callbackNode={fall}
-        enabledGestureInteraction={true}
-      />
       <View
         style={{
-          marginTop: 24,
-          marginBottom: 18,
           flexDirection: 'row',
-          margin: 20,
+          borderRadius: 4,
+          marginBottom: 12,
+          marginTop: 24,
           display: 'flex',
           alignItems: 'center',
+          backgroundColor: 'rgba(0,0,0,0.1)',
+          marginHorizontal: 24,
         }}>
-        <Ionicons
-          onPress={() => navigation.openDrawer()}
-          name="ios-menu"
-          size={36}
-          style={{ marginHorizontal: 12 }}
-          color="black"
+        <AntDesign
+          style={{ marginLeft: 12 }}
+          name="search1"
+          size={24}
+          color={'#000'}
         />
-        <Text
+        <TextInput
+          placeholder={'search'}
+          onChangeText={_text => {
+            fetchUsers(_text);
+          }}
           style={{
-            fontWeight: '900',
-            fontFamily: 'Lato-Bold',
-            textShadowColor: '#fff',
-            textShadowRadius: 24,
-            elevation: 6,
-            fontSize: 46,
-          }}>
-          Wiggle
-        </Text>
+            marginHorizontal: 26,
+            fontSize: 18,
+            borderRadius: 4,
+            textAlign: 'center',
+            width: '65%',
+            fontFamily: 'Lato-Regular',
+          }}
+        />
       </View>
-      <TouchableOpacity
-        style={{
-          position: 'absolute',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: 62,
-          backgroundColor: 'blue',
-          height: 62,
-          right: 24,
-        }}
-        onPress={() => navigation.navigate('photogram.user.list.screen')}>
-        <Text>Add</Text>
-      </TouchableOpacity>
 
-      <FlashList
-        estimatedItemSize={50}
+      <FlatList
         refreshControl={
           <RefreshControl onRefresh={refreshControl} refreshing={refreshing} />
         }
-        data={groups}
+        data={users}
         style={{ height }}
         ListEmptyComponent={() => (
           <View
@@ -292,16 +228,9 @@ export default function Chats({ navigation }) {
             </Text>
           </View>
         )}
-        // renderItem={({ item }) => {
-        //   return (
-        //     // <LaunchCard
-        //     //   groupName={item.groupName}
-        //     //   navigation={navigation}
-        //     //   item={item}
-        //     //   groupId={item.id}
-        //     // />
-        //   // );
-        // }}
+        renderItem={({ item }) => {
+          return <UserLists item={item} />;
+        }}
       />
       {/* <FloatingAction
         actions={actions}

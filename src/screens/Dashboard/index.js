@@ -1,3 +1,4 @@
+import { UsersList } from '../../components';
 import Chat from './Chat';
 import Launch from './LaunchScreen';
 import Chats from './LaunchScreen/Chats';
@@ -18,6 +19,7 @@ export {
   Chats,
   Chat,
   JoinRoom,
+  UsersList,
   CreateRoom,
   EditRoomDetails,
   RoomDetail,
