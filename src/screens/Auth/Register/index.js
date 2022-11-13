@@ -63,7 +63,8 @@ export default function Register({ navigation }) {
                 userName: EncryptData(userName),
                 email,
                 nickname: userName.replace(/\s/g, '').toLowerCase(),
-
+                chats: [],
+                requests: [],
                 groups: [],
                 createdAt: Date.now(),
                 userImg: '',

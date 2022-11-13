@@ -4,34 +4,18 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
-  ImageBackground,
   Image,
-  BackHandler,
-  RefreshControl,
-  TextInput,
   Button,
   AsyncStorage,
+  TouchableOpacity,
 } from 'react-native';
-import { FloatingAction } from 'react-native-floating-action';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import { ScrollView } from 'react-native-gesture-handler';
 import moment from 'moment';
-import { FlatList } from 'react-native-gesture-handler';
 import firestore from '@react-native-firebase/firestore';
-import { FAB, Portal, Provider } from 'react-native-paper';
-import { LaunchCard } from '../../../components';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import messaging from '@react-native-firebase/messaging';
 import auth from '@react-native-firebase/auth';
-import BottomSheet from 'reanimated-bottom-sheet';
 
-import { height, width } from '../../../constants';
-import Animated from 'react-native-reanimated';
-import mmkv from 'react-native-mmkv';
-
-export default function UserLists({ item }) {
+export default function ChatList({ item, navigation }) {
   let [requested, setRequested] = useState([]);
   let [user, setUser] = useState();
 
@@ -189,7 +173,14 @@ export default function UserLists({ item }) {
     requested?.length > 0 ? requested.indexOf(item.uid) > -1 : null;
 
   return (
-    <View>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate('photogram.chat.room.screen', {
+          uid: item.item.uid,
+          userName: item.item.userName,
+          userImg: item.item.userImg,
+        })
+      }>
       <ScrollView>
         <View
           style={{
@@ -224,15 +215,9 @@ export default function UserLists({ item }) {
               </Text>
             </View>
           </View>
-          <View style={{ marginLeft: '18%', marginTop: '5%' }}>
-            <Button
-              disabled={hasRequested ? true : false}
-              title={hasRequested ? 'requested' : 'request'}
-              onPress={() => sendRequest(item.uid)}
-            />
-          </View>
+          <View style={{ marginLeft: '18%', marginTop: '5%' }}></View>
         </View>
       </ScrollView>
-    </View>
+    </TouchableOpacity>
   );
 }

@@ -1,10 +1,18 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
-import { View, Image, TextInput, Modal, Button } from 'react-native';
+import {
+  View,
+  Image,
+  TextInput,
+  Text,
+  Modal,
+  Button,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ImagePicker from 'react-native-image-crop-picker';
-import ChatScreenHeader from '../../Components/headers/ChatScreenHeader';
 import {
   GiftedChat,
   Bubble,
@@ -13,9 +21,10 @@ import {
   Send,
 } from 'react-native-gifted-chat';
 import moment from 'moment';
-import { width, height } from '../../Utils/constants/styles';
 
-function chatRoom(props) {
+function ChatRoom(props) {
+  const { width, height } = Dimensions.get('window');
+
   const [messages, setMessages] = useState([]);
   const [messageImageUri, setMessageImageUri] = useState('');
   const [uploading, setUploading] = useState('');
@@ -26,11 +35,12 @@ function chatRoom(props) {
   const flatListRef = useRef();
 
   useEffect(() => {
+    console.log(props.route);
     getUser();
     const docid =
-      props.params.uid > auth().currentUser.uid
-        ? auth().currentUser.uid + '-' + props.params.uid
-        : props.params.uid + '-' + auth().currentUser.uid;
+      props.route.params.uid > auth().currentUser.uid
+        ? auth().currentUser.uid + '-' + props.route.params.uid
+        : props.route.params.uid + '-' + auth().currentUser.uid;
     const messageRef = firestore()
       .collection('chatrooms')
       .doc(docid)
@@ -55,13 +65,14 @@ function chatRoom(props) {
     });
   }, []);
 
-  const choosePhotoFromLibrary = () => {
-    ImagePicker.openPicker({
-      width: 1080,
-      height: 2000,
+  const choosePhotoFromLibrary = async () => {
+    await ImagePicker.openPicker({
       cropping: true,
-    }).then(image => {
-      setMessageImageUri(image.path);
+      compressImageQuality: 0.8,
+      mediaType: 'photo',
+      includeBase64: true,
+    }).then(image_data => {
+      setMessageImageUri(`data:image/jpeg;base64,${image_data.data}`);
     });
   };
 
@@ -102,8 +113,8 @@ function chatRoom(props) {
     const mymsg = {
       text: text ? text : null,
       sentBy: auth().currentUser.uid,
-      sentTo: props.params.uid,
-      image: messageImage || null,
+      sentTo: props.route.params.uid,
+      image: messageImageUri || null,
       time: moment().format('hh:mm A'),
       createdAt: new Date(),
       user: {
@@ -111,9 +122,9 @@ function chatRoom(props) {
       },
     };
     const docid =
-      props.params.uid > auth().currentUser.uid
-        ? auth().currentUser.uid + '-' + props.params.uid
-        : props.params.uid + '-' + auth().currentUser.uid;
+      props.route.params.uid > auth().currentUser.uid
+        ? auth().currentUser.uid + '-' + props.route.params.uid
+        : props.route.params.uid + '-' + auth().currentUser.uid;
     firestore()
       .collection('chatrooms')
       .doc(docid)
@@ -136,7 +147,7 @@ function chatRoom(props) {
     const FIREBASE_API_KEY =
       'AAAA_x7hFhA:APA91bEs3Q-uDXebSY5ZXZwJYRL-23nYtZ0dVdsHEKv3LI6cueK5VLyfmaWpqEObWDg4NXPtOdFWmylNuyRNgdjlMedCL3eI0YsXVZDMeIiQjyFlbIHpSefC-VNId8QMPuTn2qwOQ-Zn';
     const message = {
-      to: `${props.params.token}`,
+      to: `${props.route.params.token}`,
       notification: {
         title: userData ? userData.userName : '',
         body: text,
@@ -164,16 +175,40 @@ function chatRoom(props) {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
-      <ChatScreenHeader
-        status={props.params ? props.params.status : 'offline'}
-        props={props}
-        userName={props.params ? props.params.userName : 'Test'}
-        userImg={
-          props.params
-            ? props.params.userImg
-            : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png'
-        }
-      />
+      <View
+        style={{
+          padding: 8,
+          backgroundColor: '#FFF',
+          flexDirection: 'row',
+          display: 'flex',
+          alignItems: 'center',
+        }}>
+        <AntDesign
+          onPress={() => props.navigation.goBack()}
+          name="arrowleft"
+          style={{ marginHorizontal: 8 }}
+          size={24}
+          color="black"
+        />
+        <Image
+          source={{
+            uri: props.route.params.userImg
+              ? props.route.params.userImg
+              : 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png',
+          }}
+          style={{
+            width: 36,
+            marginRight: 8,
+            borderRadius: 80,
+            height: 36,
+          }}
+        />
+        <TouchableOpacity activeOpacity={1}>
+          <Text style={{ fontFamily: 'Lato-Bold' }}>
+            {props.route.params.userName}
+          </Text>
+        </TouchableOpacity>
+      </View>
       <GiftedChat
         onInputTextChanged={text => setText(text)}
         renderSend={props => (
@@ -239,4 +274,4 @@ function chatRoom(props) {
   );
 }
 
-export default memo(chatRoom);
+export default memo(ChatRoom);

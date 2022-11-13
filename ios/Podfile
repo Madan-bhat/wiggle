@@ -27,6 +27,8 @@ target 'photogram_chat' do
 
   pod 'RNTextGradientView', :path => '../node_modules/react-native-text-gradient'
 
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
   target 'photogram_chatTests' do
     inherit! :complete
     # Pods for testing

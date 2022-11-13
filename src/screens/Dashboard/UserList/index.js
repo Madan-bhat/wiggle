@@ -34,100 +34,7 @@ import UserLists from '../../../components/Cards/UserLists';
 
 export default function UserList({ navigation }) {
   const [users, setUsers] = useState([]);
-  const [requested, setRequested] = useState();
   const [refreshing, setRefreshing] = useState(false);
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-    },
-    cardStyle: {
-      shadowColor: '#000',
-      elevation: 8,
-      flexDirection: 'row',
-      marginHorizontal: 12,
-    },
-    ImageStyle: {
-      height: 50,
-      width: 50,
-      marginLeft: 18,
-      borderRadius: 900,
-    },
-    commandButton: {
-      padding: 15,
-      borderRadius: 10,
-      backgroundColor: '#FF6347',
-      alignItems: 'center',
-      marginTop: 10,
-    },
-    panel: {
-      padding: 20,
-      backgroundColor: '#FFFFFF',
-      paddingTop: 20,
-      width: '100%',
-    },
-    header: {
-      backgroundColor: '#FFFFFF',
-      shadowColor: '#333333',
-      shadowOffset: { width: -1, height: -3 },
-      shadowRadius: 2,
-      shadowOpacity: 0.4,
-      paddingTop: 20,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
-    },
-    panelHeader: {
-      alignItems: 'center',
-    },
-    panelHandle: {
-      width: 40,
-      height: 8,
-      borderRadius: 4,
-      backgroundColor: '#00000040',
-      marginBottom: 10,
-    },
-    panelTitle: {
-      fontSize: 27,
-      height: 35,
-    },
-    panelSubtitle: {
-      fontSize: 14,
-      color: 'gray',
-      height: 30,
-      marginBottom: 10,
-    },
-    panelButton: {
-      padding: 8,
-      borderRadius: 10,
-      alignItems: 'center',
-      marginVertical: 7,
-    },
-    panelButtonTitle: {
-      fontSize: 17,
-      fontWeight: 'bold',
-      color: 'white',
-    },
-    action: {
-      flexDirection: 'row',
-      marginTop: 10,
-      marginBottom: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: '#f2f2f2',
-      paddingBottom: 5,
-    },
-    actionError: {
-      flexDirection: 'row',
-      marginTop: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: '#FF0000',
-      paddingBottom: 5,
-    },
-    textInput: {
-      flex: 1,
-      paddingLeft: 10,
-      color: '#333333',
-    },
-  });
 
   let fetchUsers = useCallback(async searchText => {
     let Lists = [];
@@ -135,7 +42,7 @@ export default function UserList({ navigation }) {
     try {
       await firestore()
         .collection('users')
-        .where('userName', '>=', searchText)
+        .where('uid', '!=', auth().currentUser.uid)
         .onSnapshot(_doc => {
           _doc.docs.forEach(data => {
             let { uid, userName, userImg, token } = data.data();
@@ -199,13 +106,15 @@ export default function UserList({ navigation }) {
           color={'#000'}
         />
         <TextInput
-          placeholder={'search'}
+          placeholder={'Search'}
+          placeholderTextColor={'#000'}
           onChangeText={_text => {
             fetchUsers(_text);
           }}
           style={{
             marginHorizontal: 26,
             fontSize: 18,
+            color: '#000',
             borderRadius: 4,
             textAlign: 'center',
             width: '65%',
@@ -213,7 +122,6 @@ export default function UserList({ navigation }) {
           }}
         />
       </View>
-
       <FlatList
         refreshControl={
           <RefreshControl onRefresh={refreshControl} refreshing={refreshing} />
@@ -232,18 +140,6 @@ export default function UserList({ navigation }) {
           return <UserLists item={item} />;
         }}
       />
-      {/* <FloatingAction
-        actions={actions}
-        color="#45A4F9"
-        dismissKeyboardOnPress
-        overlayColor="rgba(0,0,0,0.19)"
-        onPressItem={name => {
-          if (name === 'create') {
-          } else {
-            navigation.navigate('photogram.join.screen');
-          }
-        }}
-      /> */}
     </View>
   );
 }

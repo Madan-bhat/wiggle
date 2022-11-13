@@ -10,12 +10,9 @@ import {
   RefreshControl,
   Pressable,
 } from 'react-native';
-import { FloatingAction } from 'react-native-floating-action';
-import { FlatList } from 'react-native-gesture-handler';
 import firestore from '@react-native-firebase/firestore';
 import { FAB, Portal, Provider } from 'react-native-paper';
 import { LaunchCard } from '../../../components';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import messaging from '@react-native-firebase/messaging';
 import auth from '@react-native-firebase/auth';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -23,10 +20,20 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import { height, width } from '../../../constants';
 import Animated from 'react-native-reanimated';
 import { FlashList } from '@shopify/flash-list';
+import ChatList from '../../../../components/Cards/ChatList';
 
 export default function Chats({ navigation }) {
-  const [groups, setGroups] = useState([]);
+  const [chats, setChats] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+
+  let getChats = useCallback(() => {
+    firestore()
+      .collection('users')
+      .doc(auth().currentUser.uid)
+      .onSnapshot(_doc => {
+        setChats(_doc.data().Chats);
+      });
+  });
 
   const styles = StyleSheet.create({
     container: {
@@ -165,40 +172,9 @@ export default function Chats({ navigation }) {
   bs = React.createRef();
   fall = new Animated.Value(1);
 
-  let fetchGroups = useCallback(async () => {
-    let Lists = [];
-
-    try {
-      await firestore()
-        .collection('chats')
-        .onSnapshot(_doc => {
-          _doc.docs.forEach(data => {
-            let {
-              description,
-              groupName,
-              groupImage,
-              ownerUid,
-              members,
-              createdAt,
-            } = data.data();
-            Lists.push({
-              description,
-              groupName,
-              id: data.id,
-              groupImage,
-              ownerUid,
-              members,
-              createdAt,
-            });
-            setGroups(Lists);
-          });
-        });
-    } catch (error) {}
-  }, []);
-
   let refreshControl = () => {
     setRefreshing(true);
-    fetchGroups().then(setRefreshing(false));
+    fetchChats().then(setRefreshing(false));
   };
 
   async function requestUserPermission() {
@@ -216,8 +192,8 @@ export default function Chats({ navigation }) {
   }, []);
 
   useEffect(() => {
-    fetchGroups();
-  }, [fetchGroups]);
+    getChats();
+  }, [getChats]);
 
   return (
     <View
@@ -235,54 +211,34 @@ export default function Chats({ navigation }) {
         callbackNode={fall}
         enabledGestureInteraction={true}
       />
-      <View
-        style={{
-          marginTop: 24,
-          marginBottom: 18,
-          flexDirection: 'row',
-          margin: 20,
-          display: 'flex',
-          alignItems: 'center',
-        }}>
-        <Ionicons
-          onPress={() => navigation.openDrawer()}
-          name="ios-menu"
-          size={36}
-          style={{ marginHorizontal: 12 }}
-          color="black"
-        />
-        <Text
-          style={{
-            fontWeight: '900',
-            fontFamily: 'Lato-Bold',
-            textShadowColor: '#fff',
-            textShadowRadius: 24,
-            elevation: 6,
-            fontSize: 46,
-          }}>
-          Wiggle
-        </Text>
-      </View>
-      <TouchableOpacity
-        style={{
-          position: 'absolute',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: 62,
-          backgroundColor: 'blue',
-          height: 62,
-          right: 24,
-        }}
-        onPress={() => navigation.navigate('photogram.user.list.screen')}>
-        <Text>Add</Text>
-      </TouchableOpacity>
 
+      <TouchableOpacity
+        onPress={() => navigation.navigate('photogram.user.list.screen')}>
+        <ImageBackground
+          imageStyle={{ borderRadius: 100 }}
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: 62,
+            top: height - 280,
+            left: width - 80,
+            height: 62,
+          }}
+          source={require('../../../../assets/Dania.jpg')}>
+          <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#fff' }}>
+            +
+          </Text>
+        </ImageBackground>
+      </TouchableOpacity>
       <FlashList
         estimatedItemSize={50}
         refreshControl={
           <RefreshControl onRefresh={refreshControl} refreshing={refreshing} />
         }
-        data={groups}
+        data={chats}
+        renderItem={item => {
+          return <ChatList navigation={navigation} item={item} />;
+        }}
         style={{ height }}
         ListEmptyComponent={() => (
           <View

@@ -35,12 +35,7 @@ export default function Login({ navigation }) {
       setLoading(true);
       auth()
         .signInWithEmailAndPassword(email, password)
-        .then(user => {
-          user.user.sendEmailVerification({
-            handleCodeInApp: true,
-            url: 'app/email-verification',
-          });
-        })
+
         .catch(e => {
           Alert.alert(e?.message);
         })

@@ -1,39 +1,16 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ImageBackground,
-  Image,
-  BackHandler,
-  RefreshControl,
-  TextInput,
-  Button,
-  AsyncStorage,
-} from 'react-native';
-import { FloatingAction } from 'react-native-floating-action';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import moment from 'moment';
-import { FlatList } from 'react-native-gesture-handler';
 import firestore from '@react-native-firebase/firestore';
-import { FAB, Portal, Provider } from 'react-native-paper';
-import { LaunchCard } from '../../../components';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import messaging from '@react-native-firebase/messaging';
 import auth from '@react-native-firebase/auth';
-import BottomSheet from 'reanimated-bottom-sheet';
+import { FlashList } from '@shopify/flash-list';
+import { DecryptData } from '../../../functions';
 
-import { height, width } from '../../../constants';
-import Animated from 'react-native-reanimated';
-import mmkv from 'react-native-mmkv';
-
-export default function UserLists({ item }) {
+export default function RequestLists({ item }) {
+  let [user, setUser] = useState([]);
   let [requested, setRequested] = useState([]);
-  let [user, setUser] = useState();
 
   let getUser = useCallback(async () => {
     firestore()
@@ -44,7 +21,7 @@ export default function UserLists({ item }) {
       });
   }, []);
 
-  let checkRequested = useCallback(async () => {
+  let checkRequested = async m => {
     try {
       await firestore()
         .collection('users')
@@ -54,43 +31,11 @@ export default function UserLists({ item }) {
           setRequested(requested);
         });
     } catch (error) {}
-  }, []);
-
-  useEffect(() => {
-    getUser();
-    checkRequested();
-  }, [getUser, checkRequested]);
-
-  const sendRequest = async uid => {
-    let currentUser = {
-      uid: user?.uid,
-      userName: user?.userName,
-      userImg: user?.userImg,
-    };
-    console.log(currentUser);
-    try {
-      await firestore()
-        .collection('users')
-        .doc(uid)
-        .update({
-          requests: firestore.FieldValue.arrayUnion(currentUser),
-        })
-        .catch(e => console.log(e))
-        .then(() => {
-          firestore()
-            .collection('users')
-            .doc(auth().currentUser.uid)
-            .update({
-              requested: firestore.FieldValue.arrayUnion(uid),
-            });
-          AsyncStorage.mergeItem('requests', JSON.stringify(uid)).then(
-            alert('added'),
-          );
-        });
-    } catch (error) {
-      console.log(error);
-    }
   };
+  useEffect(() => {
+    checkRequested();
+    getUser();
+  }, [getUser]);
 
   const styles = StyleSheet.create({
     container: {
@@ -185,8 +130,54 @@ export default function UserLists({ item }) {
     },
   });
 
-  let hasRequested =
-    requested?.length > 0 ? requested.indexOf(item.uid) > -1 : null;
+  const AcceptRequest = () => {
+    let currentUser = {
+      uid: user?.uid,
+      userName: user?.userName,
+      userImg: user?.userImg,
+    };
+    try {
+      firestore()
+        .collection('users')
+        .doc(auth().currentUser.uid)
+        .update({
+          Chats: firestore.FieldValue.arrayUnion(item),
+          requests: firestore.FieldValue.arrayRemove(item),
+        })
+        .then(() => {
+          console.log('added 1');
+        });
+      firestore()
+        .collection('users')
+        .doc(item?.uid)
+        .update({
+          Chats: firestore.FieldValue.arrayUnion(currentUser),
+          requested: firestore.FieldValue.arrayRemove(auth().currentUser.uid),
+        })
+        .then(() => console.log('added 2'));
+    } catch (error) {}
+  };
+
+  const DeclineRequest = () => {
+    try {
+      firestore()
+        .collection('users')
+        .doc(auth().currentUser.uid)
+        .update({
+          requests: firestore.FieldValue.arrayRemove(item),
+        })
+        .then(() => {
+          console.log('added 1');
+        });
+      firestore()
+        .collection('users')
+        .doc(item?.uid)
+        .update({
+          requested: firestore.FieldValue.arrayRemove(auth().currentUser.uid),
+        })
+        .then(() => console.log('added 2'));
+    } catch (error) {}
+  };
 
   return (
     <View>
@@ -213,7 +204,9 @@ export default function UserLists({ item }) {
               style={styles.ImageStyle}
             />
             <View style={{ marginLeft: 8 }}>
-              <Text style={{ fontFamily: 'Lato-Bold' }}>{item.userName}</Text>
+              <Text style={{ fontFamily: 'Lato-Bold' }}>
+                {DecryptData(item.userName)}
+              </Text>
               <Text
                 style={{
                   fontFamily: 'Lato-Regular',
@@ -224,12 +217,26 @@ export default function UserLists({ item }) {
               </Text>
             </View>
           </View>
-          <View style={{ marginLeft: '18%', marginTop: '5%' }}>
-            <Button
-              disabled={hasRequested ? true : false}
-              title={hasRequested ? 'requested' : 'request'}
-              onPress={() => sendRequest(item.uid)}
-            />
+          <View
+            style={{
+              marginLeft: '18%',
+              flexDirection: 'row',
+              marginTop: '5%',
+            }}>
+            <TouchableOpacity
+              style={{ marginRight: 10 }}
+              onPress={() => AcceptRequest()}>
+              <Text style={{ color: '#37d67a', fontWeight: 'bold' }}>
+                {'Accept'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => DeclineRequest()}
+              style={{ marginRight: 10 }}>
+              <Text style={{ color: '#f47373', fontWeight: 'bold' }}>
+                {'Decline'}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

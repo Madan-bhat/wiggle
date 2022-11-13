@@ -5,12 +5,14 @@ import {
   PermissionsAndroid,
   Platform,
   Text,
+  Image,
 } from 'react-native';
 import { AuthContext } from '../../../context';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
 import { ActivityIndicator } from 'react-native-paper';
+import { height, width } from '../../../constants';
 
 export default function Loading({ navigation }) {
   const [fcm, setFcm] = useState('');
@@ -41,19 +43,20 @@ export default function Loading({ navigation }) {
           navigation.navigate('photogram.login.screen');
         }
       });
-    }, 1000);
+    }, 2000);
   });
   return (
-    <ImageBackground
-      source={require('../../../../assets/background.jpg')}
+    <View
       style={{
-        flex: 1,
-        width: '100%',
-        height: '100%',
+        width: width,
+        height: height,
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-      <ActivityIndicator color={'#FFF'} size={32} />
-    </ImageBackground>
+      <Image
+        style={{ width: 280, height: 280 }}
+        source={require('../../../../assets/chat.png')}
+      />
+    </View>
   );
 }

@@ -234,35 +234,6 @@ export default function Launch({ navigation }) {
         callbackNode={fall}
         enabledGestureInteraction={true}
       />
-      <View
-        style={{
-          marginTop: 24,
-          marginBottom: 18,
-          flexDirection: 'row',
-          margin: 20,
-          display: 'flex',
-          alignItems: 'center',
-        }}>
-        <Ionicons
-          onPress={() => navigation.openDrawer()}
-          name="ios-menu"
-          size={36}
-          style={{ marginHorizontal: 12 }}
-          color="black"
-        />
-        <Text
-          style={{
-            fontWeight: '900',
-            fontFamily: 'Lato-Bold',
-            textShadowColor: '#fff',
-            textShadowRadius: 24,
-            elevation: 6,
-            fontSize: 46,
-          }}>
-          Wiggle
-        </Text>
-      </View>
-
       <FlatList
         refreshControl={
           <RefreshControl onRefresh={refreshControl} refreshing={refreshing} />

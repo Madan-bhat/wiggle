@@ -23,9 +23,10 @@ import {
   EditProfile,
   EditRoomDetails,
   Chats,
+  ChatRoom,
 } from './src/screens';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Text } from 'react-native';
 import { AuthContext } from './src/context';
 import auth from '@react-native-firebase/auth';
@@ -45,7 +46,11 @@ function App() {
 
   function LaunchScreen() {
     return (
-      <Tab.Navigator>
+      <Tab.Navigator
+        screenOptions={{
+          tabBarStyle: { marginTop: 10, marginHorizontal: 18, elevation: 0 },
+        }}
+        style={{ marginBottom: 25, backgroundColor: '#fff', elevation: 0 }}>
         <Tab.Screen name="Chats" component={Chats} />
         <Tab.Screen name="Groups" component={Groups} />
       </Tab.Navigator>
@@ -60,13 +65,13 @@ function App() {
           <MainDrawerStack.Screen
             name="photogram.launch.screen"
             options={{
+              headerStyle: { height: 100 },
               title: (
-                <Text style={{ fontFamily: 'Lato-Bold', fontSize: 50 }}>
+                <Text style={{ fontFamily: 'Lato-Bold', fontSize: 60 }}>
                   {'Wiggle'}
                 </Text>
               ),
-              headerLeft: null,
-              headerShown: false,
+              headerShown: true,
             }}
             component={LaunchScreen}
           />
@@ -206,6 +211,11 @@ function App() {
             options={{ headerShown: false }}
             name="photogram.user.list.screen"
             component={UserList}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="photogram.chat.room.screen"
+            component={ChatRoom}
           />
         </Stack.Navigator>
       </NavigationContainer>
